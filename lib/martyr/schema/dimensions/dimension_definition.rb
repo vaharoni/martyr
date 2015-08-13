@@ -1,24 +1,25 @@
 module Martyr
   module Schema
     class DimensionDefinition
-      include ActiveModel::Validations
+      include ActiveModel::Model
+      include Martyr::Schema::AppliesOnDataWithGroup
+
+      attr_accessor :name, :fact_key, :fact_alias
 
       validates_presence_of :name
 
-      attr_reader :name, :levels, :selected_level
-      delegate :add_level, to: :levels
-      delegate :foreign_key, to: :selected_level
-
-      # Receives a block used for calling add_level
-      def initialize(name, use_level: nil, levels: [])
-        @name = name.to_s
-        @levels = LevelCollection.new(name.to_s)
-        levels.each {|level_name| @levels.add_level level_name}
+      def initialize(params={})
+        super
         yield self if block_given?
-        @levels.add_level('id') if @levels.empty?
-        @selected_level = use_level ? @levels.fetch(use_level) : @levels.values.first
+        raise "#{name} dimension is invalid: #{errors.full_messages.join('; ')}" unless valid?
+      rescue => e
+        raise Schema::Error.new(e)
       end
 
+      def normalize_alias(fact_alias)
+        return unless fact_alias
+        fact_alias.to_s.gsub('.', '_')
+      end
     end
   end
 end

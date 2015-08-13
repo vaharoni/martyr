@@ -3,6 +3,8 @@ module Martyr
     class DimensionDefinitionCollection < HashWithIndifferentAccess
       include Martyr::Registrable
 
+      alias_method :find_dimension, :find_or_error
+
       attr_reader :parent_dimension_definitions
       alias_method :supports_dimension?, :has_key?
 

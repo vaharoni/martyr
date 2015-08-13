@@ -2,7 +2,7 @@ module Martyr
   module Runtime
     class QueryContext
 
-      attr_reader :cube, :compound_slice
+      attr_reader :cube, :compound_slice, :metrics, :dimensions
 
       delegate :execute, to: :new_sub_cube
 
@@ -14,14 +14,14 @@ module Martyr
 
       def initialize(cube)
         @cube = cube
-        @metric_names = []
-        @dimension_names = []
-        @compound_slice = CompoundSlice.new(mart)
+        @metrics = []
+        @dimensions = []
+        @compound_slice = CompoundSlice.new(cube)
       end
 
       def select(*metric_names)
-        @metric_names += metric_names
-        @metric_names.uniq!
+        @metrics += metric_names.map {|name| cube.find_metric(name)}
+        @metrics.uniq!(&:name)
         self
       end
 
@@ -30,9 +30,9 @@ module Martyr
         self
       end
 
-      def dimensions(*dimension_names)
-        @dimension_names += dimension_names
-        @dimension_names.uniq!
+      def group(*dimension_names)
+        @dimensions += dimension_names.map {|name| cube.find_dimension(name)}
+        @dimensions.uniq!(&:name)
         self
       end
 
@@ -43,6 +43,7 @@ module Martyr
         SubCube.new(self)
       end
 
+      # Builds a fresh new fact scope collection based on the fact scope definitions
       # @return [FactScopeCollection]
       def build_fact_scope_context
         cube.fact_definitions.build_fact_scopes

@@ -1,6 +1,7 @@
 module Martyr
   module Schema
     class FactDefinitionCollection < HashWithIndifferentAccess
+      include ActiveModel::Model
       include Martyr::Registrable
 
       attr_accessor :cube

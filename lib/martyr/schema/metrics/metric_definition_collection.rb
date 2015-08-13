@@ -3,20 +3,19 @@ module Martyr
     class MetricDefinitionCollection < HashWithIndifferentAccess
       include Martyr::Registrable
 
-      def add_count_metric(name, on: name, rollup: :sum)
-        register BuiltInMetric.new name: name, column: on, aggregate_function: :count, rollup_function: rollup
+      alias_method :find_metric, :find_or_error
+      alias_method :supports_metric?, :has_key?
+
+      def add_sum_metric(name, statement = name, fact_alias: name)
+        register BuiltInMetric.new name: name, statement: statement, fact_alias: fact_alias, rollup_function: :sum
       end
 
-      def add_min_metric(name, on: name)
-        register BuiltInMetric.new name: name, column: on, aggregate_function: :min, rollup_function: :min
+      def add_min_metric(name, statement = name, fact_alias: name)
+        register BuiltInMetric.new name: name, statement: statement, fact_alias: fact_alias, rollup_function: :min
       end
 
-      def add_max_metric(name, on: name)
-        register BuiltInMetric.new name: name, column: on, aggregate_function: :max, rollup_function: :max
-      end
-
-      def add_sum_metric(name, on: name)
-        register BuiltInMetric.new name: name, column: on, aggregate_function: :sum, rollup_function: :sum
+      def add_max_metric(name, statement = name, fact_alias: name)
+        register BuiltInMetric.new name: name, statement: statement, fact_alias: fact_alias, rollup_function: :max
       end
 
       def add_custom_metric(name, block, rollup: :sum)

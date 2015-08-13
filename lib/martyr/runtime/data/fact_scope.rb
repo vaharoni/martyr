@@ -1,6 +1,6 @@
 module Martyr
   module Runtime
-    class MainFactScope
+    class FactScope
       attr_reader :fact_definition, :scope
       delegate :name, to: :fact_definition
 
@@ -18,10 +18,17 @@ module Martyr
         return if metric_name and !supports_metric?(metric_name)
         original_scope = @scope
         @scope = Proc.new do
-          block.call(original_scope)
+          block.call(original_scope.call)
         end
       end
 
+      def scope_sql
+        run_scope.try(:arel).try(:to_sql)
+      end
+
+      def run_scope
+        scope.call
+      end
 
     end
   end

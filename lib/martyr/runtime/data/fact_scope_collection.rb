@@ -10,6 +10,19 @@ module Martyr
         end
       end
 
+      def sql
+        # TODO: apply sub facts
+        main_fact.scope_sql
+      end
+
+      def sub_facts
+        except(:main)
+      end
+
+      def main_fact
+        fetch(:main)
+      end
+
     end
   end
 end

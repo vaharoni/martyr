@@ -9,14 +9,15 @@ module Martyr
         errors.add(:base, "Slice on `#{dimension_name}`: must have either `with` and `without`") unless with or without
       end
 
-      def apply_on_data(data_slice_builder)
+      # @param scopeable [#update_scope]
+      def apply_on_data(scopeable)
         if with.present?
-          data_slice_builder.update_scope(dimension_name: dimension_name) do |x|
-            x.where(dimension_definition.foreign_key => with)
+          scopeable.update_scope(dimension_name: dimension_name) do |x|
+            x.where(dimension_definition.fact_key => with)
           end
         elsif without.present?
-          data_slice_builder.update_scope(dimension_name: dimension_name) do |x|
-            x.where.not(dimension_definition.foreign_key => with)
+          scopeable.update_scope(dimension_name: dimension_name) do |x|
+            x.where.not(dimension_definition.fact_key => with)
           end
         end
       end

@@ -1,9 +1,9 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'martyr'
-require 'fixtures'
+require 'chinook_database'
 
 RSpec.configure do |config|
   config.before :all do
-    Fixtures.setup
+    ChinookDatabase.connect
   end
 end

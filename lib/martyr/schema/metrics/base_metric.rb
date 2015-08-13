@@ -1,16 +1,17 @@
 module Martyr
   module Schema
-    class CustomMetric < BaseMetric
+    class BaseMetric
+      include ActiveModel::Model
 
-      attr_accessor :block
+      attr_accessor :name, :rollup_function
 
       def build_slice(**slice_definition)
-        raise Runtime::Error.new("Custom metrics cannot be sliced: attempted on metric `#{name}`")
+        raise NotImplementedError
       end
 
       # @param scopeable [#update_scope]
       def apply_on_data(scopeable)
-        # no-op
+        raise NotImplementedError
       end
 
     end

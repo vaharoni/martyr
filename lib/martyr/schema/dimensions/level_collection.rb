@@ -1,7 +1,7 @@
 module Martyr
   module Schema
     class LevelCollection < HashWithIndifferentAccess
-      include Registrable
+      include Martyr::Registrable
 
       attr_reader :dimension_name
 
@@ -10,6 +10,7 @@ module Martyr
         @dimension_name = dimension_name
       end
 
+      # @param name [String, Symbol] level name
       def add_level(name, **args)
         register Level.new(name, dimension_name: dimension_name, **args)
       end

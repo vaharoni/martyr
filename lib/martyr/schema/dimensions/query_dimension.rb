@@ -2,12 +2,10 @@ module Martyr
   module Schema
     class QueryDimension < DimensionDefinition
       include ActiveModel::Validations
-      include HasScope
+      include Martyr::HasScope
 
       validates_presence_of :scope_query
       validate :scope_valid
-
-      attr_reader :scope
 
       # @param name [Symbol, String]
       # @option scope [Lambda] lambda function to define the dimension scope

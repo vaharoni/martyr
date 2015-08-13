@@ -4,7 +4,7 @@ module Martyr
 
       # @param name [Symbol, String]
       # @param column [Symbol, String]
-      def initialize(name, column:)
+      def initialize(name, column: name)
         # TODO: convert the column into level definitions of week, month, and year
         super(name) do |dimension|
           dimension.add_level column, foreign_key: column

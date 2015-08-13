@@ -1,9 +1,10 @@
 module Martyr
   module Schema
     class DimensionDefinitionCollection < HashWithIndifferentAccess
-      include Registrable
+      include Martyr::Registrable
 
       attr_reader :parent_dimension_definitions
+      alias_method :supports_dimension?, :has_key?
 
       # @param parent_schema_class [Martyr::Base, nil]
       def initialize(parent_schema_class)

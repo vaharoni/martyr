@@ -1,3 +1,4 @@
+require 'martyr/schema/dimensions/dimension_definition'
 module Martyr
   module Schema
     class DegenerateDimension < DimensionDefinition

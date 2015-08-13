@@ -1,9 +1,9 @@
 module Martyr
   module Schema
-    class CustomRollup
+    class CustomMetric
       include ActiveModel::Model
 
-      attr_accessor :name, :block
+      attr_accessor :name, :block, :rollup_function
 
     end
   end

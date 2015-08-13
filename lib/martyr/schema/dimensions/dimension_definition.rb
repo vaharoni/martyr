@@ -7,6 +7,7 @@ module Martyr
 
       attr_reader :name, :levels, :selected_level
       delegate :add_level, to: :levels
+      delegate :foreign_key, to: :selected_level
 
       # Receives a block used for calling add_level
       def initialize(name, use_level: nil, levels: [])

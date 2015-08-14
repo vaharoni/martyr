@@ -34,7 +34,7 @@ module MartyrSpec
   #
   # Definition of cell coordinates:
   #   One metric
-  #   Optional dimension value for one (the lower) level.
+  #   Optional dimension value for ONE (the lower) level.
   # Tuple: (M1, D1 => {level: 2, with: 'D1.2.5'})
   #
   # These coordinates represent a group of facts that have to be rolled-up somehow.
@@ -76,86 +76,105 @@ module MartyrSpec
   #       ## `category` and `sub_category` methods are called
   #       ## category needs to tell us how to retrieve children
   #
-  #  About degenerate levels:
+  #  About levels:
   #   1. As soon as one level is considered degenerate, all levels above it must be degenerate.
-  #   2. If degenerate level is directly connected to the fact, it is always sliced and grouped by directly on the fact.
-  #   3. If all levels are degenerate, then all of the levels must be connected directly to the fact.
-  #   4. If degenerate level is above query level, it must provide custom ways to perform WHERE on the next query level
+  #   2. If degenerate level is directly connected to the fact, all levels above it must be connected to the fact.
+  #   3. If degenerate level is above query level, it must provide custom ways to perform WHERE on the NEXT query level
   #
   #
   #      Level Type       Connected to Fact?      Operation        Example        Strategy
   #      Query             Yes                     WHERE            A1            Separate dimension query, WHERE on IDs
   #      Query             Yes                     GROUP BY         A1            Group by on the column on the fact
   #      Query             No                      WHERE            A4            Separate dimension query with :includes, WHERE on IDs
-  #      Query             No                      GROUP BY         A4            ==> MAYBE I SHOULD DO A MEMORY SLICE HERE
+  #      Query             No                      GROUP BY         A4            The grouping will be performed in memory
   #
   #      Degenerate        Yes                     WHERE            A1            No dimension query - straight to the fact
   #      Degenerate        Yes                     GROUP BY         A1            Group by on the column on the fact
-  #      Degenerate        No                      WHERE            A4
+  #      Degenerate        No                      WHERE            A4            Performs a query on the query dimension (must exist according to rules)
   #      Degenerate        No                      GROUP BY         A4
-  #
-  #
   #
   #
   # Use cases, assuming D1.1, D1.2 where D1.1 is leaf level of D1:
   #
   #  A. Cube #1, with has_level D1.1 only:
-  #       Slice               Group Statement     Result
-  #  (1)  D1.1                  D1.1              GROUP BY on D1.1, WHERE on D1.1
-  #  (2)  D1.1                  D1.2              Group will automatically expand to include D1.1. Equivalent to Group D1.1, D1.2
-  #  (3)  D1.2                  D1.1              Group will automatically expand to include D1.2. Equivalent to Group D1.1, D1.2
-  #  (4)* D1.2                  D1.2              JOINS D1.2, GROUP BY D1.2, WHERE on D1.2
-  #  (5)  D1.1                  D1.1, D1.2        GROUP BY on D1.1, WHERE on D1.1. Note that D1.2 is not joined in or used.
-  #  (6)* D1.2                  D1.1, D1.2        JOINS D1.2, GROUP BY D1.1 & D1.2, WHERE on D1.2.
+  #       Slice               Group Statement     Effective Group     Result
+  #  (1)* D1.1                  D1.1               D1.1               GROUP BY on D1.1, WHERE on D1.1
+  #  (2)  D1.1                  D1.2               D1.1               Equivalent to A1
+  #  (3)* D1.2                  D1.1               D1.1               Query on D1.2 to retrieve D1.1 IDs, WHERE on D1.1 IDs
+  #  (4)  D1.2                  D1.2               D1.1               Equivalent to A3
+  #  (5)  D1.1                  D1.1, D1.2         D1.1               Equivalent to A3
+  #  (6)  D1.2                  D1.1, D1.2         D1.1               Equivalent to A3
   #
   #  B. Cube #2, with has_level D1.2 only:
-  #       Slice               Group Statement     Result
-  #  (1)  D1.1                  D1.1              Null results. D1.1 is not defined in the cube.
-  #  (2)  D1.1                  D1.2              Null results. D1.1 is not defined in the cube.
-  #  (3)  D1.2                  D1.1              D1.1 will be removed from group, D1.2 added. Equivalent to Group D1.2.
-  #  (4)  D1.2                  D1.2              WHERE on D1.2
-  #  (5)  D1.1                  D1.1, D1.2        Null results. D1.1 is not defined in the cube.
-  #  (6)  D1.2                  D1.1, D1.2        D1.1 will be removed from group. Equivalent to Group D1.2.
+  #       Slice               Group Statement     Effective Group     Result
+  #  (1)  D1.1                  D1.1               N/A                Equivalent to B2
+  #  (2)* D1.1                  D1.2               N/A                Null results: Slicing on level that is not defined in cube.
+  #  (3)  D1.2                  D1.1               D1.2               Equivalent to B4
+  #  (4)* D1.2                  D1.2               D1.2               WHERE on D1.2
+  #  (5)  D1.1                  D1.1, D1.2         N/A                Equivalent to B2
+  #  (6)  D1.2                  D1.1, D1.2         D1.2               Equivalent to B4
   #
   #  C. Cube #3, with has_level D1.1 and D1.2:
-  #       Slice               Group Statement     Result
-  #  (1)  D1.1                  D1.1              GROUP BY on D1.1, WHERE on D1.1
-  #  (2)  D1.1                  D1.2              Group will automatically expand to include D1.1. Equivalent to Group D1.1, D1.2
-  #  (3)  D1.2                  D1.1              Group will automatically expand to include D1.2. Equivalent to Group D1.1, D1.2
-  #  (4)  D1.2                  D1.2              WHERE on D1.2
-  #  (5)  D1.1                  D1.1, D1.2        GROUP BY on D1.1, WHERE on D1.1. D1.2 is not used.
-  #  (6)  D1.2                  D1.1, D1.2        GROUP BY on D1.1 & D1.2, WHERE on D1.2.
+  #       Slice               Group Statement     Effective Group     Result
+  #  (1)  D1.1                  D1.1               D1.1, D1.2         Equivalent to C5
+  #  (2)  D1.1                  D1.2               D1.1, D1.2         Equivalent to C5
+  #  (3)  D1.2                  D1.1               D1.1, D1.2         Equivalent to C6
+  #  (4)* D1.2                  D1.2               D1.2               GROUP BY on D1.2, WHERE on D1.2
+  #  (5)* D1.1                  D1.1, D1.2         D1.1, D1.2         GROUP BY on D1.1 & D1.2, WHERE on D1.1.
+  #  (6)* D1.2                  D1.1, D1.2         D1.1, D1.2         GROUP BY on D1.1 & D1.2, WHERE on D1.2.
+  #
+  #
+  #   Cube  Support               Slice           Group By            Where
+  #   (D1.1)                      D1.1            D1.1                Direct
+  #   (D1.1)                      D1.2            D1.1                Through D1.1 IDs
+  #   (D1.1)                      D1.3            D1.1                Through D1.1 IDs
+  #
+  #   (D1.2)                      D1.1            Null
+  #   (D1.2)                      D1.2            D1.2                Direct
+  #   (D1.2)                      D1.3            D1.2                Through D1.2 IDs; note that D1.2 cannot be degenerate, otherwise D1.3 must always be connected
+  #
+  #   (D1.1, D1.2)                D1.1            D1.1, D1.2          Direct
+  #   (D1.1, D1.2)                D1.2            D1.2                Direct
+  #   (D1.1, D1.2)                D1.3            D1.2                Through D1.2 IDs
+  #
+  #   (D1.1, D1.3)                D1.1            D1.1, D1.3          Direct
+  #   (D1.1, D1.3)                D1.2            D1.1, D1.3          Through D1.1 IDs
+  #   (D1.1, D1.3)                D1.3            D1.3                Direct
+  #
+  #   (D1.1, D1.2, D1.3)          D1.1            D1.1, D1.2, D1.3    Direct
+  #   (D1.1, D1.2, D1.3)          D1.2            D1.2, D1.3          Direct
+  #   (D1.1, D1.2, D1.3)          D1.3            D1.3                Direct
+  #
+  #
+  #   (D1.2, D1.3)                D1.1            Null
+  #   (D1.2, D1.3)                D1.2            D1.2, D1.3          Direct
+  #   (D1.2, D1.3)                D1.2            D1.3                Direct
+  #
+  #   (D1.3)                      D1.1            Null
+  #   (D1.3)                      D1.2            Null
+  #   (D1.3)                      D1.3            D1.3                Direct
   #
   # A few things to note:
-  #   - `slice` is setting the agenda. `group` will always expand to include the `slice`.
+  #   - If the cube supports the sliced level, `group` automatically includes it and all levels above it that the cube
+  #     supports.
+  #   - If the cube does not support the sliced level, `group` goes down to the first supported level. If none exists,
+  #     the subcube is the null cube.
   #   - The only good reason behind `group` is to include a +lower level+ than the `slice`.
   #   - Calculated metrics, selected using `select` expand the `group` without affecting `slice`.
   #   - This means that in most cases `group` is not needed at all.
   #
-  # Cases A4 and A6 above mean we need dimension levels to know how to do three things:
-  #   1. Joined into the fact statement
-  #   2. Add themselves to the WHERE clause
-  #   3. Add themselves to the GROUP BY clause
-  #
-
   #
   # Advantage:
   #   Knowing a cell coordinates mean that we can easily traverse between similar cubes with shared dimensions.
   #
-  #   This is ideal for dashboard and business intelligence applications because:
-  #   1. Cells can be drilled down on by adding a new dimension or expanding a level.
+  #       Class Context
+  #           Dimension definitions
+  #           Main Fact definition
+  #               Dimension Association
+  #           Sub Fact Definition
+  #               Dimension Association
   #
 
-
-  # Rules:
-  # - Dimensions must connect to the fact table from the lowest level. There is no mid-level connection.
-  # - We need to allow drill-through, so that facts.first.customer will yield a Customer object
-  #
-
-
-  # 1. Sub cube is with D1.
-  # 1. Dimension has level defined on the fact -- it will be used directly from there when a slice
-  # 2. Dimenion is sliced
 
 
 

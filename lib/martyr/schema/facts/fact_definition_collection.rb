@@ -6,16 +6,15 @@ module Martyr
 
       attr_accessor :cube
       delegate :dimension_definitions, :metric_definitions, to: :cube
-      delegate :supports_dimension?, to: :dimension_definitions
-      delegate :supports_metric?, to: :metric_definitions
 
       def main_fact(&scope)
         register MainFactDefinition.new(scope: scope, schema: self)
       end
 
-      def sub_fact(name, propagate, &scope)
+      def sub_fact(name, propagate_dimensions: [], propagate_metrics: [], &scope)
         raise Schema::Error.new('`main` is a reserved fact name') if name.to_s == 'main'
-        register SubFactDefinition.new(name: name, propagate: propagate, scope: scope, schema: self)
+        register SubFactDefinition.new(name: name, propagate_dimensions: propagate_dimensions,
+                                       propagate_metrics: propagate_metrics, scope: scope, schema: self)
       end
 
       # @return [Runtime::FactScopeCollection]

@@ -12,12 +12,12 @@ module Martyr
       # @param scopeable [#update_scope]
       def apply_on_data(scopeable)
         if with.present?
-          scopeable.update_scope(dimension_name: dimension_name) do |x|
-            x.where(dimension_definition.fact_key => with)
+          scopeable.update_scope(dimension_name: dimension_name) do |fact_scope|
+            fact_scope.scope.where(fact_scope.dimension_key_for_where(dimension_definition) => with)
           end
         elsif without.present?
-          scopeable.update_scope(dimension_name: dimension_name) do |x|
-            x.where.not(dimension_definition.fact_key => with)
+          scopeable.update_scope(dimension_name: dimension_name) do |fact_scope|
+            fact_scope.scope.where.not(fact_scope.dimension_key_for_where(dimension_definition) => with)
           end
         end
       end

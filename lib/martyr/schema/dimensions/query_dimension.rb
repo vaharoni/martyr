@@ -4,8 +4,7 @@ module Martyr
       include Martyr::HasScope
       include Martyr::Schema::BuildsQueryDimensionSlice
 
-      validates_presence_of :scope_query
-      validate :scope_valid
+      validates_presence_of :scope
 
       attr_accessor :primary_key, :label_key
       attr_reader :scope
@@ -29,11 +28,6 @@ module Martyr
         rescue => e
           raise Schema::Error.new(e)
         end
-      end
-
-      # @validation
-      def scope_valid
-        errors.add(:scope, 'Invalid scope provided') unless scope_query.present?
       end
 
     end

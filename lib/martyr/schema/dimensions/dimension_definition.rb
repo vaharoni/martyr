@@ -11,9 +11,7 @@ module Martyr
       def initialize(params={})
         super
         yield self if block_given?
-        raise "#{name} dimension is invalid: #{errors.full_messages.join('; ')}" unless valid?
-      rescue => e
-        raise Schema::Error.new(e)
+        raise Schema::Error.new("#{name} dimension is invalid: #{errors.full_messages.join('; ')}") unless valid?
       end
 
       def normalize_alias(fact_alias)

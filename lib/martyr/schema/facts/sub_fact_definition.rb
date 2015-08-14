@@ -16,6 +16,10 @@ module Martyr
         propagate_metrics.map(&:to_s).include? key.to_s
       end
 
+      def dimension_key_for_where(dimension)
+        dimension.fact_alias
+      end
+
     end
   end
 end

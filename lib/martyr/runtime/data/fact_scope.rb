@@ -13,12 +13,12 @@ module Martyr
       end
 
       # Chaining to allow lazy setup
+      # @yieldparam [FactScope]
       def update_scope(dimension_name: nil, metric_name: nil, &block)
         return if dimension_name and !supports_dimension?(dimension_name)
         return if metric_name and !supports_metric?(metric_name)
-        original_scope = @scope
         @scope = Proc.new do
-          block.call(original_scope.call)
+          block.call(self)
         end
       end
 

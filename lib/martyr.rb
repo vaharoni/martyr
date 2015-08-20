@@ -4,6 +4,10 @@ require 'active_support'
 require 'active_support/core_ext'
 require 'active_model'
 
+Dir.glob('lib/martyr/concerns/*.*').each{|x| require File.expand_path(x).split('.rb').first}
+require 'martyr/schema/has_level_collection'
+require 'martyr/schema/is_level_collection'
+
 Dir.glob('lib/martyr/**/*.*').each{|x| require File.expand_path(x).split('.rb').first}
 
 # require 'martyr/base'

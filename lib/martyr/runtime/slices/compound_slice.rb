@@ -19,12 +19,12 @@ module Martyr
       #   slice(:artist, with: 'AC/DC')
       #
       def slice(*several_variants)
-        if several_variants.length == 1 and several_variants.is_a?(Hash)
+        if several_variants.length == 1 and several_variants.first.is_a?(Hash)
           compound_slice_hash = several_variants.first.stringify_keys.except('metric')
           compound_slice_hash.each do |slice_on, *slice_definition|
             set_one_slice(slice_on, *slice_definition)
           end
-        elsif several_variants.is_a? Array
+        elsif several_variants.length == 2
           slice_on, *slice_definition = several_variants
           set_one_slice(slice_on, *slice_definition)
         else

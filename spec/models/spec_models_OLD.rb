@@ -77,9 +77,10 @@ module MartyrSpec
   #       ## category needs to tell us how to retrieve children
   #
   #  About levels:
-  #   1. As soon as one level is considered degenerate, all levels above it must be degenerate.
-  #   2. If degenerate level is directly connected to the fact, all levels above it must be connected to the fact.
-  #   3. If degenerate level is above query level, it must provide custom ways to perform WHERE on the NEXT query level
+  #   1. DIMENSION: As soon as one level is considered degenerate, all levels above it must be degenerate.
+  #   2. FACT: If degenerate level is directly connected to the fact, all levels above it must be connected to the fact.
+  #
+  #   *. If degenerate level is above query level, it must provide custom ways to perform WHERE on the NEXT query level
   #
   #
   #      Level Type       Connected to Fact?      Operation        Example        Strategy

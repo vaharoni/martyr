@@ -44,10 +44,13 @@ module Martyr
         @grain.set_all_if_empty
 
         sub_cube = SubCube.new(cube)
-        grain.add_to_select(sub_cube.fact_scopes)
-        metrics.each {|metric| metric.add_to_select(sub_cube.fact_scopes) }
-        compound_slice.add_to_where(sub_cube.fact_scopes)
-        grain.add_to_group_by(sub_cube.fact_scopes)
+        sub_cube.fact_scopes.tap do |scopes|
+          grain.nullify_scope_if_null(scopes)
+          grain.add_to_select(scopes)
+          metrics.each {|metric| metric.add_to_select(scopes) }
+          compound_slice.add_to_where(scopes)
+          grain.add_to_group_by(scopes)
+        end
 
         sub_cube
       end

@@ -17,7 +17,7 @@ module Martyr
           yield if block_given?
           true
         else
-          @scope = NullScope.new
+          set_null_scope
           false
         end
       end
@@ -27,7 +27,7 @@ module Martyr
           yield if block_given?
           true
         else
-          @scope = NullScope.new
+          set_null_scope
           false
         end
       end

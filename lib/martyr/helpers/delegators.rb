@@ -1,10 +1,8 @@
 module Martyr
-  module ChildrenDelegator
+  module Delegators
     extend ActiveSupport::Concern
 
-
     module ClassMethods
-
       def each_child_delegator(*method_names, to:)
         method_names.each do |method_name|
           define_method(method_name) do |*args|
@@ -14,7 +12,6 @@ module Martyr
           end
         end
       end
-
     end
   end
 end

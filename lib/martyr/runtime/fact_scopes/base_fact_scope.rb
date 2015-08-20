@@ -24,8 +24,13 @@ module Martyr
         @scope.is_a?(NullScope)
       end
 
+      def set_null_scope
+        @scope = NullScope.new
+      end
+
       # = Scope support check
 
+      # TODO: Consider refactoring: check for metric support might be all I need.
       def decorate_if_supports(metric_name: nil, dimension_name: nil, level_name: nil, &block)
         if metric_name
           if_supports_metric(metric_name) { decorate_scope(&block) }

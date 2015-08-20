@@ -12,10 +12,11 @@ module Martyr
         alias_method :has_level?, :has_key?
         alias_method :find_level, :find_or_error
         alias_method :level_names, :keys
+        alias_method :level_objects, :values
       end
 
       def lowest_level
-        values.max(&:to_i)
+        values.max_by(&:to_i)
       end
 
       def level_names_and_i

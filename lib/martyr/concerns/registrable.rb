@@ -4,8 +4,12 @@ module Martyr
       send(:[]=, object.name.to_s, object)
     end
 
+    def find_or_nil(name)
+      send(:[], name.to_s)
+    end
+
     def find_or_error(name)
-      send(:[], name.to_s) || raise(Runtime::Error.new "Could not find `#{name}`")
+      find_or_nil(name) || raise(Schema::Error.new "Could not find `#{name}`")
     end
   end
 end

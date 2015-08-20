@@ -4,7 +4,7 @@ describe 'Runtime Queries' do
 
   describe 'main fact' do
     it 'sets up SELECT clause correctly for metrics and degenerate & query dimensions' do
-      sub_cube = MartyrSpec::TrackSalesMartBasic.select(:units_sold, :amount).group(:media_type, :genre, :customer, :customer_country).execute
+      sub_cube = MartyrSpec::TrackSalesMartBasic.select(:units_sold, :amount).granulate(media_type: :name, genre: :name, customer: :name, customer: :country).execute
       expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT tracks.media_type_id AS media_type_id,
                tracks.genre_id AS genre_id,

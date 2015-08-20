@@ -9,8 +9,8 @@ module Martyr
         raise NotImplementedError
       end
 
-      # @param scopeable [#update_scope]
-      def apply_on_data(scopeable)
+      # @param fact_scopes [Runtime::FactScopeCollection]
+      def add_to_select(fact_scopes)
         raise NotImplementedError
       end
 

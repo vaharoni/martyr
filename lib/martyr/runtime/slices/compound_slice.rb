@@ -2,10 +2,13 @@ module Martyr
   module Runtime
     class CompoundSlice
 
-      attr_accessor :mart, :slices
+      attr_accessor :cube, :slices
 
-      def initialize(mart)
-        @mart = mart
+      include Martyr::ChildrenDelegator
+      each_child_delegator :add_to_grain, :add_to_where, to: :slice_objects
+
+      def initialize(cube)
+        @cube = cube
         @slices = {}
       end
 
@@ -29,21 +32,17 @@ module Martyr
         end
       end
 
-      # @param scopeable [#update_scope]
-      def apply_on_data(scopeable)
-        slices.values.each {|slice| slice.apply_on_data(scopeable)}
-      end
-
-      # def apply_in_memory(scopeable)
-      #   slices.values.each {|slice| slice.apply_in_memory(scopeable)}
-      # end
-
       private
 
       def set_one_slice(slice_on, **slice_definition)
-        slice_on_object = mart.dimension_definitions[slice_on] || mart.metric_definitions[slice_on]
+        slice_on_object = cube.dimensions[slice_on] || cube.metrics[slice_on]
         raise Query::Error.new("Could not find `#{slice_on}` to apply slice on") unless slice_on_object.present?
-        @slices[slice_on] = slice_on_object.build_slice(**slice_definition)
+        @slices[slice_on] ||= slice_on_object.build_slice
+        @slices[slice_on].set_slice(**slice_definition)
+      end
+
+      def slice_objects
+        slices.values
       end
 
     end

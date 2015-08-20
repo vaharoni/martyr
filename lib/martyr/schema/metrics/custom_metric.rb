@@ -8,8 +8,8 @@ module Martyr
         raise Runtime::Error.new("Custom metrics cannot be sliced: attempted on metric `#{name}`")
       end
 
-      # @param scopeable [#update_scope]
-      def apply_on_data(scopeable)
+      # @param fact_scopes [Runtime::FactScopeCollection]
+      def add_to_select(fact_scopes)
         # no-op
       end
 

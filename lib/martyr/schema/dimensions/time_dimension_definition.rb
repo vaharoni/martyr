@@ -1,6 +1,6 @@
 module Martyr
   module Schema
-    class TimeDimension < DimensionDefinition
+    class TimeDimension
 
       # @param name [Symbol, String]
       # @param column [Symbol, String]
@@ -13,6 +13,10 @@ module Martyr
 
       def build_slice(**slice_definition)
         Runtime::TimeDimensionSlice.new dimension_definition: self, **slice_definition
+      end
+
+      def find_level(name)
+        # TODO: implement
       end
 
     end

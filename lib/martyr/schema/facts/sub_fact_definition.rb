@@ -1,8 +1,14 @@
 module Martyr
   module Schema
-    class SubFactDefinition < BaseFactDefinition
+    class SubFactDefinition
+      include ActiveModel::Model
 
-      attr_accessor :propagate_dimensions, :propagate_metrics
+      attr_accessor :name, :cube, :scope, :propagate_dimensions, :propagate_metrics
+
+      # @return [Runtime::SubFactScope]
+      def build
+        Runtime::SubFactScope.new(self)
+      end
 
       # @param key [String, Symbol]
       # @return [Boolean]
@@ -14,10 +20,6 @@ module Martyr
       # @return [Boolean]
       def supports_metric?(key)
         propagate_metrics.map(&:to_s).include? key.to_s
-      end
-
-      def dimension_key_for_where(dimension)
-        dimension.fact_alias
       end
 
     end

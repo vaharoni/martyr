@@ -4,14 +4,19 @@ module Martyr
 
       attr_accessor :statement, :fact_alias
 
-      def build_slice(**slice_definition)
-        Runtime::MetricSlice.new metric_definition: self, **slice_definition
+      def build_slice
+        Runtime::MetricSlice.new(self)
       end
 
-      # @param scopeable [#update_scope]
-      def apply_on_data(scopeable)
-        scopeable.update_scope(metric_name: name) do |x|
-          x.select("#{statement} AS #{fact_alias}")
+      # @param fact_scopes [Runtime::FactScopeCollection]
+      def add_to_select(fact_scopes)
+        # We go directly through #supports_metric? and #decorate_scope because unsupported metrics should not result in
+        # null cube scope.
+        main_fact = fact_scopes.main_fact
+        return unless main_fact.supports_metric?(name)
+
+        main_fact.decorate_scope do |scope|
+          scope.select("#{statement} AS #{fact_alias}")
         end
       end
 

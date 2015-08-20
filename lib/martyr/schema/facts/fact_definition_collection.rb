@@ -1,20 +1,27 @@
 module Martyr
   module Schema
     class FactDefinitionCollection < HashWithIndifferentAccess
-      include ActiveModel::Model
       include Martyr::Registrable
 
-      attr_accessor :cube
-      delegate :dimension_definitions, :metric_definitions, to: :cube
+      attr_reader :cube
 
-      def main_fact(&scope)
-        register MainFactDefinition.new(scope: scope, schema: self)
+      def initialize(cube)
+        @cube = cube
       end
 
-      def sub_fact(name, propagate_dimensions: [], propagate_metrics: [], &scope)
+      # = DSL
+
+     def with_main_fact(&block)
+        register MainFactDefinition.new(cube, &block)
+      end
+
+      def with_sub_fact(name, **args, &scope)
         raise Schema::Error.new('`main` is a reserved fact name') if name.to_s == 'main'
-        register SubFactDefinition.new(name: name, propagate_dimensions: propagate_dimensions,
-                                       propagate_metrics: propagate_metrics, scope: scope, schema: self)
+        register SubFactDefinition.new(name: name, cube: cube, scope: scope, **args)
+      end
+
+      def main_fact
+        fetch(:main, nil)
       end
 
       # @return [Runtime::FactScopeCollection]

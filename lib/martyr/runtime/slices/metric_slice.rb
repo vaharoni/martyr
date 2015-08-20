@@ -3,8 +3,24 @@ module Martyr
     class MetricSlice
       include ActiveModel::Model
 
-      attr_accessor :metric_definition, :gt, :lt, :gte, :lte, :eq, :not
-      delegate :statement, to: :metric_definition
+      attr_reader :metric, :gt, :lt, :gte, :lte, :eq, :not
+      delegate :statement, to: :metric
+      delegate :name, to: :metric, prefix: true
+
+      def initialize(metric)
+        @metric = metric
+      end
+
+      # This allows a `between` operation with two consecutive `slice`:
+      #   cube.slice(:units_sold, '>1000').slice(:units_sold, '<5000')
+      def set_slice(**options)
+        @gt = options[:gt]
+        @lt = options[:lt]
+        @gte = options[:gte]
+        @lte = options[:lte]
+        @eq = options[:eq]
+        @not = options[:not]
+      end
 
       validate do
         errors.add(:base, "Slice on `#{metric_name}`: cannot have both `eq` and `not`") if eq and self.not
@@ -14,16 +30,16 @@ module Martyr
             lt or lte or gt or gte or eq or self.not
       end
 
-      def metric_name
-        metric_definition.name
+      def add_to_grain(grain)
+        # no-op
       end
 
-      # @param scopeable [#update_scope]
-      def apply_on_data(scopeable)
-        apply_operator(scopeable, gt_operator, gte || gt) if gt_operator
-        apply_operator(scopeable, lt_operator, lte || lt) if lt_operator
-        apply_operator(scopeable, '=', eq) if eq
-        apply_operator(scopeable, '!=', self.not) if self.not
+      # @param fact_scopes [Runtime::FactScopeCollection]
+      def add_to_where(fact_scopes)
+        apply_operator(fact_scopes, gt_operator, gte || gt) if gt_operator
+        apply_operator(fact_scopes, lt_operator, lte || lt) if lt_operator
+        apply_operator(fact_scopes, '=', eq) if eq
+        apply_operator(fact_scopes, '!=', self.not) if self.not
       end
 
       private
@@ -44,9 +60,9 @@ module Martyr
         end
       end
 
-      def apply_operator(scopeable, operator, value)
-        scopeable.update_scope(metric_name: metric_name) do |x|
-          x.having("#{statement} #{operator} ?", value)
+      def apply_operator(fact_scopes, operator, value)
+        fact_scopes.decorate_scopes_if_supports(metric_name: metric_name) do |scope|
+          scope.having("#{statement} #{operator} ?", value)
         end
       end
 

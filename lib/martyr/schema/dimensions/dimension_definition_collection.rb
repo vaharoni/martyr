@@ -16,25 +16,6 @@ module Martyr
         register PlainDimensionDefinition.new(*args, &block)
       end
 
-      # # @param name [String, Symbol]
-      # # @param *definition_args [Array] see DimensionDefinition#initialize
-      # # @return [SharedDimensionWrapper]
-      # def use_shared_dimension(name, *definition_args)
-      #   dimension_object = recursive_lookup(name)
-      #   raise Schema::Error.new("Cannot find shared dimension `#{name}`") unless dimension_object
-      #   register SharedDimensionWrapper.new(dimension_object, *definition_args)
-      # end
-      #
-      # # @see DegenerateDimension#initialize
-      # # Passes block to allow level definitions within block
-      # def add_degenerate_dimension(name, *args, &block)
-      #   register DegenerateDimension.new(name, *args, &block)
-      # end
-      #
-      # def add_time_dimension(name, *args)
-      #   register TimeDimension.new(name, *args)
-      # end
-
       # @param name [String, Symbol]
       # @return [DimensionDefinition] object that was found by traversing up the lookup tree
       def recursive_lookup(name)
@@ -44,7 +25,13 @@ module Martyr
       def find_dimension(name)
         recursive_lookup(name) || raise(Schema::Error.new("Could not find dimension `#{name}`"))
       end
-      alias_method :find_dimension_definition, :find_dimension
+
+      # @return [Hash]
+      def all
+        return to_hash unless parent_dimension_definitions
+        to_hash.merge(parent_dimension_definitions.all)
+      end
+
     end
   end
 end

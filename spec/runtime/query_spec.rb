@@ -10,6 +10,7 @@ describe 'Runtime Queries' do
       expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT genres.name AS genres_name,
           media_types.name AS media_types_name,
+          tracks.id AS track_id,
           customers.country AS customer_country,
           customers.state AS customer_state,
           customers.city AS customer_city,
@@ -19,7 +20,6 @@ describe 'Runtime Queries' do
           invoices.billing_city AS invoice_city,
           invoices.id AS invoice_id,
           invoice_lines.id AS invoice_line_id,
-          tracks.id AS track_id,
           SUM(invoice_lines.quantity) AS units_sold
         FROM "invoice_lines"
           INNER JOIN "tracks" ON "tracks"."id" = "invoice_lines"."track_id"
@@ -29,6 +29,7 @@ describe 'Runtime Queries' do
           INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id"
         GROUP BY genres.name,
           media_types.name,
+          tracks.id,
           customers.country,
           customers.state,
           customers.city,
@@ -37,8 +38,7 @@ describe 'Runtime Queries' do
           invoices.billing_state,
           invoices.billing_city,
           invoices.id,
-          invoice_lines.id,
-          tracks.id
+          invoice_lines.id
       SQL
     end
 

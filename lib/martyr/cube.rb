@@ -15,7 +15,7 @@ module Martyr
     end
 
     class << self
-      delegate :define_dimension, :find_dimension_definition, to: :dimension_definitions
+      delegate :define_dimension, to: :dimension_definitions
       delegate :main_fact, :with_main_fact, :with_sub_fact, :build_fact_scopes, to: :fact_definitions
       delegate :metrics, :dimensions, :rollups, :find_metric, :find_dimension, to: :main_fact
 
@@ -32,5 +32,19 @@ module Martyr
     end
 
     private_class_method :parent_schema_class
+
+    # @return [Runtime::DimensionScopeCollection]
+    #   If the level is defined in the cube but not supported by the main fact, the BaseLevelDefinition object will be
+    #   wrapped with BaseLevelScope. If the level is supported, the LevelAssociation will be wrapped.
+    def self.build_dimension_scopes
+      dimension_scopes = Runtime::DimensionScopeCollection.new(dimension_definitions)
+      dimension_definitions.all.each do |dimension_name, dimension_definition|
+        dimension_definition.levels.each do |level_name, level_definition|
+          level_association = dimensions[dimension_name].try(:levels).try(:[], level_name)
+          dimension_scopes.register_level(level_association || level_definition)
+        end
+      end
+      dimension_scopes
+    end
   end
 end

@@ -2,10 +2,10 @@ module Martyr
   module Schema
     class PlainDimensionDefinition
       include ActiveModel::Model
-      include Martyr::Schema::HasLevelCollection
+      include Martyr::HasLevelCollection
 
       attr_accessor :name, :title
-      delegate :degenerate_level, :query_level, :level_and_above_full, :level_and_below_full, to: :levels
+      delegate :degenerate_level, :query_level, to: :levels
 
       # @param name [String]
       # @option title [String]
@@ -15,6 +15,10 @@ module Martyr
 
         @levels = LevelDefinitionCollection.new(dimension: self)
         instance_eval(&block) if block
+      end
+
+      def dimension_definition
+        self
       end
 
     end

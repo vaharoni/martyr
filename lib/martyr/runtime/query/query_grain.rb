@@ -3,32 +3,42 @@ module Martyr
     class QueryGrain
       include Martyr::LevelComparator
 
-      attr_reader :cube, :grain
+      attr_reader :sub_cube, :grain
 
-      def initialize(cube)
-        @cube = cube
+      def initialize(sub_cube)
+        @sub_cube = sub_cube
         @grain = {}
         @null = false
+      end
+
+      def inspect
+        "#<#{self.class} #{inspect_part}>"
+      end
+
+      def inspect_part
+        inspection = grain.map{|k,level| "#{k}: :#{level.name}"}.join(', ')
+        "grain: {#{inspection}}"
       end
 
       def null?
         @null
       end
 
-      # @param dimension [String, Symbol]
-      # @param level [String, Symbol]
-      def add_granularity(dimension, level)
-        level_definition = cube.find_dimension_definition(dimension).find_level(level)
-        level_association_collection = cube.find_dimension(dimension).levels
-        level_to_add = find_common_denominator_level(level_definition, level_association_collection)
+      # Maintains for every dimension the lowest supported level
+      # @param dimension_name [String, Symbol]
+      # @param level_name [String, Symbol]
+      def add_granularity(dimension_name, level_name)
+        dimension = sub_cube.find_dimension(dimension_name)
+        level = dimension.find_level(level_name)
+        level_to_add = find_common_denominator_level(level, dimension.levels.supported_levels)
         @null = true and return unless level_to_add
 
-        @grain[dimension.to_s] = more_detailed_level(@grain[dimension.to_s], level_to_add)
+        @grain[dimension_name.to_s] = more_detailed_level(@grain[dimension.to_s], level_to_add)
       end
 
       def set_all_if_empty
         return if @grain.present?
-        cube.dimensions.each do |dimension_name, dimension_object|
+        sub_cube.dimension_scopes.each do |dimension_name, dimension_object|
           @grain[dimension_name.to_s] = dimension_object.lowest_level
         end
       end
@@ -61,7 +71,7 @@ module Martyr
       def each_supported_level
         return if null?
         grain.each do |dimension_name, lowest_level|
-          cube.find_dimension(dimension_name).level_and_above_supported(lowest_level.name).each do |_level_name, level_object|
+          sub_cube.find_dimension(dimension_name).level_and_above_supported(lowest_level.name).each do |level_object|
             yield level_object
           end
         end

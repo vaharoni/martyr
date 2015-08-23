@@ -5,7 +5,7 @@ module Martyr
 
       attr_accessor :name, :rollup_function
 
-      def build_slice(**slice_definition)
+      def build_slice
         raise NotImplementedError
       end
 

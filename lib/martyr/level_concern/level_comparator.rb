@@ -15,12 +15,12 @@ module Martyr
     end
 
 
-    # @param level_definition [LevelDefinition]
-    # @param level_association_collection [LevelAssociationCollection]
-    # @return [LevelAssociation, nil] finds the highest supported level in the cube that is equal or below level_definition
-    def find_common_denominator_level(level_definition, level_association_collection)
-      common_denominator = level_definition.level_and_below_full.find{|definition| level_association_collection[definition.name] }
-      level_association_collection[common_denominator.try(:name)]
+    # @param level [BaseLevelScope]
+    # @param supported_levels_arr [Array<Martyr::Level>] of supported levels
+    # @return [Martyr::Level, nil] finds the highest supported level in the cube that is equal or below level_definition
+    def find_common_denominator_level(level, supported_levels_arr)
+      supported_index = supported_levels_arr.index_by(&:name)
+      level.level_and_below_full.find{|l| supported_index[l.name] }
     end
 
   end

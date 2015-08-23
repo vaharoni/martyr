@@ -4,17 +4,15 @@ require 'active_support'
 require 'active_support/core_ext'
 require 'active_model'
 
-Dir.glob('lib/martyr/concerns/*.*').each{|x| require File.expand_path(x).split('.rb').first}
-require 'martyr/schema/has_level_collection'
-require 'martyr/schema/is_level_collection'
-
+Dir.glob('lib/martyr/helpers/*.*').each{|x| require File.expand_path(x).split('.rb').first}
+Dir.glob('lib/martyr/level_concern/*.*').each{|x| require File.expand_path(x).split('.rb').first}
 Dir.glob('lib/martyr/**/*.*').each{|x| require File.expand_path(x).split('.rb').first}
 
 # require 'martyr/base'
 # require 'martyr/errors'
 #
-# require 'martyr/schema/concerns/registrable'
-# require 'martyr/schema/concerns/has_scope'
+# require 'martyr/schema/helpers/registrable'
+# require 'martyr/schema/helpers/has_scope'
 #
 # require 'martyr/schema/dimensions/dimension_definition'
 # require 'martyr/schema/dimensions/degenerate_dimension'

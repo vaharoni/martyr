@@ -11,6 +11,11 @@ module Martyr
         @metric = metric
       end
 
+      def inspect_part
+        operator_inspection = [gt_operator, gte || gt, lt_operator, lte || lt, eq ? '=' : nil, eq, self.not ? '!=' : nil, self.not].compact.join(' ')
+        "metric: '#{metric_name}' #{operator_inspection}"
+      end
+
       # This allows a `between` operation with two consecutive `slice`:
       #   cube.slice(:units_sold, '>1000').slice(:units_sold, '<5000')
       def set_slice(**options)

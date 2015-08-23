@@ -2,14 +2,22 @@ module Martyr
   module Runtime
     class CompoundSlice
 
-      attr_accessor :cube, :slices
+      attr_accessor :sub_cube, :slices
 
-      include Martyr::ChildrenDelegator
+      include Martyr::Delegators
       each_child_delegator :add_to_grain, :add_to_where, to: :slice_objects
 
-      def initialize(cube)
-        @cube = cube
+      def initialize(sub_cube)
+        @sub_cube = sub_cube
         @slices = {}
+      end
+
+      def inspect
+        "#<#{self.class} #{inspect_part}>"
+      end
+
+      def inspect_part
+        "slices: {#{@slices.values.map(&:inspect_part).join(', ')}}"
       end
 
       # Variant 1 - full slice as one hash:
@@ -35,8 +43,8 @@ module Martyr
       private
 
       def set_one_slice(slice_on, **slice_definition)
-        slice_on_object = cube.dimensions[slice_on] || cube.metrics[slice_on]
-        raise Query::Error.new("Could not find `#{slice_on}` to apply slice on") unless slice_on_object.present?
+        slice_on_object = sub_cube.find_dimension_or_metric(slice_on)
+        raise Query::Error.new("Could not find `#{slice_on}` to apply slice on") unless slice_on_object
         @slices[slice_on] ||= slice_on_object.build_slice
         @slices[slice_on].set_slice(**slice_definition)
       end

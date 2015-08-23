@@ -5,7 +5,7 @@ module Martyr
     # as a result of their application.
     class QueryContext
 
-      attr_reader :cube, :compound_slice, :metrics, :grain
+      attr_reader :cube
 
       # TODO: select, slice, and dimensions need to return a new object, so that this is allowed:
       # query1 = cube.slice(:a, with: 1).dimensions(:a)
@@ -15,43 +15,39 @@ module Martyr
 
       def initialize(cube)
         @cube = cube
-        @metrics = []
-        @grain = QueryGrain.new(cube)
-        @compound_slice = CompoundSlice.new(cube)
+        @select_args = []
+        @slice_args = []
+        @granulate_args = []
       end
 
-      def select(*metric_names)
-        @metrics += metric_names.map{|metric_name| cube.find_metric(metric_name) }
-        @metrics.uniq!(&:name)
+      def select(*args)
+        @select_args += args.flatten
         self
       end
 
       def slice(*args)
-        @compound_slice.slice(*args)
+        @slice_args << args
         self
       end
 
-      def granulate(grain_hash)
-        grain_hash.each do |dimension, level|
-          @grain.add_granularity(dimension, level)
-        end
+      def granulate(hash)
+        @granulate_args << hash
         self
       end
 
       # @return [Runtime::SubCube]
       def execute
-        compound_slice.add_to_grain(@grain)
-        @grain.set_all_if_empty
+        sub_cube = build_sub_cube
+        sub_cube.slice_all_scopes
+        sub_cube
+      end
 
+      def build_sub_cube
         sub_cube = SubCube.new(cube)
-        sub_cube.fact_scopes.tap do |scopes|
-          grain.nullify_scope_if_null(scopes)
-          grain.add_to_select(scopes)
-          metrics.each {|metric| metric.add_to_select(scopes) }
-          compound_slice.add_to_where(scopes)
-          grain.add_to_group_by(scopes)
-        end
-
+        sub_cube.set_metrics(@select_args)
+        sub_cube.set_slice(@slice_args)
+        sub_cube.set_grain(@granulate_args)
+        sub_cube.set_defaults_and_dependencies
         sub_cube
       end
 

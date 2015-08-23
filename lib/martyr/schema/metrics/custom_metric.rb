@@ -4,7 +4,7 @@ module Martyr
 
       attr_accessor :block
 
-      def build_slice(**slice_definition)
+      def build_slice
         raise Runtime::Error.new("Custom metrics cannot be sliced: attempted on metric `#{name}`")
       end
 

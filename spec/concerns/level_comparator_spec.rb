@@ -42,20 +42,19 @@ describe Martyr::LevelComparator do
 
   describe 'find_common_denominator_level' do
     before do
-      @cube = MartyrSpec::DegeneratesAndHighLevels
-      @dimension = @cube.find_dimension(:invoices)
-      @dimension.dimension_definition.tap do |x|
-        @level_city = x.find_level(:city)
-        @level_invoice = x.find_level(:invoice)
-        @level_invoice_line = x.find_level(:invoice_line)
-      end
+      cube = MartyrSpec::DegeneratesAndHighLevels
+      @scopes = cube.build_dimension_scopes
+      @level_city = @scopes.find_level(:invoices, :city)
+      @level_invoice = @scopes.find_level(:invoices, :invoice)
+      @level_invoice_line = @scopes.find_level(:invoices, :invoice_line)
     end
 
     it 'returns the same level if it is supported' do
-      expect(subject.find_common_denominator_level(@level_invoice, @dimension.levels)).to eq(@dimension.find_level(:invoice))
+      expect(subject.find_common_denominator_level(@level_invoice, [@level_invoice])).to eq(@level_invoice)
     end
 
     it 'returns a lower supported level if it is not directly supported' do
+      expect(subject.find_common_denominator_level(@level_city, [@level_invoice])).to eq(@level_invoice)
       expect(subject.find_common_denominator_level(@level_city, @dimension.levels)).to eq(@dimension.find_level(:invoice))
     end
 

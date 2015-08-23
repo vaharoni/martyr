@@ -8,28 +8,31 @@ module Martyr
       # @attribute level [LevelDefinition]
       attr_reader :level
 
-      attr_reader :dimension_association, :with, :without
-      delegate :dimension_definition, to: :dimension_association
+      attr_reader :dimension_scope, :with, :without
       delegate :name, to: :level, prefix: true
+
+      def inspect_part
+        operator_inspection = [with ? "with: '#{with}'" : nil, without ? "without: '#{without}'" : nil].compact.join(' ')
+        "#{dimension_name}: {level: '#{level_name}', #{operator_inspection}}"
+      end
 
       validate do
         errors.add(:base, "Slice on `#{dimension_name}`: cannot have both `with` and `without`") if with and without
         errors.add(:base, "Slice on `#{dimension_name}`: must have either `with` and `without`") unless with or without
       end
 
-      # @param dimension_association [Schema::DimensionAssociation]
-      def initialize(dimension_association)
-        @dimension_association = dimension_association
+      def initialize(dimension_scope)
+        @dimension_scope = dimension_scope
       end
 
       def dimension_name
-        dimension_association.name
+        dimension_scope.name
       end
 
       # Sets the slice if this is the first time the dimension slice was referenced or if the level is equal to or lower
       # than the existing slice's level
       def set_slice(**options)
-        level = dimension_definition.find_level(options[:level])
+        level = dimension_scope.find_level(options[:level])
         @level = more_detailed_level(level, @level)
         return unless @level == level
         @with = options[:with]
@@ -55,10 +58,9 @@ module Martyr
       #     - if query - look at the slice above me to calculate my slice
       #     - if degenerate - look at the query and asks for get_slice
 
-      # TODO: refactor to handle join strategy
       # @param fact_scopes [Runtime::FactScopeCollection]
       def add_to_where(fact_scopes)
-        level_association = find_common_denominator_level(level, dimension_association.levels)
+        level_association = find_common_denominator_level(level, dimension_scope.levels.supported_levels)
 
         # This should never be raised, since the QueryGrain should have already nullified the cube
         raise Internal::Error.new("Internal error: Dimension `#{dimension_name}` slice on level `#{level_name}` has no common denominator.") unless level_association
@@ -82,7 +84,7 @@ module Martyr
       end
 
       # @param fact_scopes [Runtime::FactScopeCollection]
-      # @param common_denominator_level [Schema::LevelAssociation]
+      # @param common_denominator_level [Martyr::Level]
       def add_to_where_using_join_strategy(fact_scopes, common_denominator_level)
         if with.present?
           level.slice_with(with)
@@ -92,7 +94,7 @@ module Martyr
         fact_scopes.decorate_scopes_if_supports(dimension_name: dimension_name,
                                                 level_name: common_denominator_level.name) do |scope, fact_scope|
           level_key = fact_scope.level_key_for_where(common_denominator_level)
-          scope.where(level_key => common_denominator_level.level.keys)
+          scope.where(level_key => common_denominator_level.keys)
         end
       end
 

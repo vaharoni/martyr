@@ -230,18 +230,16 @@ describe 'Runtime Queries' do
   end
 
   describe 'sub facts' do
-    it 'sets up JOIN, SELECT, and GROUP BY correctly for sub facts that expose metrics and dimensions' do
-      sub_cube = MartyrSpec::DegeneratesAndCustomersAndSubFacts.all.execute
+    it 'sets up JOIN, SELECT, and GROUP BY correctly for sub facts that expose metrics and dimensions without propagating unsuported dimensions' do
+      sub_cube = MartyrSpec::DegeneratesAndCustomersAndSubFacts.
+          slice(media_types: {level: :name, with: 'AAC audio file'},
+                genres: {level: :name, with: 'Rock'}).granulate(first_invoice: :yes_no).execute
       sub_cube.run
 
       expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT CASE customer_first_invoices.first_invoice_id WHEN invoices.id THEN 1 ELSE 0 END AS first_invoice_yes_no,
-          genres.name AS genres_name,
           media_types.name AS media_types_name,
-          customers.country AS customer_country,
-          customers.state AS customer_state,
-          customers.id AS customer_id,
-          invoice_lines.id AS invoice_line_id,
+          genres.name AS genres_name,
           SUM(invoice_lines.quantity) AS units_sold,
           SUM(invoice_lines.unit_price * invoice_lines.quantity) AS amount,
           SUM(invoice_counts.invoice_count) AS invoice_count
@@ -259,13 +257,11 @@ describe 'Runtime Queries' do
                       MIN(invoices.id) AS first_invoice_id
                       FROM "invoices"
                       GROUP BY invoices.customer_id) customer_first_invoices ON customer_first_invoices.customer_id = customers.id
+        WHERE "media_types"."name" = 'AAC audio file' AND
+           "genres"."name" = 'Rock'
         GROUP BY CASE customer_first_invoices.first_invoice_id WHEN invoices.id THEN 1 ELSE 0 END,
-          genres.name,
           media_types.name,
-          customers.country,
-          customers.state,
-          customers.id,
-          invoice_lines.id
+          genres.name
       SQL
     end
 

@@ -13,7 +13,7 @@ module Martyr
       end
 
       # @return [LevelAssociation]
-      def has_dimension_level(dimension_name, *args)
+      def has_dimension_level(dimension_name, level_name, **args)
         if has_key?(dimension_name)
           dimension = find_or_nil(dimension_name)
         else
@@ -21,7 +21,7 @@ module Martyr
           dimension = Martyr::DimensionReference.new(dimension, LevelAssociationCollection)
           register dimension
         end
-        dimension.has_dimension_level(*args)
+        dimension.has_dimension_level(level_name, **args)
       end
     end
   end

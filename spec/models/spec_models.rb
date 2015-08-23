@@ -32,13 +32,13 @@ module MartyrSpec
 
   class DegeneratesAndBottomLevels < Common
     # Degenerates
-    has_dimension_level :genres, level: :name
-    has_dimension_level :media_types, level: :name
+    has_dimension_level :genres, :name
+    has_dimension_level :media_types, :name
 
     # Bottom levels
-    has_dimension_level :customers, level: :last_name
-    has_dimension_level :invoices, level: :invoice_line
-    has_dimension_level :albums, level: :track
+    has_dimension_level :customers, :last_name
+    has_dimension_level :invoices, :invoice_line
+    has_dimension_level :albums, :track
 
     has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
     has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
@@ -50,22 +50,22 @@ module MartyrSpec
 
   class DegeneratesAndAllLevels < Common
     # Degenerates
-    has_dimension_level :genres, level: :name
-    has_dimension_level :media_types, level: :name
+    has_dimension_level :genres, :name
+    has_dimension_level :media_types, :name
 
-    has_dimension_level :customers, level: :last_name
-    has_dimension_level :customers, level: :city
-    has_dimension_level :customers, level: :state
-    has_dimension_level :customers, level: :country
-
-    has_dimension_level :invoices, level: :invoice_line
-    has_dimension_level :invoices, level: :invoice
-    has_dimension_level :invoices, level: :city
-    has_dimension_level :invoices, level: :state
-    has_dimension_level :invoices, level: :country
+    has_dimension_level :customers, :last_name
+    has_dimension_level :customers, :city
+    has_dimension_level :customers, :state
+    has_dimension_level :customers, :country
+                                   
+    has_dimension_level :invoices, :invoice_line
+    has_dimension_level :invoices, :invoice
+    has_dimension_level :invoices, :city
+    has_dimension_level :invoices, :state
+    has_dimension_level :invoices, :country
 
     # Album is not connected to the fact query so only the bottom level is available
-    has_dimension_level :albums, level: :track
+    has_dimension_level :albums, :track
 
     has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
     has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
@@ -77,15 +77,15 @@ module MartyrSpec
 
   class DegeneratesAndHighLevels < Common
     # Degenerates
-    has_dimension_level :genres, level: :name
-    has_dimension_level :media_types, level: :name
+    has_dimension_level :genres, :name
+    has_dimension_level :media_types, :name
 
     # High levels - degenerate
-    has_dimension_level :customers, level: :state
-    has_dimension_level :customers, level: :country
+    has_dimension_level :customers, :state
+    has_dimension_level :customers, :country
 
     # High level - query without degenerates
-    has_dimension_level :invoices, level: :invoice
+    has_dimension_level :invoices, :invoice
 
     has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
     has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'

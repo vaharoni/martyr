@@ -2,7 +2,7 @@ module Martyr
   module Runtime
     class MainFactScope < BaseFactScope
 
-      # @param level [LevelAssociation]
+      # @param level [BaseLevelScope]
       # @return [String] how to add a where condition to the level
       def level_key_for_where(level)
         level.fact_key

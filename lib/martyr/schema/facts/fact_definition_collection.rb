@@ -9,11 +9,6 @@ module Martyr
         @cube = cube
       end
 
-      def with_sub_fact(name, **args, &scope)
-        raise Schema::Error.new('`main` is a reserved fact name') if name.to_s == 'main'
-        register SubFactDefinition.new(name: name, cube: cube, scope: scope, **args)
-      end
-
       def main_fact
         fetch(:main, nil) || build_main_fact
       end
@@ -21,6 +16,12 @@ module Martyr
       def build_main_fact
         register MainFactDefinition.new(cube)
       end
+
+      def sub_fact(name, &block)
+        raise Schema::Error.new('`main` is a reserved query name') if name.to_s == 'main'
+        register SubFactDefinition.new(cube, name, &block)
+      end
+      alias_method :sub_query, :sub_fact
 
       # @return [Runtime::FactScopeCollection]
       def build_fact_scopes

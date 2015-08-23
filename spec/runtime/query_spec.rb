@@ -5,7 +5,7 @@ describe 'Runtime Queries' do
   describe 'main fact' do
 
     it 'picks up all grains when no grain can be inferred' do
-      sub_cube = MartyrSpec::DegeneratesAndAllLevels.select(:units_sold).execute
+      sub_cube = MartyrSpec::DegeneratesAndAllLevels.all.execute
       sub_cube.run
       expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT genres.name AS genres_name,
@@ -20,7 +20,8 @@ describe 'Runtime Queries' do
           invoices.billing_city AS invoice_city,
           invoices.id AS invoice_id,
           invoice_lines.id AS invoice_line_id,
-          SUM(invoice_lines.quantity) AS units_sold
+          SUM(invoice_lines.quantity) AS units_sold,
+          SUM(invoice_lines.unit_price * invoice_lines.quantity) AS amount
         FROM "invoice_lines"
           INNER JOIN "tracks" ON "tracks"."id" = "invoice_lines"."track_id"
           INNER JOIN "genres" ON "genres"."id" = "tracks"."genre_id"
@@ -229,7 +230,107 @@ describe 'Runtime Queries' do
   end
 
   describe 'sub facts' do
+    it 'sets up JOIN, SELECT, and GROUP BY correctly for sub facts that expose metrics and dimensions' do
+      sub_cube = MartyrSpec::DegeneratesAndCustomersAndSubFacts.all.execute
+      sub_cube.run
 
+      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+        SELECT CASE customer_first_invoices.first_invoice_id WHEN invoices.id THEN 1 ELSE 0 END AS first_invoice_yes_no,
+          genres.name AS genres_name,
+          media_types.name AS media_types_name,
+          customers.country AS customer_country,
+          customers.state AS customer_state,
+          customers.id AS customer_id,
+          invoice_lines.id AS invoice_line_id,
+          SUM(invoice_lines.quantity) AS units_sold,
+          SUM(invoice_lines.unit_price * invoice_lines.quantity) AS amount,
+          SUM(invoice_counts.invoice_count) AS invoice_count
+        FROM "invoice_lines"
+          INNER JOIN "tracks" ON "tracks"."id" = "invoice_lines"."track_id"
+          INNER JOIN "genres" ON "genres"."id" = "tracks"."genre_id"
+          INNER JOIN "media_types" ON "media_types"."id" = "tracks"."media_type_id"
+          INNER JOIN "invoices" ON "invoices"."id" = "invoice_lines"."invoice_id"
+          INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id"
+          INNER JOIN (SELECT invoices.customer_id,
+                      COUNT(invoices.id) AS invoice_count
+                      FROM "invoices"
+                      GROUP BY invoices.customer_id) invoice_counts ON invoice_counts.customer_id = customers.id
+          INNER JOIN (SELECT invoices.customer_id,
+                      MIN(invoices.id) AS first_invoice_id
+                      FROM "invoices"
+                      GROUP BY invoices.customer_id) customer_first_invoices ON customer_first_invoices.customer_id = customers.id
+        GROUP BY CASE customer_first_invoices.first_invoice_id WHEN invoices.id THEN 1 ELSE 0 END,
+          genres.name,
+          media_types.name,
+          customers.country,
+          customers.state,
+          customers.id,
+          invoice_lines.id
+      SQL
+    end
+
+    it 'propagates dimension slices to the sub fact when level is supported for both main query and sub query' do
+      sub_cube = MartyrSpec::DegeneratesAndCustomersAndSubFacts.select(:units_sold).slice(customers: {level: :last_name, with: 'Tremblay'}).execute
+      sub_cube.run
+
+      customer_id = Customer.find_by(last_name: 'Tremblay').id
+      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+        SELECT customers.country AS customer_country,
+          customers.state AS customer_state,
+          customers.id AS customer_id,
+          SUM(invoice_lines.quantity) AS units_sold
+        FROM "invoice_lines"
+          INNER JOIN "tracks" ON "tracks"."id" = "invoice_lines"."track_id"
+          INNER JOIN "genres" ON "genres"."id" = "tracks"."genre_id"
+          INNER JOIN "media_types" ON "media_types"."id" = "tracks"."media_type_id"
+          INNER JOIN "invoices" ON "invoices"."id" = "invoice_lines"."invoice_id"
+          INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id"
+          INNER JOIN (SELECT invoices.customer_id,
+                      COUNT(invoices.id) AS invoice_count
+                      FROM "invoices"
+                      WHERE "invoices"."customer_id" = #{customer_id}
+                      GROUP BY invoices.customer_id) invoice_counts ON invoice_counts.customer_id = customers.id
+          INNER JOIN (SELECT invoices.customer_id,
+                      MIN(invoices.id) AS first_invoice_id
+                      FROM "invoices"
+                      WHERE "invoices"."customer_id" = #{customer_id}
+                      GROUP BY invoices.customer_id) customer_first_invoices ON customer_first_invoices.customer_id = customers.id
+        WHERE "customers"."id" = #{customer_id}
+        GROUP BY customers.country,
+          customers.state,
+          customers.id
+      SQL
+    end
+
+
+    it 'propagates dimension slices to the sub fact when level is supported by main query but not by sub query' do
+      sub_cube = MartyrSpec::DegeneratesAndCustomersAndSubFacts.select(:units_sold).slice(customers: {level: :country, with: 'USA'}).execute
+      sub_cube.run
+
+      customer_ids = Customer.where(country: 'USA').map(&:id).join(', ')
+      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+        SELECT customers.country AS customer_country,
+          SUM(invoice_lines.quantity) AS units_sold
+        FROM "invoice_lines"
+          INNER JOIN "tracks" ON "tracks"."id" = "invoice_lines"."track_id"
+          INNER JOIN "genres" ON "genres"."id" = "tracks"."genre_id"
+          INNER JOIN "media_types" ON "media_types"."id" = "tracks"."media_type_id"
+          INNER JOIN "invoices" ON "invoices"."id" = "invoice_lines"."invoice_id"
+          INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id"
+          INNER JOIN (SELECT invoices.customer_id,
+                      COUNT(invoices.id) AS invoice_count
+                      FROM "invoices"
+                      WHERE "invoices"."customer_id" IN (#{customer_ids})
+                      GROUP BY invoices.customer_id) invoice_counts ON invoice_counts.customer_id = customers.id
+          INNER JOIN (SELECT invoices.customer_id,
+                      MIN(invoices.id) AS first_invoice_id
+                      FROM "invoices"
+                      WHERE "invoices"."customer_id" IN (#{customer_ids})
+                      GROUP BY invoices.customer_id) customer_first_invoices ON customer_first_invoices.customer_id = customers.id
+        WHERE "customers"."country" = 'USA'
+        GROUP BY customers.country
+      SQL
+    end
   end
 
 

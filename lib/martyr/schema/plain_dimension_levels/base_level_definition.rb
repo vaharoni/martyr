@@ -14,6 +14,11 @@ module Martyr
       def level_above
         @_level_above ||= collection.level_above(name)
       end
+
+      def level_index
+        @_level_index ||= collection.level_index(name)
+      end
+      alias_method :to_i, :level_index
     end
   end
 end

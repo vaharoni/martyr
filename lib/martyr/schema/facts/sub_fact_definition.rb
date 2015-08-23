@@ -1,25 +1,35 @@
 module Martyr
   module Schema
-    class SubFactDefinition
-      include ActiveModel::Model
+    class SubFactDefinition < BaseFactDefinition
+      attr_reader :name, :join_clause, :join_on
 
-      attr_accessor :name, :cube, :scope, :propagate_dimensions, :propagate_metrics
+      delegate :main_fact, :dimension_definitions, to: :cube
+
+      delegate :find_level, to: :dimension_associations
+
+      def initialize(cube, name, &block)
+        @cube = cube
+        @name = name
+        @dimension_associations = DimensionAssociationCollection.new(dimension_definitions)
+        scope = instance_eval(&block)
+        @scope = -> { scope }
+      end
+
+      def has_dimension_level(dimension_name, level_name, **args)
+        raise Schema::Error.new("Dimension level `#{dimension_name}.#{level_name}` does not exist in main query") unless
+            main_fact.has_dimension_level?(dimension_name, level_name)
+
+        dimension_associations.has_dimension_level(dimension_name, level_name, **args)
+      end
+
+      def joins_with(join_clause, on:)
+        @join_clause = join_clause
+        @join_on = on
+      end
 
       # @return [Runtime::SubFactScope]
       def build
         Runtime::SubFactScope.new(self)
-      end
-
-      # @param key [String, Symbol]
-      # @return [Boolean]
-      def supports_dimension?(key)
-        propagate_dimensions.map(&:to_s).include? key.to_s
-      end
-
-      # @param key [String, Symbol]
-      # @return [Boolean]
-      def supports_metric?(key)
-        propagate_metrics.map(&:to_s).include? key.to_s
       end
 
     end

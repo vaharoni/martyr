@@ -16,12 +16,13 @@ module Martyr
 
     class << self
       delegate :define_dimension, to: :dimension_definitions
-      delegate :main_fact, :build_fact_scopes, to: :fact_definitions
+      delegate :main_fact, :build_fact_scopes, :sub_query, to: :fact_definitions
       delegate :has_dimension_level, :has_count_metric, :has_min_metric, :has_max_metric,          # DSL
                :has_sum_metric, :has_custom_metric, :main_query,                                   # DSL
                :metrics, :dimensions, :rollups, :find_metric, :find_dimension, to: :main_fact      # Runtime
 
       delegate :select, :slice, :granulate, :pivot, to: :new_query_context
+      alias_method :all, :new_query_context
     end
 
     def self.martyr_schema_class?

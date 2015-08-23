@@ -95,51 +95,51 @@ module MartyrSpec
     end
   end
 
-  # class DegeneratesAndBottomLevelsWithAlbumsAndSubFacts < Common
-  #   define_dimension :first_invoice do
-  #     degenerate_level :yes_no
-  #   end
-  #
-  #   # Degenerates
-  #   has_dimension_level :genres, :name
-  #   has_dimension_level :media_types, :name
-  #
-  #   has_dimension_level :customers, :last_name
-  #   has_dimension_level :customers, :state
-  #   has_dimension_level :customers, :country
-  #
-  #   has_dimension_level :invoices, :invoice_line
-  #
-  #   has_dimension_level :albums, :artist
-  #
-  #   has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
-  #   has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
-  #
-  #   # Sub facts
-  #   has_dimension_level :first_invoice, :yes_no,
-  #                       fact_key: 'COALESCE(customer_first_invoices.first_invoice_yes_no, 0)'
-  #
-  #   main_query do
-  #     InvoiceLine.joins(track: [{album: :artist}, :genre, :media_type], invoice: :customer)
-  #   end
-  #
-  #   sub_query :invoice_counts do
-  #     joins_with 'INNER JOIN', on: "#{name}.customer_id = customers.id"
-  #     propagates_dimension_level :customers, :last_name
-  #
-  #     Invoice.
-  #         select('invoices.customer_id',
-  #                'COUNT(invoice.id) AS invoice_line_count').
-  #         group('invoices.customer_id')
-  #   end
-  #
-  #   sub_query :customer_first_invoices do
-  #     joins_with 'LEFT OUTER JOIN', on: "#{name}.first_invoice_line_id = invoice_lines.id"
-  #
-  #     InvoiceLine.
-  #         select('MIN(invoice_lines.id) AS first_invoice_line_id',
-  #                '1 AS first_invoice_yes_no').
-  #         group('invoices_lines.id')
-  #   end
-  # end
+  class DegeneratesAndCustomersAndSubFacts < Common
+    define_dimension :first_invoice do
+      degenerate_level :yes_no
+    end
+
+    # Degenerates
+    has_dimension_level :genres, :name
+    has_dimension_level :media_types, :name
+
+    has_dimension_level :customers, :last_name
+    has_dimension_level :customers, :state
+    has_dimension_level :customers, :country
+
+    has_dimension_level :invoices, :invoice_line
+
+    has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
+    has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+
+    # Sub facts
+    has_sum_metric :invoice_count, 'SUM(invoice_counts.invoice_count)'
+    has_dimension_level :first_invoice, :yes_no,
+                        fact_key: 'CASE customer_first_invoices.first_invoice_id WHEN invoices.id THEN 1 ELSE 0 END'
+
+    main_query do
+      InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
+    end
+
+    sub_query :invoice_counts do
+      joins_with 'INNER JOIN', on: "#{name}.customer_id = customers.id"
+      has_dimension_level :customers, :last_name, fact_key: 'invoices.customer_id'
+
+      Invoice.
+          select('invoices.customer_id',
+                 'COUNT(invoices.id) AS invoice_count').
+          group('invoices.customer_id')
+    end
+
+    sub_query :customer_first_invoices do
+      joins_with 'INNER JOIN', on: "#{name}.customer_id = customers.id"
+      has_dimension_level :customers, :last_name, fact_key: 'invoices.customer_id'
+
+      Invoice.
+          select('invoices.customer_id',
+                 'MIN(invoices.id) AS first_invoice_id').
+          group('invoices.customer_id')
+    end
+  end
 end

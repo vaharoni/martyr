@@ -10,14 +10,14 @@ module Martyr
       each_child_delegator :add_scope_operator, to: :values
 
       def add_scope_operator(operator)
-        main_fact.add_scope_operator(operator)
+        main_fact.add_scope_operator(operator.dup)
         return false if null?
-        sub_facts.each {|x| x.add_scope_operator(operator) }
+        sub_facts.each {|x| x.add_scope_operator(operator.dup) }
         true
       end
 
       def sql
-        # TODO: apply sub facts
+        sub_facts.each {|x| x.add_to_join(main_fact)}
         main_fact.scope_sql
       end
 
@@ -39,7 +39,7 @@ module Martyr
       # = Accessors
 
       def sub_facts
-        except(:main)
+        except(:main).values
       end
 
       def main_fact

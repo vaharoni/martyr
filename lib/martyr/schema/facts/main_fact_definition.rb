@@ -1,11 +1,10 @@
 module Martyr
   module Schema
-    class MainFactDefinition
+    class MainFactDefinition < BaseFactDefinition
 
-      attr_reader :cube, :scope, :dimension_associations, :metric_definitions, :rollup_definitions
+      attr_reader :metric_definitions, :rollup_definitions
       delegate :dimension_definitions, to: :cube
 
-      alias_method :dimensions, :dimension_associations
       alias_method :metrics, :metric_definitions
       alias_method :rollups, :rollup_definitions
 
@@ -26,21 +25,12 @@ module Martyr
         @rollup_definitions ||= Schema::RollupDefinitionCollection.new
       end
 
-      def supports_dimension_level?(dimension_name, level_name)
-        dimension = dimension_associations[dimension_name]
-        return false unless dimension
-
-        lowest_supported_level_i = dimension.lowest_level.to_i
-        considered_level_i = dimension_definitions.find_dimension(dimension_name).find_level(level_name).to_i
-        considered_level_i >= lowest_supported_level_i
+      def main_query(&scope)
+        @scope = scope
       end
 
       def name
         'main'
-      end
-
-      def main_query(&scope)
-        @scope = scope
       end
 
       # @return [Runtime::MainFactScope]

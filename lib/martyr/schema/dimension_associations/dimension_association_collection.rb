@@ -23,6 +23,10 @@ module Martyr
         end
         dimension.has_dimension_level(level_name, **args)
       end
+
+      def find_level(dimension_name, level_name)
+        find_or_error(dimension_name).find_level(level_name)
+      end
     end
   end
 end

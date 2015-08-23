@@ -204,6 +204,10 @@ module MartyrSpec
   #
   #
   #
+  #   Sub facts:
+  #
+  #
+
 
 
   class Schema1 < Martyr::Cube

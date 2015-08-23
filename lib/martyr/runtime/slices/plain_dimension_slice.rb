@@ -5,7 +5,7 @@ module Martyr
       include ActiveModel::Validations
 
 
-      # @attribute level [LevelDefinition]
+      # @attribute level [BaseLevelScope]
       attr_reader :level
 
       attr_reader :dimension_scope, :with, :without
@@ -60,21 +60,21 @@ module Martyr
 
       # @param fact_scopes [Runtime::FactScopeCollection]
       def add_to_where(fact_scopes)
-        level_association = find_common_denominator_level(level, dimension_scope.levels.supported_levels)
+        scope_operator = DimensionScopeOperator.new(dimension_name, level_name) do |operator|
+          common_denominator_level = operator.common_denominator_level(level)
 
-        # This should never be raised, since the QueryGrain should have already nullified the cube
-        raise Internal::Error.new("Internal error: Dimension `#{dimension_name}` slice on level `#{level_name}` has no common denominator.") unless level_association
-
-        if level_association.name == level_name and level.degenerate?
-          add_to_where_using_fact_strategy(fact_scopes)
-        else
-          add_to_where_using_join_strategy(fact_scopes, level_association)
+          if common_denominator_level.name == level_name and level.degenerate?
+            add_to_where_using_fact_strategy(operator)
+          else
+            add_to_where_using_join_strategy(operator, common_denominator_level)
+          end
         end
+        fact_scopes.add_scope_operator(scope_operator)
       end
 
-      def add_to_where_using_fact_strategy(fact_scopes)
-        fact_scopes.decorate_scopes_if_supports(dimension_name: dimension_name, level_name: level_name) do |scope, fact_scope|
-          level_key = fact_scope.level_key_for_where(level)
+      def add_to_where_using_fact_strategy(operator)
+        level_key = operator.level_key_for_where(level)
+        operator.decorate_scope do |scope|
           if with.present?
             scope.where(level_key => with)
           elsif without.present?
@@ -83,17 +83,15 @@ module Martyr
         end
       end
 
-      # @param fact_scopes [Runtime::FactScopeCollection]
-      # @param common_denominator_level [Martyr::Level]
-      def add_to_where_using_join_strategy(fact_scopes, common_denominator_level)
+      def add_to_where_using_join_strategy(operator, common_denominator_level)
         if with.present?
           level.slice_with(with)
         elsif without.present?
           level.slice_without(without)
-        end
-        fact_scopes.decorate_scopes_if_supports(dimension_name: dimension_name,
-                                                level_name: common_denominator_level.name) do |scope, fact_scope|
-          level_key = fact_scope.level_key_for_where(common_denominator_level)
+        end unless level.loaded
+
+        operator.decorate_scope do |scope|
+          level_key = operator.level_key_for_where(common_denominator_level)
           scope.where(level_key => common_denominator_level.keys)
         end
       end

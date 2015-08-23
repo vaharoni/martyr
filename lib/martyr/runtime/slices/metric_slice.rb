@@ -41,10 +41,10 @@ module Martyr
 
       # @param fact_scopes [Runtime::FactScopeCollection]
       def add_to_where(fact_scopes)
-        apply_operator(fact_scopes, gt_operator, gte || gt) if gt_operator
-        apply_operator(fact_scopes, lt_operator, lte || lt) if lt_operator
-        apply_operator(fact_scopes, '=', eq) if eq
-        apply_operator(fact_scopes, '!=', self.not) if self.not
+        add_scope_operator(fact_scopes, gt_operator, gte || gt) if gt_operator
+        add_scope_operator(fact_scopes, lt_operator, lte || lt) if lt_operator
+        add_scope_operator(fact_scopes, '=', eq) if eq
+        add_scope_operator(fact_scopes, '!=', self.not) if self.not
       end
 
       private
@@ -65,10 +65,13 @@ module Martyr
         end
       end
 
-      def apply_operator(fact_scopes, operator, value)
-        fact_scopes.decorate_scopes_if_supports(metric_name: metric_name) do |scope|
-          scope.having("#{statement} #{operator} ?", value)
+      def add_scope_operator(fact_scopes, statement_operator, value)
+        scope_operator = MetricScopeOperator.new(metric_name) do |operator|
+          operator.decorate_scope do |scope|
+            scope.having("#{statement} #{statement_operator} ?", value)
+          end
         end
+        fact_scopes.add_scope_operator(scope_operator)
       end
 
     end

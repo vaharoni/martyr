@@ -8,30 +8,14 @@ module Martyr
         level.fact_key
       end
 
-      private
-
-      # = Scope support check
-
-      def if_supports_metric(name)
-        if supports_metric?(name)
-          yield if block_given?
-          true
+      def add_scope_operator(operator)
+        operator.fact_scope = self
+        if operator.supported?
+          operator.execute
         else
           set_null_scope
-          false
         end
       end
-
-      def if_supports_dimension_level(dimension_name, level_name)
-        if supports_dimension_level?(dimension_name, level_name)
-          yield if block_given?
-          true
-        else
-          set_null_scope
-          false
-        end
-      end
-
     end
   end
 end

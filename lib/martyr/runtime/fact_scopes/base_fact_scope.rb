@@ -2,7 +2,7 @@ module Martyr
   module Runtime
     class BaseFactScope
       attr_reader :fact_definition, :scope
-      delegate :name, :supports_metric?, :supports_dimension_level?, to: :fact_definition
+      delegate :name, :supports_metric?, :supports_dimension_level?, :dimensions, to: :fact_definition
 
       # = Scope accessors
 
@@ -29,18 +29,6 @@ module Martyr
       end
 
       # = Scope support check
-
-      # TODO: Consider refactoring: check for metric support might be all I need.
-      def decorate_if_supports(metric_name: nil, dimension_name: nil, level_name: nil, &block)
-        if metric_name
-          if_supports_metric(metric_name) { decorate_scope(&block) }
-        elsif dimension_name and level_name
-          if_supports_dimension_level(dimension_name, level_name) { decorate_scope(&block) }
-        else
-          raise Internal::Error.new('Invalid arguments for if_supports: `level_name` cannot be empty') unless level_name
-          raise Internal::Error.new('Invalid arguments for if_supports: `dimension_name` cannot be empty') unless dimension_name
-        end
-      end
 
       # = Scope updater
 

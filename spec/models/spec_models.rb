@@ -9,8 +9,8 @@ module MartyrSpec
     end
 
     define_dimension :albums do
-      query_level :artist, -> { Artist.all }, label_key: 'name'
-      query_level :album, -> { Album.all }, label_key: 'title'
+      query_level :artist, -> { Artist.all }, label_key: 'name', fact_key: 'artists.id', fact_alias: 'artist_id'
+      query_level :album, -> { Album.all }, label_key: 'title', fact_key: 'albums.id', fact_alias: 'album_id'
       query_level :track, -> { Track.all }, label_key: 'name', fact_key: 'tracks.id', fact_alias: 'track_id'
     end
 
@@ -101,36 +101,51 @@ module MartyrSpec
     end
   end
 
-  # Degenerates:
-  #   genres, media_types
+  # class DegeneratesAndBottomLevelsWithAlbumsAndSubFacts < Common
+  #   define_dimension :first_invoice do
+  #     degenerate_level :yes_no
+  #   end
   #
-  # Skipped levels:
-  #   customers - last_name, state, country (skipped city)
-  #   invoices - invoice_lines, state, country (skipped invoice and city)
+  #   # Degenerates
+  #   has_dimension_level :genres, :name
+  #   has_dimension_level :media_types, :name
   #
-  # class DegeneratesAndSkipLevels < Common
-  #   with_main_fact do
-  #     # Degenerates
-  #     has_dimension_level :genres, level: :name
-  #     has_dimension_level :media_types, level: :name
+  #   has_dimension_level :customers, :last_name
+  #   has_dimension_level :customers, :state
+  #   has_dimension_level :customers, :country
   #
-  #     # Skipped level - city
-  #     has_dimension_level :customers, level: :last_name
-  #     has_dimension_level :customers, level: :state
-  #     has_dimension_level :customers, level: :country
+  #   has_dimension_level :invoices, :invoice_line
   #
-  #     # Skipped levels - invoices and city
-  #     has_dimension_level :invoices, level: :invoice_line
-  #     has_dimension_level :invoices, level: :state
-  #     has_dimension_level :invoices, level: :country
+  #   has_dimension_level :albums, :artist
   #
-  #     has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
-  #     has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+  #   has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
+  #   has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
   #
-  #     query do
-  #       InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
-  #     end
+  #   # Sub facts
+  #   has_dimension_level :first_invoice, :yes_no,
+  #                       fact_key: 'COALESCE(customer_first_invoices.first_invoice_yes_no, 0)'
+  #
+  #   main_query do
+  #     InvoiceLine.joins(track: [{album: :artist}, :genre, :media_type], invoice: :customer)
+  #   end
+  #
+  #   sub_query :invoice_counts do
+  #     joins_with 'INNER JOIN', on: "#{name}.customer_id = customers.id"
+  #     propagates_dimension_level :customers, :last_name
+  #
+  #     Invoice.
+  #         select('invoices.customer_id',
+  #                'COUNT(invoice.id) AS invoice_line_count').
+  #         group('invoices.customer_id')
+  #   end
+  #
+  #   sub_query :customer_first_invoices do
+  #     joins_with 'LEFT OUTER JOIN', on: "#{name}.first_invoice_line_id = invoice_lines.id"
+  #
+  #     InvoiceLine.
+  #         select('MIN(invoice_lines.id) AS first_invoice_line_id',
+  #                '1 AS first_invoice_yes_no').
+  #         group('invoices_lines.id')
   #   end
   # end
-
 end

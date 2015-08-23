@@ -4,18 +4,15 @@ module Martyr
       include Martyr::Registrable
 
       alias_method :scopes, :values
-      delegate :set_null_scope, to: :main_fact
+      delegate :set_null_scope, :null?, to: :main_fact
 
-      def self.delegate_to_all_scopes(method_name, *args, &block)
-        values.each {|x| x.send(method_name, *args, &block)}
-      end
+      include Martyr::Delegators
+      each_child_delegator :add_scope_operator, to: :values
 
-      # First executes on the main scope. If it does not support the level or metric, stop execution, otherwise execute
-      # on sub facts.
-      def decorate_scopes_if_supports(**options, &block)
-        main_fact_supported = main_fact.decorate_if_supports(**options, &block)
-        return false unless main_fact_supported
-        sub_facts.each{|x| x.decorate_if_supports(**options, &block)}
+      def add_scope_operator(operator)
+        main_fact.add_scope_operator(operator)
+        return false if null?
+        sub_facts.each {|x| x.add_scope_operator(operator) }
         true
       end
 

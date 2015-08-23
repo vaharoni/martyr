@@ -31,73 +31,67 @@ module MartyrSpec
   end
 
   class DegeneratesAndBottomLevels < Common
-    with_main_fact do
-      # Degenerates
-      has_dimension_level :genres, level: :name
-      has_dimension_level :media_types, level: :name
+    # Degenerates
+    has_dimension_level :genres, level: :name
+    has_dimension_level :media_types, level: :name
 
-      # Bottom levels
-      has_dimension_level :customers, level: :last_name
-      has_dimension_level :invoices, level: :invoice_line
-      has_dimension_level :albums, level: :track
+    # Bottom levels
+    has_dimension_level :customers, level: :last_name
+    has_dimension_level :invoices, level: :invoice_line
+    has_dimension_level :albums, level: :track
 
-      has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
-      has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+    has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
+    has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
 
-      query do
-        InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
-      end
+    main_query do
+      InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
     end
   end
 
   class DegeneratesAndAllLevels < Common
-    with_main_fact do
-      # Degenerates
-      has_dimension_level :genres, level: :name
-      has_dimension_level :media_types, level: :name
+    # Degenerates
+    has_dimension_level :genres, level: :name
+    has_dimension_level :media_types, level: :name
 
-      has_dimension_level :customers, level: :last_name
-      has_dimension_level :customers, level: :city
-      has_dimension_level :customers, level: :state
-      has_dimension_level :customers, level: :country
+    has_dimension_level :customers, level: :last_name
+    has_dimension_level :customers, level: :city
+    has_dimension_level :customers, level: :state
+    has_dimension_level :customers, level: :country
 
-      has_dimension_level :invoices, level: :invoice_line
-      has_dimension_level :invoices, level: :invoice
-      has_dimension_level :invoices, level: :city
-      has_dimension_level :invoices, level: :state
-      has_dimension_level :invoices, level: :country
+    has_dimension_level :invoices, level: :invoice_line
+    has_dimension_level :invoices, level: :invoice
+    has_dimension_level :invoices, level: :city
+    has_dimension_level :invoices, level: :state
+    has_dimension_level :invoices, level: :country
 
-      # Album is not connected to the fact query so only the bottom level is available
-      has_dimension_level :albums, level: :track
+    # Album is not connected to the fact query so only the bottom level is available
+    has_dimension_level :albums, level: :track
 
-      has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
-      has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+    has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
+    has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
 
-      query do
-        InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
-      end
+    main_query do
+      InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
     end
   end
 
   class DegeneratesAndHighLevels < Common
-    with_main_fact do
-      # Degenerates
-      has_dimension_level :genres, level: :name
-      has_dimension_level :media_types, level: :name
+    # Degenerates
+    has_dimension_level :genres, level: :name
+    has_dimension_level :media_types, level: :name
 
-      # High levels - degenerate
-      has_dimension_level :customers, level: :state
-      has_dimension_level :customers, level: :country
+    # High levels - degenerate
+    has_dimension_level :customers, level: :state
+    has_dimension_level :customers, level: :country
 
-      # High level - query without degenerates
-      has_dimension_level :invoices, level: :invoice
+    # High level - query without degenerates
+    has_dimension_level :invoices, level: :invoice
 
-      has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
-      has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+    has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
+    has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
 
-      query do
-        InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
-      end
+    main_query do
+      InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
     end
   end
 

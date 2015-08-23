@@ -19,12 +19,11 @@ module Martyr
       delegate :define_rollup, to: :rollup_definitions
 
       # @param cube [Martyr::Cube]
-      def initialize(cube, &block)
+      def initialize(cube)
         @cube = cube
         @dimension_associations = DimensionAssociationCollection.new(dimension_definitions)
         @metric_definitions ||= Schema::MetricDefinitionCollection.new
         @rollup_definitions ||= Schema::RollupDefinitionCollection.new
-        instance_eval(&block) if block
       end
 
       def supports_dimension_level?(dimension_name, level_name)
@@ -40,7 +39,7 @@ module Martyr
         'main'
       end
 
-      def query(&scope)
+      def main_query(&scope)
         @scope = scope
       end
 

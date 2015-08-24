@@ -5,9 +5,9 @@ module Martyr
 
     include Martyr::HasLevelCollection
 
-    def initialize(dimension_definition, levels_collection_class)
+    def initialize(dimension_definition, levels_collection_class, &block)
       @dimension_definition = dimension_definition
-      @levels = levels_collection_class.new dimension: self
+      @levels = levels_collection_class.new(dimension: self, &block)
     end
 
     # Delegate everything to the concrete levels

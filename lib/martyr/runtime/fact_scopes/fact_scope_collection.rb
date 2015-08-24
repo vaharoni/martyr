@@ -16,13 +16,28 @@ module Martyr
         true
       end
 
-      def sql
+      def join_sub_facts
+        return if @join_sub_facts
         sub_facts.each {|x| x.add_to_join(main_fact)}
+        @join_sub_facts = true
+      end
+
+      def select_keys
+        combined_scope.select_values.map{|x| x.split(' AS ').last }
+      end
+
+      def combined_scope
+        join_sub_facts
+        main_fact.run_scope
+      end
+
+      def combined_sql
+        join_sub_facts
         main_fact.scope_sql
       end
 
       def pretty_sql
-        sql.gsub(', ', ",\n\t").
+        combined_sql.gsub(', ', ",\n\t").
             gsub(/from/i, "\nFROM").
             gsub(/where/i, "\nWHERE").
             gsub(/and/i, "AND\n\t").
@@ -33,7 +48,13 @@ module Martyr
       end
 
       def run
-        ActiveRecord::Base.connection.execute(sql)
+        ActiveRecord::Base.connection.execute(combined_sql)
+      end
+
+      def test
+        join_sub_facts
+        main_fact.run_scope.first
+        true
       end
 
       # = Accessors

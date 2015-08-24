@@ -30,6 +30,14 @@ module MartyrSpec
     end
   end
 
+  class OneLevel < Common
+    has_dimension_level :customers, :city
+
+    main_query do
+      Customer.all
+    end
+  end
+
   class DegeneratesAndBottomLevels < Common
     # Degenerates
     has_dimension_level :genres, :name

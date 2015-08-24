@@ -4,10 +4,24 @@ module Martyr
       include Martyr::LevelCollection
 
       attr_reader :dimension_supported
+      attr_accessor :sliced_level_i, :sub_cube
+      delegate :foreign_keys_from_facts_for, to: :sub_cube
 
       def initialize(*args)
         super
         @dimension_supported = false
+        @sliced_level_i = nil
+        yield self if block_given?
+      end
+
+      def id
+        dimension_name
+      end
+
+      def remove_levels!(level_names)
+        level_names.each do |level_name|
+          delete level_name
+        end
       end
 
       # @param level [Martyr::Level]

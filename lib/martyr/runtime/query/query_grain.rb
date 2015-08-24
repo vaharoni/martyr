@@ -20,6 +20,18 @@ module Martyr
         "grain: {#{inspection}}"
       end
 
+      def supported_dimensions
+        grain.keys
+      end
+
+      # @return [Hash] { dimension_name => ['level1', 'level2'] }
+      def levels_below_grain
+        arr = grain.map do |dimension_name, lowest_level|
+          [dimension_name, lowest_level.level_and_below_full.map(&:name) - [lowest_level.name]]
+        end
+        Hash[arr]
+      end
+
       def null?
         @null
       end
@@ -50,7 +62,7 @@ module Martyr
       # Adds all supported levels including and above the sliced level
       # @param fact_scopes [Runtime::FactScopeCollection]
       def add_to_select(fact_scopes)
-        each_supported_level do |level_object|
+        supported_levels.each do |level_object|
           fact_scopes.main_fact.decorate_scope do |scope|
             scope.select("#{level_object.fact_key} AS #{level_object.fact_alias}")
           end
@@ -59,7 +71,7 @@ module Martyr
 
       # @param fact_scopes [Runtime::FactScopeCollection]
       def add_to_group_by(fact_scopes)
-        each_supported_level do |level_object|
+        supported_levels.each do |level_object|
           fact_scopes.main_fact.decorate_scope do |scope|
             scope.group(level_object.fact_key)
           end
@@ -68,12 +80,10 @@ module Martyr
 
       private
 
-      def each_supported_level
-        return if null?
-        grain.each do |dimension_name, lowest_level|
-          sub_cube.find_dimension(dimension_name).level_and_above_supported(lowest_level.name).each do |level_object|
-            yield level_object
-          end
+      def supported_levels
+        return [] if null?
+        grain.flat_map do |dimension_name, lowest_level|
+          sub_cube.find_dimension(dimension_name).level_and_above_supported(lowest_level.name)
         end
       end
 

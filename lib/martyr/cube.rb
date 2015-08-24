@@ -36,12 +36,16 @@ module Martyr
 
     private_class_method :parent_schema_class
 
+    def self.supported_dimension_definitions
+      dimension_definitions.all.slice(*dimensions.keys)
+    end
+
     # @return [Runtime::DimensionScopeCollection]
     #   If the level is defined in the cube but not supported by the main fact, the BaseLevelDefinition object will be
     #   wrapped with BaseLevelScope. If the level is supported, the LevelAssociation will be wrapped.
-    def self.build_dimension_scopes
-      dimension_scopes = Runtime::DimensionScopeCollection.new(dimension_definitions)
-      dimension_definitions.all.each do |dimension_name, dimension_definition|
+    def self.build_dimension_scopes(&block)
+      dimension_scopes = Runtime::DimensionScopeCollection.new(dimension_definitions, &block)
+      supported_dimension_definitions.each do |dimension_name, dimension_definition|
         dimension_definition.levels.each do |level_name, level_definition|
           level_association = dimensions[dimension_name].try(:levels).try(:[], level_name)
           dimension_scopes.register_level(level_association || level_definition)

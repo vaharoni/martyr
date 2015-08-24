@@ -3,14 +3,12 @@ require 'spec_helper'
 describe 'Runtime Queries' do
 
   describe 'main fact' do
-
     it 'picks up all grains when no grain can be inferred' do
       sub_cube = MartyrSpec::DegeneratesAndAllLevels.all.execute
-      sub_cube.run
-      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+      sub_cube.test
+      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT genres.name AS genres_name,
           media_types.name AS media_types_name,
-          tracks.id AS track_id,
           customers.country AS customer_country,
           customers.state AS customer_state,
           customers.city AS customer_city,
@@ -20,6 +18,7 @@ describe 'Runtime Queries' do
           invoices.billing_city AS invoice_city,
           invoices.id AS invoice_id,
           invoice_lines.id AS invoice_line_id,
+          tracks.id AS track_id,
           SUM(invoice_lines.quantity) AS units_sold,
           SUM(invoice_lines.unit_price * invoice_lines.quantity) AS amount
         FROM "invoice_lines"
@@ -30,7 +29,6 @@ describe 'Runtime Queries' do
           INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id"
         GROUP BY genres.name,
           media_types.name,
-          tracks.id,
           customers.country,
           customers.state,
           customers.city,
@@ -39,14 +37,15 @@ describe 'Runtime Queries' do
           invoices.billing_state,
           invoices.billing_city,
           invoices.id,
-          invoice_lines.id
+          invoice_lines.id,
+          tracks.id
       SQL
     end
 
     it 'sets the level keys on SELECT and GROUP BY for single degenerate levels that are connected to the fact' do
       sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).granulate(media_types: :name, genres: :name).execute
-      sub_cube.run
-      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+      sub_cube.test
+      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT media_types.name AS media_types_name,
           genres.name AS genres_name,
           SUM(invoice_lines.quantity) AS units_sold
@@ -63,8 +62,8 @@ describe 'Runtime Queries' do
 
     it 'sets the level keys on SELECT and GROUP BY for all supported hierarchy for multiple degenerate levels that are connected to the fact' do
       sub_cube = MartyrSpec::DegeneratesAndAllLevels.select(:units_sold).granulate(customers: :city).execute
-      sub_cube.run
-      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+      sub_cube.test
+      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT customers.country AS customer_country,
           customers.state AS customer_state,
           customers.city AS customer_city,
@@ -85,9 +84,9 @@ describe 'Runtime Queries' do
       sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).
           slice(media_types: {level: :name, with: 'AAC audio file'},
                 genres: {level: :name, with: 'Rock'}).execute
-      sub_cube.run
+      sub_cube.test
 
-      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT media_types.name AS media_types_name,
           genres.name AS genres_name,
           SUM(invoice_lines.quantity) AS units_sold
@@ -109,8 +108,8 @@ describe 'Runtime Queries' do
           slice(media_types: {level: :name, with: 'AAC audio file'},
                 genres: {level: :name, with: 'Rock'}).granulate(customers: :country).execute
 
-      sub_cube.run
-      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+      sub_cube.test
+      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT customers.id AS customer_id,
           media_types.name AS media_types_name,
           genres.name AS genres_name,
@@ -131,8 +130,8 @@ describe 'Runtime Queries' do
 
     it 'sets up HAVING for metric slices' do
       sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold, :amount).granulate(customers: :last_name).slice(:amount, gt: 5).execute
-      sub_cube.run
-      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+      sub_cube.test
+      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT customers.id AS customer_id,
           SUM(invoice_lines.quantity) AS units_sold,
           SUM(invoice_lines.unit_price * invoice_lines.quantity) AS amount
@@ -149,10 +148,10 @@ describe 'Runtime Queries' do
 
     it 'sets up WHERE on keys when slicing on query level that is connected to the fact' do
       sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice(albums: {level: :track, with: 'Fast As a Shark'}).execute
-      sub_cube.run
+      sub_cube.test
 
       track = Track.find_by(name: 'Fast As a Shark')
-      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT tracks.id AS track_id,
           SUM(invoice_lines.quantity) AS units_sold
         FROM "invoice_lines"
@@ -168,9 +167,9 @@ describe 'Runtime Queries' do
 
     it 'sets up WHERE on keys when slicing on query level that is connected to the fact with custom label expression' do
       sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice(invoices: {level: :invoice_line, with: 'invoice-line-5'}).execute
-      sub_cube.run
+      sub_cube.test
 
-      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT invoice_lines.id AS invoice_line_id,
           SUM(invoice_lines.quantity) AS units_sold
         FROM "invoice_lines"
@@ -186,10 +185,10 @@ describe 'Runtime Queries' do
 
     it 'sets up WHERE on keys when slicing on query level that is not connected to the fact' do
       sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice(albums: {level: :album, with: 'Restless and Wild'}).execute
-      sub_cube.run
+      sub_cube.test
 
       track_ids = Album.find_by(title: 'Restless and Wild').track_ids.join(', ')
-      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT tracks.id AS track_id,
           SUM(invoice_lines.quantity) AS units_sold
         FROM "invoice_lines"
@@ -205,10 +204,10 @@ describe 'Runtime Queries' do
 
     it 'sets up WHERE on keys when slicing on degenerate level that is not connected to the fact' do
       sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice(customers: {level: :country, with: 'USA'}).execute
-      sub_cube.run
+      sub_cube.test
 
       customer_ids = Customer.where(country: 'USA').map(&:id).join(', ')
-      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT customers.id AS customer_id,
           SUM(invoice_lines.quantity) AS units_sold
         FROM "invoice_lines"
@@ -224,10 +223,10 @@ describe 'Runtime Queries' do
 
     it 'sets up WHERE on keys when slicing on degenerate level whose query-level-below is not connected to the fact' do
       sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice(invoices: {level: :country, with: 'USA'}).execute
-      sub_cube.run
+      sub_cube.test
 
       invoice_line_ids = Invoice.includes(:invoice_lines).where(billing_country: 'USA').flat_map(&:invoice_line_ids).join(', ')
-      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT invoice_lines.id AS invoice_line_id,
           SUM(invoice_lines.quantity) AS units_sold
         FROM "invoice_lines"
@@ -252,9 +251,9 @@ describe 'Runtime Queries' do
       sub_cube = MartyrSpec::DegeneratesAndCustomersAndSubFacts.
           slice(media_types: {level: :name, with: 'AAC audio file'},
                 genres: {level: :name, with: 'Rock'}).granulate(first_invoice: :yes_no).execute
-      sub_cube.run
+      sub_cube.test
 
-      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT CASE customer_first_invoices.first_invoice_id WHEN invoices.id THEN 1 ELSE 0 END AS first_invoice_yes_no,
           media_types.name AS media_types_name,
           genres.name AS genres_name,
@@ -285,10 +284,10 @@ describe 'Runtime Queries' do
 
     it 'propagates dimension slices to the sub fact when level is supported for both main query and sub query' do
       sub_cube = MartyrSpec::DegeneratesAndCustomersAndSubFacts.select(:units_sold).slice(customers: {level: :last_name, with: 'Tremblay'}).execute
-      sub_cube.run
+      sub_cube.test
 
       customer_id = Customer.find_by(last_name: 'Tremblay').id
-      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT customers.country AS customer_country,
           customers.state AS customer_state,
           customers.id AS customer_id,
@@ -319,10 +318,10 @@ describe 'Runtime Queries' do
 
     it 'propagates dimension slices to the sub fact when level is supported by main query but not by sub query' do
       sub_cube = MartyrSpec::DegeneratesAndCustomersAndSubFacts.select(:units_sold).slice(customers: {level: :country, with: 'USA'}).execute
-      sub_cube.run
+      sub_cube.test
 
       customer_ids = Customer.where(country: 'USA').map(&:id).join(', ')
-      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT customers.country AS customer_country,
           SUM(invoice_lines.quantity) AS units_sold
         FROM "invoice_lines"

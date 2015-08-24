@@ -13,7 +13,7 @@ module Martyr
       end
 
       def run_scope
-        scope.call
+        @_run_scope ||= scope.call
       end
 
       def scope_sql

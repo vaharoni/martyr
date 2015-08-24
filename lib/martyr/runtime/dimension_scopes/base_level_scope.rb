@@ -2,19 +2,30 @@ module Martyr
   module Runtime
     class BaseLevelScope
       include Martyr::Level
+      include Martyr::LevelComparator
 
       attr_accessor :level
-      attr_reader :loaded
+      attr_reader :collection
       delegate :name, :dimension_name, :supported?, :query?, :degenerate?, :fact_key, :fact_alias, :to_i, to: :level
 
       def initialize(collection, level)
         @collection = collection
         @level = level
-        @loaded = false
+        @cache = nil
+      end
+
+      def id
+        "#{dimension_name}.#{name}"
+      end
+
+      def common_denominator_with_cube
+        @_common_denominator_with_cube ||= find_common_denominator_level(self, collection.supported_levels)
       end
 
       def level_above
-        @_query_above ||= collection.find_or_nil(level.level_above.name)
+        return @_level_above if @_level_above
+        raise Query::Error.new("`#{dimension_name}`: Cannot find level above `#{name}`") unless level.level_above
+        @_level_above = collection.find_or_nil(level.level_above.name)
       end
 
       def query_level_below

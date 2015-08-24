@@ -19,6 +19,8 @@ module Martyr
     # @param supported_levels_arr [Array<Martyr::Level>] of supported levels
     # @return [Martyr::Level, nil] finds the highest supported level in the cube that is equal or below level_definition
     def find_common_denominator_level(level, supported_levels_arr)
+      raise Internal::Error.new('level cannot be nil') unless level
+      raise Internal::Error.new('supported_levels_arr cannot be nil') unless supported_levels_arr
       supported_index = supported_levels_arr.index_by(&:name)
       level.level_and_below_full.find{|l| supported_index[l.name] }
     end

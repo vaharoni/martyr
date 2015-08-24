@@ -88,7 +88,7 @@ module Martyr
           level.slice_with(with)
         elsif without.present?
           level.slice_without(without)
-        end unless level.loaded
+        end unless level.loaded?
 
         operator.decorate_scope do |scope|
           level_key = operator.level_key_for_where(common_denominator_level)

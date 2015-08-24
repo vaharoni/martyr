@@ -25,8 +25,8 @@ module MartyrSpec
       degenerate_level :country, query_level_key: :billing_country, fact_key: 'invoices.billing_country', fact_alias: 'invoice_country'
       degenerate_level :state, query_level_key: :billing_state, fact_key: 'invoices.billing_state', fact_alias: 'invoice_state'
       degenerate_level :city, query_level_key: :billing_city, fact_key: 'invoices.billing_city', fact_alias: 'invoice_city'
-      query_level :invoice, -> { Invoice.all }, label_key: 'id', fact_key: 'invoices.id', fact_alias: 'invoice_id'
-      query_level :invoice_line, -> { InvoiceLine.all }, label_key: 'id', fact_key: 'invoice_lines.id', fact_alias: 'invoice_line_id'
+      query_level :invoice, -> { Invoice.all }, label_expression: "'invoice-' || invoices.id", fact_key: 'invoices.id', fact_alias: 'invoice_id'
+      query_level :invoice_line, -> { InvoiceLine.all }, label_expression: "'invoice-line-' || invoice_lines.id", fact_key: 'invoice_lines.id', fact_alias: 'invoice_line_id'
     end
   end
 

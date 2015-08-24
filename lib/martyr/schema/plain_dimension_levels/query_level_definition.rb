@@ -2,7 +2,7 @@ module Martyr
   module Schema
     class QueryLevelDefinition < BaseLevelDefinition
 
-      attr_accessor :scope, :primary_key, :label_key, :fact_key, :fact_alias, :parent_association_name
+      attr_accessor :scope, :primary_key, :label_key, :label_expression, :fact_key, :fact_alias, :parent_association_name
 
       # @param collection [DimensionDefinitionCollection]
       # @param name [String, Symbol]
@@ -13,14 +13,16 @@ module Martyr
       # @option fact_alias [String]
       def initialize(collection, name, scope = nil, **options)
         @collection = collection
+        @scope = scope || default_scope
         super name: name.to_s,
               primary_key: options[:primary_key] || 'id',
               label_key: options[:label_key] || name.to_s,
+              label_expression: options[:label_expression],
               fact_key: options[:fact_key] || "#{dimension_name}_#{name}_id",
               fact_alias: options[:fact_alias] || "#{dimension_name}_#{name}_id",
               parent_association_name: options[:parent_association_name]
 
-        @scope = scope || default_scope
+        add_label_expression_to_scope
       end
 
       def query?
@@ -48,6 +50,17 @@ module Martyr
           ->{ klass.all }
         rescue => e
           raise Schema::Error.new(e)
+        end
+      end
+
+      def add_label_expression_to_scope
+        return unless label_expression
+        label_field_name = 'martyr_label_expression'
+        original_scope = @scope.call
+        if original_scope.select_values.present?
+          @scope = -> { original_scope.select("#{label_expression} AS #{label_field_name}") }
+        else
+          @scope = -> { original_scope.select("#{original_scope.klass.table_name}.*", "#{label_expression} AS #{label_field_name}") }
         end
       end
 

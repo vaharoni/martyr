@@ -2,7 +2,7 @@ module Martyr
   module Runtime
     class QueryLevelScope < BaseLevelScope
 
-      delegate :primary_key, :label_key, to: :level
+      delegate :primary_key, :label_key, :label_expression, to: :level
 
       def initialize(*args)
         super
@@ -15,14 +15,22 @@ module Martyr
 
       def slice_with(values)
         decorate_scope do |scope|
-          scope.where label_key => values
+          if label_expression
+            scope.where("#{label_expression} IN (?)", values)
+          else
+            scope.where label_key => values
+          end
         end
         run
       end
 
       def slice_without(values)
         decorate_scope do |scope|
-          scope.where.not label_key => values
+          if label_expression
+            scope.where("#{label_expression} NOT IN (?)", values)
+          else
+            scope.where.not label_key => values
+          end
         end
         run
       end

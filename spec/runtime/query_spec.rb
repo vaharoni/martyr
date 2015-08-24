@@ -166,6 +166,24 @@ describe 'Runtime Queries' do
       SQL
     end
 
+    it 'sets up WHERE on keys when slicing on query level that is connected to the fact with custom label expression' do
+      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice(invoices: {level: :invoice_line, with: 'invoice-line-5'}).execute
+      sub_cube.run
+
+      expect(sub_cube.sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+        SELECT invoice_lines.id AS invoice_line_id,
+          SUM(invoice_lines.quantity) AS units_sold
+        FROM "invoice_lines"
+          INNER JOIN "tracks" ON "tracks"."id" = "invoice_lines"."track_id"
+          INNER JOIN "genres" ON "genres"."id" = "tracks"."genre_id"
+          INNER JOIN "media_types" ON "media_types"."id" = "tracks"."media_type_id"
+          INNER JOIN "invoices" ON "invoices"."id" = "invoice_lines"."invoice_id"
+          INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id"
+        WHERE "invoice_lines"."id" = 5
+        GROUP BY invoice_lines.id
+      SQL
+    end
+
     it 'sets up WHERE on keys when slicing on query level that is not connected to the fact' do
       sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice(albums: {level: :album, with: 'Restless and Wild'}).execute
       sub_cube.run

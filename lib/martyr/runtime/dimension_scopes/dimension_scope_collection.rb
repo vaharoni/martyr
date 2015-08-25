@@ -14,7 +14,7 @@ module Martyr
       end
 
       def to_s
-        "#<DimensionScopeCollection #{values.flat_map{|x| x.level_objects.map(&:id)}.inspect}>"
+        values.flat_map{|x| x.level_objects.map(&:id)}.inspect
       end
 
       # @param level [Martyr::Level]

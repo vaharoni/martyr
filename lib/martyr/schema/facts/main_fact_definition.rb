@@ -21,7 +21,7 @@ module Martyr
       def initialize(cube)
         @cube = cube
         @dimension_associations = DimensionAssociationCollection.new(dimension_definitions)
-        @metric_definitions ||= Schema::MetricDefinitionCollection.new
+        @metric_definitions ||= Schema::MetricDefinitionCollection.new(cube.cube_name)
         @rollup_definitions ||= Schema::RollupDefinitionCollection.new
       end
 

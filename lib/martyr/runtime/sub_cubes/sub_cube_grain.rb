@@ -16,8 +16,7 @@ module Martyr
       end
 
       def inspect_part
-        inspection = grain.map{|k,level| "#{k}: :#{level.name}"}.join(', ')
-        "grain: {#{inspection}}"
+        "grain: #{ grain.map{|k,level| "#{k}.#{level.name}"}.inspect }"
       end
 
       def null?

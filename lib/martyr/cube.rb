@@ -18,6 +18,14 @@ module Martyr
       Runtime::QueryContextBuilder.new(self)
     end
 
+    def self.set_cube_name(value)
+      @name = value.to_s
+    end
+
+    def self.cube_name
+      @name || name.split('::').last.underscore
+    end
+
     class << self
       delegate :define_dimension, to: :dimension_definitions
       delegate :main_fact, :build_fact_scopes, :sub_query, to: :fact_definitions

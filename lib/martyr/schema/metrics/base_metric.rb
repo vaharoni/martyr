@@ -3,7 +3,11 @@ module Martyr
     class BaseMetric
       include ActiveModel::Model
 
-      attr_accessor :name, :rollup_function
+      attr_accessor :cube_name, :name, :rollup_function
+
+      def id
+        "#{cube_name}.name"
+      end
 
       def build_slice
         raise NotImplementedError

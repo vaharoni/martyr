@@ -31,6 +31,8 @@ module MartyrSpec
   end
 
   class OneLevel < Common
+    set_cube_name :cube
+
     has_dimension_level :customers, :city
 
     main_query do
@@ -39,6 +41,8 @@ module MartyrSpec
   end
 
   class DegeneratesAndBottomLevels < Common
+    set_cube_name :cube
+
     # Degenerates
     has_dimension_level :genres, :name
     has_dimension_level :media_types, :name
@@ -57,6 +61,8 @@ module MartyrSpec
   end
 
   class DegeneratesAndAllLevels < Common
+    set_cube_name :cube
+
     # Degenerates
     has_dimension_level :genres, :name
     has_dimension_level :media_types, :name
@@ -84,6 +90,8 @@ module MartyrSpec
   end
 
   class DegeneratesAndHighLevels < Common
+    set_cube_name :cube
+
     # Degenerates
     has_dimension_level :genres, :name
     has_dimension_level :media_types, :name
@@ -104,6 +112,8 @@ module MartyrSpec
   end
 
   class DegeneratesAndCustomersAndSubFacts < Common
+    set_cube_name :cube
+
     define_dimension :first_invoice do
       degenerate_level :yes_no
     end

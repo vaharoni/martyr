@@ -2,6 +2,7 @@ module Martyr
   module Runtime
     class QueryMetrics < HashWithIndifferentAccess
       include Martyr::Registrable
+      include Martyr::Translations
 
       attr_reader :sub_cube
 
@@ -22,12 +23,14 @@ module Martyr
         "metrics: #{keys}"
       end
 
-      def add_metric(metric_name)
-        store metric_name, cube.find_metric(metric_name)
+      def add_metric(metric_id)
+        with_standard_id(metric_id) do |cube_name, metric_name|
+          register cube.find_metric(metric_name) if cube_name == sub_cube.cube_name
+        end
       end
 
-      def set_all_if_empty
-        merge! cube.metrics unless present?
+      def add_all
+        merge! cube.metrics
       end
     end
   end

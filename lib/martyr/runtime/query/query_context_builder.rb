@@ -24,7 +24,7 @@ module Martyr
 
       # select(:a, :b, :c)
       def select(*arr)
-        @select_args += arr.flatten
+        @select_args += fully_qualify_metrics_array(arr)
         self
       end
 
@@ -49,7 +49,7 @@ module Martyr
 
       # granulate('artist.name', 'genre.name')
       def granulate(*arr)
-        @granulate_args += arr.flatten
+        @granulate_args += arr
         self
       end
 
@@ -75,6 +75,20 @@ module Martyr
         dimensions = level_ids.map{|id| first_element_from_id(id) }.uniq
         return dimensions if dimensions.present?
         cube.supported_dimension_definitions.keys
+      end
+
+      def fully_qualify_metrics_array(array)
+        array.map do |metric_name|
+          with_standard_id(metric_name) do |cube_or_metric, metric|
+            metric || add_cube_name_to_metric(cube_or_metric)
+          end
+        end
+      end
+
+      def add_cube_name_to_metric(metric_name)
+        cube_classes = cube.contained_cube_classes
+        raise Query::Error.new("Invalid metric #{metric_name}: must be preceded with cube name") if cube_classes.length > 1
+        "#{cube_classes.first.cube_name}.#{metric_name}"
       end
     end
   end

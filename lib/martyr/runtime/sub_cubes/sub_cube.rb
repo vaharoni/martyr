@@ -7,6 +7,7 @@ module Martyr
 
       attr_reader :query_context, :cube, :fact_scopes, :metrics, :grain, :sub_cube_slice
       delegate :combined_sql, :pretty_sql, :test, :select_keys, to: :fact_scopes
+      delegate :cube_name, to: :cube
 
       alias_method :dimension_bus, :query_context
 
@@ -22,7 +23,7 @@ module Martyr
       end
 
       def inspect
-        "#<SubCube: #{cube}, #{metrics.inspect_part}, #{sub_cube_slice.inspect_part}, #{grain.inspect_part}>"
+        "#{cube_name}: {#{metrics.inspect_part}, #{sub_cube_slice.inspect_part}, #{grain.inspect_part}}"
       end
 
       def dimension_definitions
@@ -59,10 +60,13 @@ module Martyr
 
       # = Definitions
 
-      # @param select_args [Array<Symbol, String>]
       def set_metrics(metrics_arr)
-        metrics_arr.each do |metric_name|
-          @metrics.add_metric(metric_name)
+        if metrics_arr.empty?
+          metrics.add_all
+        else
+          metrics_arr.each do |metric_id|
+            @metrics.add_metric(metric_id)
+          end
         end
       end
 
@@ -79,7 +83,6 @@ module Martyr
       end
 
       def set_defaults_and_dependencies
-        metrics.set_all_if_empty
         sub_cube_slice.add_to_grain(grain)
         grain.set_all_if_empty
         grain.nullify_scope_if_null(fact_scopes)

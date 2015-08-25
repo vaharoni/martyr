@@ -5,7 +5,7 @@ module Martyr
 
       delegate :main_fact, :dimension_definitions, to: :cube
 
-      delegate :find_level, to: :dimension_associations
+      delegate :find_level_association, to: :dimension_associations
 
       def initialize(cube, name, &block)
         @cube = cube

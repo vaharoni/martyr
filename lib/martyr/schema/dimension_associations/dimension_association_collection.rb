@@ -2,9 +2,10 @@ module Martyr
   module Schema
     class DimensionAssociationCollection < HashWithIndifferentAccess
       include Martyr::Registrable
+      include Martyr::Translations
 
       attr_reader :dimension_definitions
-      alias_method :find_dimension, :find_or_error
+      alias_method :find_dimension_association, :find_or_error
       alias_method :supports_dimension?, :has_key?
 
       # @param dimension_definitions [DimensionDefinitionCollection]
@@ -24,8 +25,8 @@ module Martyr
         dimension.has_dimension_level(level_name, **args)
       end
 
-      def find_level(dimension_name, level_name)
-        find_or_error(dimension_name).find_level(level_name)
+      def find_level_association(level_id)
+        with_standard_id(level_id) {|dimension, level| find_dimension_association(dimension).find_level(level)}
       end
     end
   end

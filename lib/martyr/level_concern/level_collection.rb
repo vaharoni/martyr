@@ -22,6 +22,31 @@ module Martyr
       to_a.index { |name, _object| name.to_s == level_name.to_s }
     end
 
+    # @return [BaseLevelDefinition]
+    def level_above(level_name)
+      above_index = level_index(level_name) - 1
+      return nil if above_index < 0
+      values[above_index]
+    end
+
+    # @param level_name [String, Symbol]
+    # @return [Array<Martyr::Level>] the first level of type `query` below the provided level
+    def query_level_below(level_name)
+      level_objects[level_index(level_name) + 1..-1].find{|level| level.query?}
+    end
+
+    # @param level_name [String, Symbol]
+    # @return [Array<Martyr::Level>] the provided level and all the levels above it
+    def level_and_above(level_name)
+      level_objects[0..level_index(level_name)]
+    end
+
+    # @param level_name [String, Symbol]
+    # @return [Array<Martyr::Level>] the provided level and all the levels below it
+    def level_and_below(level_name)
+      level_objects[level_index(level_name)..-1]
+    end
+
     def lowest_level
       values.max_by(&:to_i)
     end

@@ -4,12 +4,6 @@ module Martyr
 
       delegate :add_to_join, to: :fact_definition
 
-      # @param level [BaseLevelScope] note that LevelScope objects are always associated with the main fact
-      # @return [String] how to add a where condition to the level
-      def level_key_for_where(level)
-        fact_definition.find_level(level.dimension_name, level.name).fact_key
-      end
-
       def add_scope_operator(operator)
         operator.fact_scope = self
         operator.execute if operator.supported?

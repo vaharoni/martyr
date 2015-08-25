@@ -1,6 +1,6 @@
 module Martyr
   module Runtime
-    class QueryGrain
+    class SubCubeGrain
       include Martyr::LevelComparator
 
       attr_reader :sub_cube, :grain
@@ -20,37 +20,21 @@ module Martyr
         "grain: {#{inspection}}"
       end
 
-      def supported_dimensions
-        grain.keys
-      end
-
-      # @return [Hash] { dimension_name => ['level1', 'level2'] }
-      def levels_below_grain
-        arr = grain.map do |dimension_name, lowest_level|
-          [dimension_name, lowest_level.level_and_below_full.map(&:name) - [lowest_level.name]]
-        end
-        Hash[arr]
-      end
-
       def null?
         @null
       end
 
       # Maintains for every dimension the lowest supported level
-      # @param dimension_name [String, Symbol]
-      # @param level_name [String, Symbol]
-      def add_granularity(dimension_name, level_name)
-        dimension = sub_cube.find_dimension(dimension_name)
-        level = dimension.find_level(level_name)
-        level_to_add = find_common_denominator_level(level, dimension.levels.supported_levels)
+      def add_granularity(level_id)
+        level_to_add = sub_cube.common_denominator_level_association(level_id)
         @null = true and return unless level_to_add
-
-        @grain[dimension_name.to_s] = more_detailed_level(@grain[dimension.to_s], level_to_add)
+        dimension = level_to_add.dimension_name
+        @grain[dimension] = more_detailed_level(@grain[dimension], level_to_add)
       end
 
       def set_all_if_empty
         return if @grain.present?
-        sub_cube.dimension_scopes.each do |dimension_name, dimension_object|
+        sub_cube.dimension_associations.each do |dimension_name, dimension_object|
           @grain[dimension_name.to_s] = dimension_object.lowest_level
         end
       end
@@ -82,8 +66,8 @@ module Martyr
 
       def supported_levels
         return [] if null?
-        grain.flat_map do |dimension_name, lowest_level|
-          sub_cube.find_dimension(dimension_name).level_and_above_supported(lowest_level.name)
+        grain.flat_map do |_dimension_name, lowest_level|
+          sub_cube.association_from_id(lowest_level.id).level_and_above
         end
       end
 

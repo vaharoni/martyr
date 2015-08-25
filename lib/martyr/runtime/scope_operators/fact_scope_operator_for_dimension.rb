@@ -1,6 +1,6 @@
 module Martyr
   module Runtime
-    class DimensionScopeOperator < BaseScopeOperator
+    class FactScopeOperatorForDimension < BaseFactScopeOperator
       include Martyr::LevelComparator
 
       attr_reader :dimension_name, :level_name, :block
@@ -16,8 +16,8 @@ module Martyr
         fact_scope.supports_dimension_level?(dimension_name, level_name)
       end
 
-      def common_denominator_level(level)
-        common_level = find_common_denominator_level(level, fact_scope.dimensions[dimension_name].level_objects)
+      def common_denominator_level(level_definition)
+        common_level = find_common_denominator_level(level_definition, fact_scope.dimensions[dimension_name].level_objects)
 
         # This should never be raised, since the QueryGrain should have already nullified the cube
         raise Internal::Error.new("Internal error: Dimension `#{dimension_name}` slice on level `#{level_name}` has no common denominator.") unless common_level

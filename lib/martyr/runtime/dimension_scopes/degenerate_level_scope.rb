@@ -4,10 +4,6 @@ module Martyr
 
       delegate :query_level_with_finder, :query_level_without_finder, :query_level_key, to: :level
 
-      def query_level_below
-        @_query_level_below ||= collection.query_level_below(name)
-      end
-
       def slice_with(values)
         query_level_below.send(:decorate_scope) do |scope|
           query_level_with_finder.call(scope, values)
@@ -23,7 +19,7 @@ module Martyr
       end
 
       def loaded?
-        supported? or query_level_below.loaded?
+        query_level_below.loaded?
       end
 
       def all

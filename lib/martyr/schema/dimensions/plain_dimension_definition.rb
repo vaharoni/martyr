@@ -21,6 +21,10 @@ module Martyr
         self
       end
 
+      def build_slice(dimension_bus)
+        Runtime::PlainDimensionSlice.new(self, dimension_bus)
+      end
+
     end
   end
 end

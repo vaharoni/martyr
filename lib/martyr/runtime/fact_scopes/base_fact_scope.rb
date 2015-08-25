@@ -28,6 +28,11 @@ module Martyr
         @scope = NullScope.new
       end
 
+      # @return [String] how to add a where condition to the level
+      def level_key_for_where(level_id)
+        fact_definition.find_level_association(level_id).fact_key
+      end
+
       # = Scope support check
 
       # = Scope updater
@@ -50,23 +55,6 @@ module Martyr
         @scope = Proc.new do
           block.call(original_scope.call, self)
         end
-      end
-
-      # @param level [LevelAssociation]
-      # @return [String] how to add a where condition to the level - different depending on whether this is a main fact
-      #   scope or sub fact
-      def level_key_for_where(level)
-        raise NotImplementedError
-      end
-
-      private
-
-      def if_supports_metric(*args, &block)
-        raise NotImplementedError
-      end
-
-      def if_supports_dimension_level(*args, &block)
-        raise NotImplementedError
       end
 
     end

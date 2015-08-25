@@ -10,6 +10,8 @@ module Martyr
         raise Schema::Error.new("Could not find level `#{level}` for dimension #{dimension_name}") unless level_definition
         level_association = LevelAssociation.new(self, level_definition, **args)
         register level_association
+        arr = sort_by{|_name, level| level.to_i}
+        clear.merge!(Hash[arr])
       end
     end
   end

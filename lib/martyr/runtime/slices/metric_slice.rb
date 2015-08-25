@@ -66,7 +66,7 @@ module Martyr
       end
 
       def add_scope_operator(fact_scopes, statement_operator, value)
-        scope_operator = MetricScopeOperator.new(metric_name) do |operator|
+        scope_operator = FactScopeOperatorForMetric.new(metric_name) do |operator|
           operator.decorate_scope do |scope|
             scope.having("#{statement} #{statement_operator} ?", value)
           end

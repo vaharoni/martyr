@@ -4,7 +4,9 @@ module Martyr
       include Martyr::Level
 
       attr_accessor :level, :fact_key, :fact_alias
-      delegate :dimension_name, to: :collection
+
+      delegate :to_i, to: :level    # Important so that the to_i will take into account all levels defined for the
+                                    # dimension, not just the supported one
 
       # @param collection [LevelAssociationCollection]
       # @param level [BaseLevelDefinition]
@@ -17,13 +19,6 @@ module Martyr
 
       def supported?
         true
-      end
-
-      # Interjects level#build so that the #level object in the appropriate scope object is self
-      def build(collection)
-        level_scope = level.build(collection)
-        level_scope.level = self
-        level_scope
       end
 
       private

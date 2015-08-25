@@ -15,14 +15,14 @@ module Martyr
     end
 
 
-    # @param level [BaseLevelScope]
-    # @param supported_levels_arr [Array<Martyr::Level>] of supported levels
-    # @return [Martyr::Level, nil] finds the highest supported level in the cube that is equal or below level_definition
-    def find_common_denominator_level(level, supported_levels_arr)
-      raise Internal::Error.new('level cannot be nil') unless level
-      raise Internal::Error.new('supported_levels_arr cannot be nil') unless supported_levels_arr
-      supported_index = supported_levels_arr.index_by(&:name)
-      level.level_and_below_full.find{|l| supported_index[l.name] }
+    # @param level_definition [BaseLevelDefinition] must be level definition so that #level_and_below performs a full search
+    # @param level_associations_arr [Array<LevelAssociation>] of supported levels
+    # @return [BaseLevelDefinition, nil] finds the highest supported level in the cube that is equal or below level_definition
+    def find_common_denominator_level(level_definition, level_associations_arr)
+      raise Internal::Error.new('level_definition must be level definition object') unless level_definition.is_a?(Schema::BaseLevelDefinition)
+      raise Internal::Error.new('level_associations_arr cannot be nil') unless level_associations_arr
+      supported_index = level_associations_arr.index_by(&:name)
+      level_definition.level_and_below.find{|l| supported_index[l.name] }
     end
 
   end

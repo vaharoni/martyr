@@ -1,6 +1,6 @@
 module Martyr
   module Runtime
-    class MetricScopeOperator < BaseScopeOperator
+    class FactScopeOperatorForMetric < BaseFactScopeOperator
 
       attr_reader :metric_name
 

@@ -1,6 +1,6 @@
 module Martyr
   module Runtime
-    class BaseScopeOperator
+    class BaseFactScopeOperator
       attr_reader :block
       attr_accessor :fact_scope
       delegate :decorate_scope, to: :fact_scope

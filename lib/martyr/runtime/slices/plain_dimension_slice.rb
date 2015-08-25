@@ -8,8 +8,13 @@ module Martyr
       # @attribute level [BaseLevelScope]
       attr_reader :level
 
-      attr_reader :dimension_scope, :with, :without
+      attr_reader :dimension_definition, :dimension_bus, :with, :without
       delegate :name, to: :level, prefix: true
+
+      def initialize(dimension_definition, dimension_bus)
+        @dimension_definition = dimension_definition
+        @dimension_bus = dimension_bus
+      end
 
       def inspect_part
         operator_inspection = [with ? "with: '#{with}'" : nil, without ? "without: '#{without}'" : nil].compact.join(' ')
@@ -21,26 +26,21 @@ module Martyr
         errors.add(:base, "Slice on `#{dimension_name}`: must have either `with` and `without`") unless with or without
       end
 
-      def initialize(dimension_scope)
-        @dimension_scope = dimension_scope
-      end
-
       def dimension_name
-        dimension_scope.name
+        dimension_definition.name
       end
 
       # Sets the slice if this is the first time the dimension slice was referenced or if the level is equal to or lower
       # than the existing slice's level
-      def set_slice(**options)
-        level = dimension_scope.find_level(options[:level])
+      def set_slice(level:, with: nil, without: nil)
         @level = more_detailed_level(level, @level)
         return unless @level == level
-        @with = options[:with]
-        @without = options[:without]
+        @with = with
+        @without = without
       end
 
       def add_to_grain(grain)
-        grain.add_granularity(dimension_name, level_name)
+        grain.add_granularity(level.id)
       end
 
       # Add to where has two distinct strategies:
@@ -60,7 +60,7 @@ module Martyr
 
       # @param fact_scopes [Runtime::FactScopeCollection]
       def add_to_where(fact_scopes)
-        scope_operator = DimensionScopeOperator.new(dimension_name, level_name) do |operator|
+        scope_operator = FactScopeOperatorForDimension.new(dimension_name, level_name) do |operator|
           common_denominator_level = operator.common_denominator_level(level)
 
           if common_denominator_level.name == level_name and level.degenerate?
@@ -73,7 +73,7 @@ module Martyr
       end
 
       def add_to_where_using_fact_strategy(operator)
-        level_key = operator.level_key_for_where(level)
+        level_key = operator.level_key_for_where(level.id)
         operator.decorate_scope do |scope|
           if with.present?
             scope.where(level_key => with)
@@ -84,15 +84,19 @@ module Martyr
       end
 
       def add_to_where_using_join_strategy(operator, common_denominator_level)
-        if with.present?
-          level.slice_with(with)
-        elsif without.present?
-          level.slice_without(without)
-        end unless level.loaded?
+        dimension_bus.with_level_scope(level.id) do |level_scope|
+          if with.present?
+            level_scope.slice_with(with)
+          elsif without.present?
+            level_scope.slice_without(without)
+          end unless level_scope.loaded?
+        end
 
-        operator.decorate_scope do |scope|
-          level_key = operator.level_key_for_where(common_denominator_level)
-          scope.where(level_key => common_denominator_level.keys)
+        dimension_bus.with_level_scope(common_denominator_level.id) do |common_level|
+          operator.decorate_scope do |scope|
+            level_key = operator.level_key_for_where(common_level.id)
+            scope.where(level_key => common_level.keys)
+          end
         end
       end
 

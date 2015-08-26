@@ -44,9 +44,27 @@ module Martyr
         end
       end
 
-      def elements
-
+      def facts
+        map_reduce_sub_cubes(&:facts)
       end
+
+      def elements
+        map_reduce_sub_cubes(&:elements)
+      end
+
+      private
+
+      def map_reduce_sub_cubes
+        if sub_cubes.length == 1
+          yield sub_cubes.first
+        else
+          arr = sub_cubes.map do |sub_cube|
+            [sub_cube.cube_name, yield(sub_cube)]
+          end
+          Hash[arr]
+        end
+      end
+
     end
   end
 end

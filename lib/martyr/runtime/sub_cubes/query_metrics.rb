@@ -32,6 +32,18 @@ module Martyr
       def add_all
         merge! cube.metrics
       end
+
+      def built_in_metrics
+        values.select(&:built_in?)
+      end
+
+      def custom_metrics
+        values.reject(&:built_in?)
+      end
+
+      def metric_ids
+        values.map(&:id)
+      end
     end
   end
 end

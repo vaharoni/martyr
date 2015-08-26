@@ -9,7 +9,8 @@ module Martyr
       delegate :combined_sql, :pretty_sql, :test, :select_keys, to: :fact_scopes
       delegate :cube_name, :dimension_associations, to: :cube
       delegate :supported_level_associations, :supported_level_definitions, :supports_level?, to: :grain
-      delegate :facts, :facts_by, to: :fact_indexer
+      delegate :metric_ids, :built_in_metrics, :custom_metrics, to: :metrics
+      delegate :facts, :elements_by, to: :fact_indexer
 
       alias_method :dimension_bus, :query_context
 
@@ -35,8 +36,15 @@ module Martyr
       # @return [BaseMetric, DimensionReference, BaseLevelDefinition]
       def definition_from_id(id)
         with_standard_id(id) do |x, y|
-          return dimension_definitions[x].try(:levels).try(:[], y) if x and y
-          metrics[x] || dimension_definitions[x]
+          if x and y
+            if Schema::BaseMetric.metric_id?(id)
+              return metrics[y]
+            else
+              return dimension_definitions[x].try(:levels).try(:[], y)
+            end
+          else
+            metrics[x] || dimension_definitions[x]
+          end
         end
       end
 
@@ -103,8 +111,12 @@ module Martyr
         @fact_indexer ||= FactIndexer.new(self, grain.null? ? [] : fact_scopes.run.map { |hash| Fact.new(self, hash) })
       end
 
-      def fact_sets
-        facts_by *grain.level_ids
+      def elements
+        elements_by(*grain.level_ids).each{|element| element.rollup(*metrics.values)}
+      end
+
+      def pivot
+        Runtime::PivotTableBuilder.new(self)
       end
 
     end

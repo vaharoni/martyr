@@ -16,7 +16,11 @@ module Martyr
       end
 
       def inspect_part
-        "grain: #{ grain.map{|k,level| "#{k}.#{level.name}"}.inspect }"
+        "grain: #{ level_ids.inspect }"
+      end
+
+      def level_ids
+        grain.values.map(&:id)
       end
 
       def null?
@@ -45,7 +49,7 @@ module Martyr
       # Adds all supported levels including and above the sliced level
       # @param fact_scopes [Runtime::FactScopeCollection]
       def add_to_select(fact_scopes)
-        supported_levels.each do |level_object|
+        supported_level_associations.each do |level_object|
           fact_scopes.main_fact.decorate_scope do |scope|
             scope.select("#{level_object.fact_key} AS #{level_object.fact_alias}")
           end
@@ -54,22 +58,48 @@ module Martyr
 
       # @param fact_scopes [Runtime::FactScopeCollection]
       def add_to_group_by(fact_scopes)
-        supported_levels.each do |level_object|
+        supported_level_associations.each do |level_object|
           fact_scopes.main_fact.decorate_scope do |scope|
             scope.group(level_object.fact_key)
           end
         end
       end
 
-      private
+      # Assume the following levels, where (*) denotes has association to the fact
+      #   L1
+      #     L2 (*)
+      #       L3 (*)
+      #         L4 (*)
+      #
+      # Assuming the lowest level in the grain is L3:
+      #
+      #   supported_level_associations
+      #   # => [L2, L3] of LevelAssociation objects
+      #
+      #   supported_level_definitions
+      #   # => [L1, L2, L3] of BaseLevelDefinition objects
 
-      def supported_levels
+      def supported_level_associations
         return [] if null?
-        grain.flat_map do |_dimension_name, lowest_level|
+        @supported_level_associations ||= grain.flat_map do |_dimension_name, lowest_level|
           sub_cube.association_from_id(lowest_level.id).level_and_above
         end
       end
 
+      def supported_level_definitions
+        return [] if null?
+        @_supported_level_definitions ||= grain.flat_map do |_dimension_name, lowest_level|
+          sub_cube.definition_from_id(lowest_level.id).level_and_above
+        end
+      end
+
+      def supported_level_associations_lookup
+        @_supported_level_associations_lookup ||= supported_level_associations.group_by(&:id)
+      end
+
+      def supports_level?(level_id)
+        supported_level_associations_lookup[level_id]
+      end
     end
   end
 end

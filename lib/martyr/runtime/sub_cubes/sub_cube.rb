@@ -7,7 +7,9 @@ module Martyr
 
       attr_reader :query_context, :cube, :fact_scopes, :metrics, :grain, :sub_cube_slice
       delegate :combined_sql, :pretty_sql, :test, :select_keys, to: :fact_scopes
-      delegate :cube_name, to: :cube
+      delegate :cube_name, :dimension_associations, to: :cube
+      delegate :supported_level_associations, :supported_level_definitions, :supports_level?, to: :grain
+      delegate :facts, :facts_by, to: :fact_indexer
 
       alias_method :dimension_bus, :query_context
 
@@ -30,10 +32,6 @@ module Martyr
         cube.supported_dimension_definitions
       end
 
-      def dimension_associations
-        cube.dimensions
-      end
-
       # @return [BaseMetric, DimensionReference, BaseLevelDefinition]
       def definition_from_id(id)
         with_standard_id(id) do |x, y|
@@ -51,11 +49,15 @@ module Martyr
       end
 
       def common_denominator_level_association(level_id)
+        @_common_denominator_level_association ||= {}
+        return @_common_denominator_level_association[level_id] if @_common_denominator_level_association[level_id]
+
         level = definition_from_id(level_id)
         dimension_association = dimension_associations.find_dimension_association(level.dimension_name)
         level = find_common_denominator_level(level, dimension_association.level_objects)
         return nil unless level
-        dimension_association.levels[level.name]
+
+        @_common_denominator_level_association[level_id] = dimension_association.levels[level.name]
       end
 
       # = Definitions
@@ -95,35 +97,14 @@ module Martyr
         grain.add_to_group_by(fact_scopes)
       end
 
-      def foreign_keys_from_facts_for(level)
-        facts.map { |x| x.send level.fact_alias }
-      end
-
       # = Running
 
-      def facts
-        raise Query::Error.new('Sub cube must be sliced before facts can be retrieved') unless sliced
-        @facts ||= fact_scopes.run.map { |x| Fact.new.merge! x.slice(*select_keys) }
+      def fact_indexer
+        @fact_indexer ||= FactIndexer.new(self, grain.null? ? [] : fact_scopes.run.map { |hash| Fact.new(self, hash) })
       end
 
-      def elements
-        @elements ||= facts.map{|x| Element.new(self, x)}
-      end
-
-      def dimensions
-        dimension_scopes.values
-      end
-
-      def dimension_ids
-        dimensions.map(&:id)
-      end
-
-      def levels
-        @levels ||= dimensions.flat_map(&:level_objects)
-      end
-
-      def level_ids
-        levels.map(&:id)
+      def fact_sets
+        facts_by *grain.level_ids
       end
 
     end

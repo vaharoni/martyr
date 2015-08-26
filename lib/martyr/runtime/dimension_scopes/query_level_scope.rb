@@ -42,7 +42,7 @@ module Martyr
       def load
         return true if loaded?
         if !collection.sliced_level_i
-          load_from_fact
+          execute_query
         elsif to_i > collection.sliced_level_i
           load_from_level_above
         elsif to_i < collection.sliced_level_i
@@ -78,20 +78,22 @@ module Martyr
 
       protected
 
-      def slice_from_fact_keys
-        decorate_scope do |scope|
-          scope.where primary_key => collection.foreign_keys_from_facts_for(self)
-        end
-        execute_query
-      end
+      # TODO: inject one cube if exists
+
+      # def slice_from_fact_keys
+      #   decorate_scope do |scope|
+      #     scope.where primary_key => collection.foreign_keys_from_facts_for(self)
+      #   end
+      #   execute_query
+      # end
 
       # Loading strategies
 
-      def load_from_fact
-        return slice_from_fact_keys if common_denominator_with_cube.name == name
-        common_denominator_with_cube.load_from_fact
-        load_from_level_below
-      end
+      # def load_from_fact
+      #   return slice_from_fact_keys if common_denominator_with_cube.name == name
+      #   common_denominator_with_cube.load_from_fact
+      #   load_from_level_below
+      # end
 
       def load_from_level_above
         raise Schema::Error.new("Cannot infer slice for dimension `#{dimension_name}` level `#{name}`: parent level is not query level") unless level_above.query?

@@ -31,7 +31,7 @@ module Martyr
       delegate :main_fact, :build_fact_scopes, :sub_query, to: :fact_definitions
       delegate :has_dimension_level, :has_count_metric, :has_min_metric, :has_max_metric, # DSL
                :has_sum_metric, :has_custom_metric, :main_query, # DSL
-               :metrics, :dimensions, :rollups, :find_metric, :find_dimension, to: :main_fact # Runtime
+               :metrics, :find_metric, :dimension_associations, :rollups, to: :main_fact # Runtime
 
       delegate :select, :slice, :granulate, :pivot, to: :new_query_context_builder
       alias_method :all, :new_query_context_builder
@@ -46,8 +46,13 @@ module Martyr
       ancestors[1..-1].find { |x| x != self and x.respond_to?(:martyr_schema_class?) }
     end
 
+    # @return [Hash]
     def self.supported_dimension_definitions
-      dimension_definitions.all.slice(*dimensions.keys)
+      dimension_definitions.all.slice(*dimension_associations.keys)
+    end
+
+    def self.level_associations
+      dimension_associations.flat_map { |_name, dimension_association| dimension_association.level_objects }
     end
 
     def self.build_dimension_scopes(dimension_names)
@@ -57,5 +62,6 @@ module Martyr
       end
       dimension_scopes
     end
+
   end
 end

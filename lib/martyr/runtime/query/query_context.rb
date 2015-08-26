@@ -6,6 +6,7 @@ module Martyr
 
       def initialize
         @sub_cubes = []
+        @promises = {}
       end
 
       def inspect
@@ -14,12 +15,38 @@ module Martyr
 
       # = As Dimension Bus Role
 
+      def level_scope(level_id)
+        dimension_scopes.find_level(level_id)
+      end
+
       # @param level_id [String]
       # @yieldparam [BaseLevelScope]
       def with_level_scope(level_id)
-        yield dimension_scopes.find_level(level_id)
+        yield level_scope(level_id)
       end
 
+      def level_loaded?(level_id)
+        level_scope(level_id).loaded?
+      end
+
+      def fetch_unsupported_level_value(level_id, fact_record)
+        sought_level_definition = fact_record.sub_cube.definition_from_id(level_id)
+        common_denominator_association = fact_record.sub_cube.common_denominator_level_association(level_id)
+        with_level_scope(common_denominator_association.id) do |common_denominator_level_scope|
+          common_denominator_level_scope.recursive_value_lookup fact_record[common_denominator_association.id], level: sought_level_definition
+        end
+      end
+
+      def fetch_supported_query_level_record(level_id, fact_key_value)
+        with_level_scope(level_id) do |level_scope|
+          raise Internal::Error.new('level must be query') unless level_scope.query?
+          level_scope.recursive_value_lookup fact_key_value, level: level_scope
+        end
+      end
+
+      def elements
+
+      end
     end
   end
 end

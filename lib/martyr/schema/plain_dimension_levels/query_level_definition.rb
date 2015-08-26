@@ -37,6 +37,10 @@ module Martyr
         (parent_association_name || level_above.try(:name)).to_s.presence
       end
 
+      def label
+        label_expression || label_key
+      end
+
       def build(collection)
         Runtime::QueryLevelScope.new(collection, self)
       end

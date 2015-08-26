@@ -10,6 +10,7 @@ module Martyr
       delegate :cube_name, :dimension_associations, to: :cube
       delegate :supported_level_associations, :supported_level_definitions, :supports_level?, to: :grain
       delegate :metric_ids, :built_in_metrics, :custom_metrics, to: :metrics
+      delegate :metric_slices, to: :sub_cube_slice
       delegate :facts, :elements_by, to: :fact_indexer
 
       alias_method :dimension_bus, :query_context
@@ -36,15 +37,9 @@ module Martyr
       # @return [BaseMetric, DimensionReference, BaseLevelDefinition]
       def definition_from_id(id)
         with_standard_id(id) do |x, y|
-          if x and y
-            if Schema::BaseMetric.metric_id?(id)
-              return metrics[y]
-            else
-              return dimension_definitions[x].try(:levels).try(:[], y)
-            end
-          else
-            metrics[x] || dimension_definitions[x]
-          end
+          return (metrics[x] || dimension_definitions[x]) if !y
+          return metrics[y] if Schema::BaseMetric.metric_id?(id)
+          dimension_definitions[x].try(:levels).try(:[], y)
         end
       end
 

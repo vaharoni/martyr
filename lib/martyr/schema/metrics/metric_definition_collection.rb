@@ -2,15 +2,19 @@ module Martyr
   module Schema
     class MetricDefinitionCollection < HashWithIndifferentAccess
       include Martyr::Registrable
+      include Martyr::Translations
 
       attr_reader :cube_name
 
       alias_method :find_metric, :find_or_error
-      alias_method :supports_metric?, :has_key?
 
       def initialize(cube_name)
         super
         @cube_name = cube_name
+      end
+
+      def supports_metric?(metric_name)
+        has_key? second_element_from_id(metric_name)
       end
 
       def has_sum_metric(name, statement = name, fact_alias: name)

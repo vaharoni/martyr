@@ -3,7 +3,7 @@ module Martyr
     class PivotCell
 
       attr_reader :metric_id, :metric_human_name, :element
-      delegate :facts, to: :element
+      delegate :facts, :coordinates, to: :element
 
       def initialize(metric, element)
         @metric_id = metric.id
@@ -16,7 +16,11 @@ module Martyr
       end
 
       def to_hash
-        {'metric' => metric_id, 'metric_human_name' => metric_human_name, 'value' => value}.merge!(element.grain)
+        {'metric_human_name' => metric_human_name, 'value' => value}.merge!(element.grain)
+      end
+
+      def coordinates
+        element.coordinates.merge('metric' => metric_id)
       end
 
       def to_axis_values(pivot_axis, flat: true)

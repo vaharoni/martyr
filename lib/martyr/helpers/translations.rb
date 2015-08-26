@@ -14,5 +14,9 @@ module Martyr
       id.to_s.include?('.') ? id.to_s.split('.').first : id.to_s
     end
 
+    def second_element_from_id(id)
+      id.to_s.include?('.') ? id.to_s.split('.').last : id.to_s
+    end
+
   end
 end

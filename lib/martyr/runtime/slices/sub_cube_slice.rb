@@ -30,15 +30,19 @@ module Martyr
         if slice_on_object.respond_to?(:level_object?)
           dimension = slice_on_object.dimension_definition
           @slices[dimension.name] ||= dimension.build_slice(sub_cube.dimension_bus)
-          @slices[dimension.name].set_slice(level: slice_on_object, **slice_definition)
+          @slices[dimension.name].set_slice(level: slice_on_object, **slice_definition.symbolize_keys)
         else
           @slices[slice_on] ||= slice_on_object.build_slice
-          @slices[slice_on].set_slice(**slice_definition)
+          @slices[slice_on].set_slice(**slice_definition.symbolize_keys)
         end
       end
 
       def slice_objects
         slices.values
+      end
+
+      def metric_slices
+        @_metric_slices ||= slice_objects.select{|x| x.is_a?(Runtime::MetricSlice)}
       end
 
     end

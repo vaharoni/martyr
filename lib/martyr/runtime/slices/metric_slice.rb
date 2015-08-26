@@ -3,9 +3,11 @@ module Martyr
     class MetricSlice
       include ActiveModel::Model
 
-      attr_reader :metric, :gt, :lt, :gte, :lte, :eq, :not
+      OPERATORS = [:gt, :lt, :gte, :lte, :eq, :not]
+
+      attr_reader :metric, *OPERATORS
       delegate :statement, to: :metric
-      delegate :name, to: :metric, prefix: true
+      delegate :id, to: :metric, prefix: true
 
       def initialize(metric)
         @metric = metric
@@ -13,7 +15,12 @@ module Martyr
 
       def inspect_part
         operator_inspection = [gt_operator, gte || gt, lt_operator, lte || lt, eq ? '=' : nil, eq, self.not ? '!=' : nil, self.not].compact.join(' ')
-        "metric: '#{metric_name}' #{operator_inspection}"
+        "metric: '#{metric_id}' #{operator_inspection}"
+      end
+      
+      def to_hash
+        hash = OPERATORS.inject({}) {|h, op| send(op) ? h.merge!(op => send(op)) : h}
+        { metric_id => hash }
       end
 
       # This allows a `between` operation with two consecutive `slice`:
@@ -28,10 +35,10 @@ module Martyr
       end
 
       validate do
-        errors.add(:base, "Slice on `#{metric_name}`: cannot have both `eq` and `not`") if eq and self.not
-        errors.add(:base, "Slice on `#{metric_name}`: cannot have both `gt` and `gte`") if gt and gte
-        errors.add(:base, "Slice on `#{metric_name}`: cannot have both `lt` and `lte`") if lt and lte
-        errors.add(:base, "Slice on `#{metric_name}`: must have at least `lt`, `lte`, `gt`, `gte`, `eq`, or `not`") unless
+        errors.add(:base, "Slice on `#{metric_id}`: cannot have both `eq` and `not`") if eq and self.not
+        errors.add(:base, "Slice on `#{metric_id}`: cannot have both `gt` and `gte`") if gt and gte
+        errors.add(:base, "Slice on `#{metric_id}`: cannot have both `lt` and `lte`") if lt and lte
+        errors.add(:base, "Slice on `#{metric_id}`: must have at least `lt`, `lte`, `gt`, `gte`, `eq`, or `not`") unless
             lt or lte or gt or gte or eq or self.not
       end
 
@@ -66,7 +73,7 @@ module Martyr
       end
 
       def add_scope_operator(fact_scopes, statement_operator, value)
-        scope_operator = FactScopeOperatorForMetric.new(metric_name) do |operator|
+        scope_operator = FactScopeOperatorForMetric.new(metric_id) do |operator|
           operator.decorate_scope do |scope|
             scope.having("#{statement} #{statement_operator} ?", value)
           end

@@ -25,6 +25,10 @@ module Martyr
         end
       end
 
+      def transpose
+        self.row_axis, self.column_axis = column_axis, row_axis
+      end
+
       def to_chart
         cells.group_by do |cell|
           cell.to_axis_values(row_axis)

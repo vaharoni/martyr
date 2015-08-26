@@ -16,7 +16,7 @@ module Martyr
           level_keys_arr.map{|key| fact.fetch(key)}
         end.map do |index_key, facts_arr|
           grain_arr = level_keys_arr.each_with_index.map {|level_id, i| [level_id, index_key[i]]}
-          [index_key, Element.new(Hash[grain_arr], facts_arr)]
+          [index_key, Element.new(Hash[grain_arr], facts_arr, sub_cube.metric_slices)]
         end
         @indices[level_keys_arr] = Hash[arr]
         @indices[level_keys_arr].values

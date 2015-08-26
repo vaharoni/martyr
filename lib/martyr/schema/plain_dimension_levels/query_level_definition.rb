@@ -2,6 +2,8 @@ module Martyr
   module Schema
     class QueryLevelDefinition < BaseLevelDefinition
 
+      LABEL_EXPRESSION_ALIAS = 'martyr_label_expression'
+
       attr_accessor :scope, :primary_key, :label_key, :label_expression, :fact_key, :fact_alias, :parent_association_name
 
       # @param collection [DimensionDefinitionCollection]
@@ -37,8 +39,8 @@ module Martyr
         (parent_association_name || level_above.try(:name)).to_s.presence
       end
 
-      def label
-        label_expression || label_key
+      def label_field
+        label_expression ? LABEL_EXPRESSION_ALIAS : label_key
       end
 
       def build(collection)
@@ -59,12 +61,11 @@ module Martyr
 
       def add_label_expression_to_scope
         return unless label_expression
-        label_field_name = 'martyr_label_expression'
         original_scope = @scope.call
         if original_scope.select_values.present?
-          @scope = -> { original_scope.select("#{label_expression} AS #{label_field_name}") }
+          @scope = -> { original_scope.select("#{label_expression} AS #{LABEL_EXPRESSION_ALIAS}") }
         else
-          @scope = -> { original_scope.select("#{original_scope.klass.table_name}.*", "#{label_expression} AS #{label_field_name}") }
+          @scope = -> { original_scope.select("#{original_scope.klass.table_name}.*", "#{label_expression} AS #{LABEL_EXPRESSION_ALIAS}") }
         end
       end
 

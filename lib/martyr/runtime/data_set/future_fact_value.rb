@@ -18,7 +18,7 @@ module Martyr
         return @value if @value
         if fact_key_value
           @active_record = dimension_bus.fetch_supported_query_level_record(level.id, fact_key_value)
-          @value = @active_record.send(level.label)
+          @value = @active_record.send(level.label_field)
         else
           @value = dimension_bus.fetch_unsupported_level_value(level.id, fact_record)
         end

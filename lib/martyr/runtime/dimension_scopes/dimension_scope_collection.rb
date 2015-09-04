@@ -27,27 +27,6 @@ module Martyr
       def find_level(level_id)
         with_standard_id(level_id) { |dimension, level| find_dimension(dimension).find_level(level) }
       end
-
-      # TODO: remove
-      # def find_level(*several_variants)
-      #   case several_variants.length
-      #     when 1
-      #       arg = several_variants.first
-      #       if arg.is_a?(String)
-      #         dimension_name, level_name = several_variants.first.split('.')
-      #       elsif arg.respond_to?(:level_object?)
-      #         dimension_name = arg.dimension_name
-      #         level_name = arg.name
-      #       else
-      #         raise ArgumentError.new('Invalid argument')
-      #       end
-      #     when 2
-      #       dimension_name, level_name = several_variants
-      #     else
-      #       raise ArgumentError.new("wrong number of arguments (#{several_variants.length} for 1..2)")
-      #   end
-      #   find_or_error(dimension_name).find_level(level_name)
-      # end
     end
   end
 end

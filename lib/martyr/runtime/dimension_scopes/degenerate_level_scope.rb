@@ -3,6 +3,7 @@ module Martyr
     class DegenerateLevelScope < BaseLevelScope
 
       delegate :query_level_with_finder, :query_level_without_finder, :query_level_key, to: :level
+      delegate :nullify, to: :query_level_below
 
       def slice_with(values)
         query_level_below.send(:decorate_scope) do |scope|
@@ -49,7 +50,7 @@ module Martyr
         degenerate_values = Array.wrap(degenerate_values)
         return degenerate_values if name == level.name
         query_level_records = degenerate_values.flat_map{|value| query_level_below.cached_records_by(query_level_key)[value]}
-        query_level_below.send :recursive_value_lookup_down_from_records, query_level_records, level: level
+        query_level_below.recursive_value_lookup_down(query_level_records, level: level)
       end
 
       protected

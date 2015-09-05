@@ -29,6 +29,11 @@ module Martyr
       values[above_index]
     end
 
+    def level_below(level_name)
+      below_index = level_index(level_name) + 1
+      values[below_index]
+    end
+
     # @param level_name [String, Symbol]
     # @return [Array<Martyr::Level>] the first level of type `query` below the provided level
     def query_level_below(level_name)

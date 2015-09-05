@@ -12,7 +12,7 @@ module Martyr
 
       def initialize(sub_cube, *args)
         super(*args)
-        @elements = sub_cube.elements_by(*pivot_grain).each { |element| element.rollup(*metrics) }
+        @elements = sub_cube.elements(levels: pivot_grain, metrics: metrics)
         row_axis.load_values(cells)
         column_axis.load_values(cells)
       end

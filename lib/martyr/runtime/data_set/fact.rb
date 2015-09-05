@@ -16,16 +16,21 @@ module Martyr
       alias_method :hash_fetch, :fetch
 
       def fetch(key)
-        value = super(key)
+        value = hash_fetch(key)
         value.is_a?(FutureFactValue) ? value.value : value
       end
-
       alias_method :[], :fetch
 
+      # Similar to fetch, but returns the original fact_key_value if such existed for the level
+      def fact_key_for(level_id)
+        value = hash_fetch(level_id)
+        value.is_a?(FutureFactValue) ? (value.fact_key_value || value.value) : value
+      end
+
+      # Similar to fetch, but returns the active record object if such existed for the level
       def record_for(level_id)
-        future = hash_fetch(level_id)
-        return nil unless future.is_a?(FutureFactValue)
-        future.active_record
+        value = hash_fetch(level_id)
+        value.is_a?(FutureFactValue) ? (value.active_record || value.value) : value
       end
 
       private
@@ -33,15 +38,19 @@ module Martyr
       def value_by_levels_hash
         hash = {}
         sub_cube.supported_level_definitions.each do |level_definition|
-          if sub_cube.supports_level?(level_definition.id)
+          if sub_cube.has_association_with_level?(level_definition.id)
             level_association = sub_cube.association_from_id(level_definition.id)
             fact_key_value = raw.fetch(level_association.fact_alias)
             if level_association.degenerate?
+              # The value is stored in the fact. No query needed.
               value = fact_key_value
             else
+              # The primary key is stored in the fact and we need to retrieve the string value from the dimension.
               value = FutureFactValue.new(self, level_definition, fact_key_value)
             end
           else
+            # We don't have a direct connection to the level - we can access it through traversing the dimension
+            # hierarchy starting at a lower level.
             value = FutureFactValue.new(self, level_definition)
           end
           hash[level_definition.id] = value

@@ -2,14 +2,12 @@ module Martyr
   module Runtime
     class PlainDimensionSlice
       include Martyr::LevelComparator
-      include ActiveModel::Validations
 
+      # @attribute level [BaseLevelDefinition]
+      attr_reader :level, :slice_definition
 
-      # @attribute level [BaseLevelScope]
-      attr_reader :level
-
-      attr_reader :dimension_definition, :dimension_bus, :with, :without
-      delegate :name, to: :level, prefix: true
+      attr_reader :dimension_definition, :dimension_bus
+      delegate :id, :name, to: :level, prefix: true
 
       def initialize(dimension_definition, dimension_bus)
         @dimension_definition = dimension_definition
@@ -17,13 +15,11 @@ module Martyr
       end
 
       def inspect_part
-        operator_inspection = [with ? "with: '#{with}'" : nil, without ? "without: '#{without}'" : nil].compact.join(' ')
-        "#{dimension_name}: {level: '#{level_name}', #{operator_inspection}}"
+        to_hash.inspect
       end
 
-      validate do
-        errors.add(:base, "Slice on `#{dimension_name}`: cannot have both `with` and `without`") if with and without
-        errors.add(:base, "Slice on `#{dimension_name}`: must have either `with` and `without`") unless with or without
+      def to_hash
+        {level_id => slice_definition.to_hash}
       end
 
       def dimension_name
@@ -32,11 +28,10 @@ module Martyr
 
       # Sets the slice if this is the first time the dimension slice was referenced or if the level is equal to or lower
       # than the existing slice's level
-      def set_slice(level:, with: nil, without: nil)
+      def set_slice(level:, **options)
         @level = more_detailed_level(level, @level)
         return unless @level == level
-        @with = with
-        @without = without
+        @slice_definition = PlainDimensionSliceDefinition.new(options)
       end
 
       def add_to_grain(grain)
@@ -75,20 +70,24 @@ module Martyr
       def add_to_where_using_fact_strategy(operator)
         level_key = operator.level_key_for_where(level.id)
         operator.decorate_scope do |scope|
-          if with.present?
-            scope.where(level_key => with)
-          elsif without.present?
-            scope.where.not(level_key => without)
+          if slice_definition.null?
+            scope.where('0=1')
+          elsif slice_definition.with.present?
+            scope.where(level_key => slice_definition.with)
+          elsif slice_definition.without.present?
+            scope.where.not(level_key => slice_definition.without)
           end
         end
       end
 
       def add_to_where_using_join_strategy(operator, common_denominator_level)
         dimension_bus.with_level_scope(level.id) do |level_scope|
-          if with.present?
-            level_scope.slice_with(with)
-          elsif without.present?
-            level_scope.slice_without(without)
+          if slice_definition.null?
+            level_scope.nullify
+          elsif slice_definition.with.present?
+            level_scope.slice_with(slice_definition.with)
+          elsif slice_definition.without.present?
+            level_scope.slice_without(slice_definition.without)
           end unless level_scope.loaded?
         end
 

@@ -46,7 +46,8 @@ module Martyr
       ancestors[1..-1].find { |x| x != self and x.respond_to?(:martyr_schema_class?) }
     end
 
-    # @return [Hash]
+    # @return [Hash] { dimension_name => PlainDimensionDefinition } including dimensions that have at least one level
+    #   supported by the cube through #has_dimension_level
     def self.supported_dimension_definitions
       dimension_definitions.all.slice(*dimension_associations.keys)
     end
@@ -55,6 +56,9 @@ module Martyr
       dimension_associations.flat_map { |_name, dimension_association| dimension_association.level_objects }
     end
 
+    # @param dimension_names
+    # @return [Runtime::DimensionScopeCollection] a collection with dimensions that maintain SQL scoped queries and
+    #   their results. All dimensions that have at least one level supported by the cube are included.
     def self.build_dimension_scopes(dimension_names)
       dimension_scopes = Runtime::DimensionScopeCollection.new(dimension_definitions)
       supported_dimension_definitions.slice(*dimension_names).values.flat_map(&:level_objects).each do |level|

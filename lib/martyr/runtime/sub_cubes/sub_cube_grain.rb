@@ -78,6 +78,10 @@ module Martyr
       #
       #   supported_level_definitions
       #   # => [L1, L2, L3] of BaseLevelDefinition objects
+      #
+      #   [L1, L2, L3, L4].map{|x| x.has_association_with_level(x) }
+      #   # => [false, true, true, false]
+      #
 
       def supported_level_associations
         return [] if null?
@@ -94,11 +98,11 @@ module Martyr
       end
 
       def supported_level_associations_lookup
-        @_supported_level_associations_lookup ||= supported_level_associations.group_by(&:id)
+        @_supported_level_associations_lookup ||= supported_level_associations.index_by(&:id)
       end
 
-      def supports_level?(level_id)
-        supported_level_associations_lookup[level_id]
+      def has_association_with_level?(level_id)
+        !!supported_level_associations_lookup[level_id]
       end
     end
   end

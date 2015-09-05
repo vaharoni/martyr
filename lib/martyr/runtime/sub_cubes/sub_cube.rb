@@ -8,10 +8,9 @@ module Martyr
       attr_reader :query_context, :cube, :fact_scopes, :metrics, :grain, :sub_cube_slice
       delegate :combined_sql, :pretty_sql, :test, :select_keys, to: :fact_scopes
       delegate :cube_name, :dimension_associations, to: :cube
-      delegate :supported_level_associations, :supported_level_definitions, :supports_level?, to: :grain
+      delegate :supported_level_associations, :supported_level_definitions, :has_association_with_level?, to: :grain
       delegate :metric_ids, :built_in_metrics, :custom_metrics, to: :metrics
-      delegate :metric_slices, to: :sub_cube_slice
-      delegate :facts, :elements_by, to: :fact_indexer
+      delegate :facts, to: :fact_indexer
 
       alias_method :dimension_bus, :query_context
 
@@ -38,7 +37,7 @@ module Martyr
       def definition_from_id(id)
         with_standard_id(id) do |x, y|
           return (metrics[x] || dimension_definitions[x]) if !y
-          return metrics[y] if Schema::BaseMetric.metric_id?(id)
+          return metrics[y] if is_metric_id?(id)
           dimension_definitions[x].try(:levels).try(:[], y)
         end
       end
@@ -106,8 +105,14 @@ module Martyr
         @fact_indexer ||= FactIndexer.new(self, grain.null? ? [] : fact_scopes.run.map { |hash| Fact.new(self, hash) })
       end
 
-      def elements
-        elements_by(*grain.level_ids).each{|element| element.rollup(*metrics.values)}
+      # @option levels [Array<String, Martyr::Level>] array of level IDs or any type of level to group facts by.
+      #   Default is all levels in the query context.
+      # @option metrics [Array<String, BaseMetric>] array of metric IDs or metric objects to roll up in the elements.
+      def elements(levels: nil, metrics: nil)
+        levels = (Array.wrap(levels).presence || query_context.level_ids_in_grain)
+        levels.map!{|x| x.is_a?(String) ? dimension_bus.level_scope(x) : dimension_bus.level_scope(x.id)}
+        metrics = Array.wrap(metrics).map{|x| x.is_a?(String) ? definition_from_id(x) : x}.presence || self.metrics.values
+        fact_indexer.elements_by(*levels).each{|element| element.rollup(*metrics)}
       end
 
       def pivot

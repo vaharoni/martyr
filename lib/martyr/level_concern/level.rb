@@ -19,6 +19,10 @@ module Martyr
       @_level_above ||= collection.level_above(name)
     end
 
+    def level_below
+      @_level_below ||= collection.level_below(name)
+    end
+
     def level_index
       @_level_index ||= collection.level_index(name)
     end

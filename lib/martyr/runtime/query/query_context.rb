@@ -2,11 +2,12 @@ module Martyr
   module Runtime
     class QueryContext
 
-      attr_accessor :sub_cubes, :dimension_scopes
+      attr_accessor :sub_cubes, :dimension_scopes, :level_ids_in_grain
 
-      def initialize
+      # @param level_ids_in_grain [Array<String>]
+      def initialize(level_ids_in_grain)
+        @level_ids_in_grain = level_ids_in_grain
         @sub_cubes = []
-        @promises = {}
       end
 
       def inspect
@@ -29,18 +30,22 @@ module Martyr
         level_scope(level_id).loaded?
       end
 
+      # @param level_id [String] e.g. 'customers.last_name'
+      # @param fact_record [Fact]
       def fetch_unsupported_level_value(level_id, fact_record)
         sought_level_definition = fact_record.sub_cube.definition_from_id(level_id)
         common_denominator_association = fact_record.sub_cube.common_denominator_level_association(level_id)
         with_level_scope(common_denominator_association.id) do |common_denominator_level_scope|
-          common_denominator_level_scope.recursive_value_lookup fact_record[common_denominator_association.id], level: sought_level_definition
+          common_denominator_level_scope.recursive_value_lookup_up fact_record.fact_key_for(common_denominator_association.id), level: sought_level_definition
         end
       end
 
+      # @param level_id [String] e.g. 'customers.last_name'
+      # @param fact_key_value [Integer] the primary key stored in the fact
       def fetch_supported_query_level_record(level_id, fact_key_value)
         with_level_scope(level_id) do |level_scope|
           raise Internal::Error.new('level must be query') unless level_scope.query?
-          level_scope.recursive_value_lookup fact_key_value, level: level_scope
+          level_scope.recursive_value_lookup_up fact_key_value, level: level_scope
         end
       end
 

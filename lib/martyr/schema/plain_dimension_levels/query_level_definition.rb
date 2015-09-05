@@ -47,6 +47,11 @@ module Martyr
         Runtime::QueryLevelScope.new(collection, self)
       end
 
+      # @param record [ActiveRecord::Base]
+      def record_value(record)
+        record.send(label_field)
+      end
+
       private
 
       # @return [Proc] a lambda object representing running #all on the guessed-class

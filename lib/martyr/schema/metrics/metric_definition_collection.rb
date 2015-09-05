@@ -17,15 +17,15 @@ module Martyr
         has_key? second_element_from_id(metric_name)
       end
 
-      def has_sum_metric(name, statement = name, fact_alias: name)
+      def has_sum_metric(name, statement, fact_alias: name)
         register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias, rollup_function: :sum
       end
 
-      def has_min_metric(name, statement = name, fact_alias: name)
+      def has_min_metric(name, statement, fact_alias: name)
         register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias, rollup_function: :min
       end
 
-      def has_max_metric(name, statement = name, fact_alias: name)
+      def has_max_metric(name, statement, fact_alias: name)
         register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias, rollup_function: :max
       end
 

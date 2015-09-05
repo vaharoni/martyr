@@ -26,7 +26,7 @@ module Martyr
         recursive_lookup(name) || raise(Schema::Error.new("Could not find dimension `#{name}`"))
       end
 
-      # @return [Hash]
+      # @return [Hash] { dimension_name => PlainDimensionDefinition } including dimension definitions from all superclasses
       def all
         return to_hash unless parent_dimension_definitions
         to_hash.merge(parent_dimension_definitions.all)

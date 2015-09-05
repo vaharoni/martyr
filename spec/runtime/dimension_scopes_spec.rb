@@ -147,17 +147,17 @@ describe 'Dimension Scopes Loading and Tree Traversal' do
 
   describe 'fetching values down' do
     it 'returns the right record when using #recursive_value_lookup_down on same query level' do
-      records = invoice_level.recursive_value_lookup_down(1, level: invoice_level)
+      records = invoice_level.recursive_value_lookup_down('invoice-1', level: invoice_level)
       expect(records).to eq([Invoice.find(1)])
     end
 
     it 'returns right records when using #recursive_value_lookup_down on same query level with multiple records' do
-      records = invoice_level.recursive_value_lookup_down([1, 2], level: invoice_level)
+      records = invoice_level.recursive_value_lookup_down(['invoice-1', 'invoice-2'], level: invoice_level)
       expect(records).to eq([Invoice.find(1), Invoice.find(2)])
     end
 
     it 'returns the right record when using #recursive_value_lookup_down on query level below from query level' do
-      records = invoice_level.recursive_value_lookup_down(1, level: invoice_line_level)
+      records = invoice_level.recursive_value_lookup_down('invoice-1', level: invoice_line_level)
       invoice_lines = InvoiceLine.where(invoice_id: 1)
       expect(records).to eq(invoice_lines)
     end

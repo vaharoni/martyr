@@ -2,7 +2,7 @@ module Martyr
   module Runtime
     class QueryLevelScope < BaseLevelScope
 
-      delegate :value_for, :primary_key, :label_key, :label_expression, to: :level
+      delegate :record_value, :primary_key, :label_key, :label_expression, to: :level
 
       def initialize(*args)
         super
@@ -11,6 +11,12 @@ module Martyr
 
       def parent_association_name
         level.parent_association_name_with_default
+      end
+
+      def nullify
+        decorate_scope do |scope|
+          scope.where('0=1')
+        end
       end
 
       def slice_with(values)
@@ -72,7 +78,7 @@ module Martyr
       # the desired `level`.
       #
       # @param primary_key_value [String, Integer]
-      # @param level [BaseLevelScope] this level must be equal or above the current level
+      # @param level [Martyr::Level] this level must be equal or above the current level
       # @return [ActiveRecord::Base, String] the record if query level, or the value if degenerate
       def recursive_value_lookup_up(primary_key_value, level:)
         record = fetch(primary_key_value)
@@ -83,19 +89,22 @@ module Martyr
       end
 
       # TODO: this is making the assumption that only degenerate levels can be above a query level
-      def recursive_value_lookup_down(primary_key_values, level:)
-        records = Array.wrap(primary_key_values).map{|x| fetch(x)}
-        recursive_value_lookup_down_from_records(records, level: level)
-      end
+      # @param records [Array<String>, String, Array<ActiveRecord::Base>, ActiveRecord::Base] two options:
+      #   - Single or Array of values as evaluated by the level value strategy, e.g. 'invoice-1'
+      #   - Single or Array of active record objects - this helps DRYing up code in this package that already obtained records
+      # @param level [Martyr::Level] this level must be equal or below the current level
+      # @return [Array<ActiveRecord::Base>, Array<String>]
+      def recursive_value_lookup_down(records, level:)
+        records = Array.wrap(records)
+        records = records.flat_map{|value| cached_records_by_value[value]} if records.first.is_a?(String)
 
-      protected
-
-      def recursive_value_lookup_down_from_records(records, level:)
         return records if name == level.name
         return records.map{|r| r.send(level.query_level_key)}.uniq if level.degenerate?
         child_records = level_below.fetch_by_parent(records.map{|x| record_primary_key(x)})
-        level_below.recursive_value_lookup_down_from_records(child_records, level: level)
+        level_below.recursive_value_lookup_down(child_records, level: level)
       end
+
+      protected
 
       # @param parent_primary_key_values [Array<Integer>]
       # @return [Array<ActiveRecord::Base>] all records whose parent keys were given in parent_primary_key_values
@@ -173,6 +182,11 @@ module Martyr
       # @return [Hash] { parent_key1 => Array<ActiveRecord::Base> }
       def cached_records_by_parent
         cached_records_by(parent_association.foreign_key)
+      end
+
+      # @return [Hash] { value1 => Array<ActiveRecord::Base> }
+      def cached_records_by_value
+        cached_records_by(level.label_field)
       end
 
       public

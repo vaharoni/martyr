@@ -54,7 +54,7 @@ module Martyr
       end
 
       def build
-        context = QueryContext.new
+        context = QueryContext.new(@granulate_args)
         context.dimension_scopes = cube.build_dimension_scopes(relevant_dimensions)
         cube.contained_cube_classes.each do |cube_class|
           sub_cube = Runtime::SubCube.new(context, cube_class)

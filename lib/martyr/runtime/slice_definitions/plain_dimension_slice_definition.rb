@@ -8,7 +8,8 @@ module Martyr
     end
 
     def merge(other)
-      self.class.new(with: with + other.with, without: without + other.without)
+      merged_with = with.present? && other.with.present? ? with & other.with : with + other.with
+      self.class.new(with: merged_with, without: without + other.without)
     end
 
     private

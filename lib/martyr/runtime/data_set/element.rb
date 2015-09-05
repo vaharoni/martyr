@@ -2,15 +2,15 @@ module Martyr
   module Runtime
     class Element < HashWithIndifferentAccess
 
-      attr_reader :facts, :grain, :sub_cube_slice
+      attr_reader :facts, :grain
 
       # @param grain [Hash] {level_name => level_value}
       # @param facts [Array<Fact>]
-      # @param sub_cube_slice [SubCubeSlice]
-      def initialize(grain, facts, sub_cube_slice)
+      # @param coordinates_resolver [CoordinatesResolver]
+      def initialize(grain, facts, coordinates_resolver)
         @facts = facts
         @grain = grain
-        @sub_cube_slice = sub_cube_slice
+        @coordinates_resolver = coordinates_resolver
         merge! grain
       end
 
@@ -22,18 +22,7 @@ module Martyr
       end
 
       def coordinates
-        sub_cube_slice
-        sub_cube_slice.merge_with_hash(grain_coordinates).to_hash
-      end
-
-      private
-
-      def grain_coordinates
-        grain.map do |level_id, value|
-          {level_id => {'with' => value}}
-        end.inject({}) do |h, coords|
-          h.merge! coords
-        end
+        @coordinates_resolver.resolve(self)
       end
 
     end

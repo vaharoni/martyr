@@ -10,7 +10,7 @@ module Martyr
         @indices = {}
       end
 
-      # @param levels_arr [Array<BaseLevelDefinition>] levels used to group facts by
+      # @param levels_arr [Array<BaseLevelScope>] levels used to group facts by
       # @return [Array<Element>] creates an array of elements. Each elements holds multiple facts based on
       #   level_keys_arr.
       #
@@ -35,11 +35,13 @@ module Martyr
       def elements_by(levels_arr)
         level_keys_arr = levels_arr.map(&:id)
         return @indices[level_keys_arr].values if @indices[level_keys_arr]
+
+        coordinates_resolver = CoordinatesResolver.new(sub_cube.sub_cube_slice, levels_arr)
         arr = facts.group_by do |fact|
           level_keys_arr.map{|key| fact.fetch(key)}
         end.map do |index_key, facts_arr|
           grain_arr = level_keys_arr.each_with_index.map {|level_id, i| [level_id, index_key[i]]}
-          [index_key, Element.new(Hash[grain_arr], facts_arr, sub_cube.sub_cube_slice)]
+          [index_key, Element.new(Hash[grain_arr], facts_arr, coordinates_resolver )]
         end
         @indices[level_keys_arr] = Hash[arr]
         @indices[level_keys_arr].values

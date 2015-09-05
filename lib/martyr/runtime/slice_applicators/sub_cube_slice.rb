@@ -57,7 +57,8 @@ module Martyr
         end
       end
 
-      def dimension_for_level(level_id)
+      # @return [PlainDimensionSlice]
+      def dimension_slice_for_level(level_id)
         dimension = slices[first_element_from_id(level_id)]
         raise Internal::Error.new("Cannot find level #{level_id} in sub cube slice grain") unless dimension
         dimension

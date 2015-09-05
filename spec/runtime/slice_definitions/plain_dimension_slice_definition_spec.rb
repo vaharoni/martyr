@@ -40,19 +40,20 @@ describe Martyr::PlainDimensionSliceDefinition do
   end
 
   describe 'merge' do
-    it 'handles correctly merging of with' do
+    it 'handles correctly merging of with when there is no overlap' do
       x = subject.new(with: 1)
       y = subject.new(with: 2)
       z = x.merge(y)
-      expect(z.with).to eq([1,2])
+      expect(z.with).to eq([])
       expect(z.without).to eq([])
+      expect(z.null?).to eq(true)
     end
 
     it 'handles correctly merging of with when overlaps exist' do
       x = subject.new(with: [1, 2])
       y = subject.new(with: [2, 3])
       z = x.merge(y)
-      expect(z.with).to eq([1,2,3])
+      expect(z.with).to eq([2])
       expect(z.without).to eq([])
     end
 
@@ -68,7 +69,7 @@ describe Martyr::PlainDimensionSliceDefinition do
       x = subject.new(without: [1, 2])
       y = subject.new(without: [2, 3])
       z = x.merge(y)
-      expect(z.without).to eq([1,2, 3])
+      expect(z.without).to eq([1, 2, 3])
       expect(z.with).to eq([])
     end
 

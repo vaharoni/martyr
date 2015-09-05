@@ -10,8 +10,8 @@ module Martyr
     #  {'customers.city' => {with: 'Boston', 'Paris'}}     'customers.city'          The current element city
     #  {'customers.city' => {with: 'Boston', 'Paris'}}     'customers.last_name'     The current element last name
     #  {'customers.city' => {with: 'Boston', 'Paris'}}     'customers.country'       All the cities in the current element country,
-    #                                                                                taken from the dimension itself - not the ones stored
-    #                                                                                in the element facts.
+    #                                                                                taken from the dimension itself, that overlap
+    #                                                                                with the cities in the sub cube slice.
     #
     class CoordinatesResolver
 
@@ -25,6 +25,8 @@ module Martyr
       #
       def initialize(sub_cube_slice, levels_in_memory_grain)
         @strategies = []
+
+        # First we handle all dimensions that are both in the memory grain and in the sub cube slice
         levels_in_memory_grain.each do |level_scope|
           case sub_cube_slice.compare_level_with_grain(level_scope)
             when nil, 0, -1
@@ -34,11 +36,20 @@ module Martyr
               #   The level in the sub cube slice is higher than `level_scope`
               @strategies << FromElementStrategy.new(level_scope.id)
             when 1
-              # The level in the sub cube slice is lower than `level_scope`
-              level_in_slice = sub_cube_slice.dimension_for_level(level_scope.id).level
-              @strategies << FromSubCubeWhileRespectingParentElementStrategy.new(level_scope, level_in_slice)
+              # The level in the sub cube slice is lower than level_scope`
+              sub_cube_dimension_slice = sub_cube_slice.dimension_slice_for_level(level_scope.id)
+              @strategies << MergeWithSubCubeDimensionSlice.new(level_scope, sub_cube_dimension_slice)
           end
         end
+
+        # Then we handle all the other slices (dimensions + metrics) in the sub cube
+        sub_cube_slice.slices.except(*levels_in_memory_grain.map(&:dimension_name)).each do |slice_on, slice_object|
+          @strategies << FromSubCubeStrategy.new(slice_object.to_hash)
+        end
+      end
+
+      def resolve(element)
+        @strategies.inject({}) {|coords_hash, strategy| coords_hash.merge!(strategy.execute(element))}
       end
 
       class FromElementStrategy
@@ -52,26 +63,26 @@ module Martyr
       end
 
       class FromSubCubeStrategy
+        def initialize(slice_hash)
+          @slice_hash = slice_hash
+        end
 
+        def execute(_element)
+          @slice_hash
+        end
       end
 
-      class FromSubCubeWhileRespectingParentElementStrategy
-        def initialize(memory_level, sub_cube_level)
+      class MergeWithSubCubeDimensionSlice
+        def initialize(memory_level, sub_cube_dimension_slice)
           @memory_level = memory_level
-          @sub_cube_level = sub_cube_level
+          @sub_cube_dimension_slice = sub_cube_dimension_slice
         end
 
-        # TODO: add merging capability for slice.
-        # Because what happens when you have slice1: without: [5] and slice2: with: [7]. You have to merge them!
         def execute(element)
-          sub_cube_level_values = @memory_level.recursive_value_lookup_down(element[@memory_level.id], level: @sub_cube_level)
-          { @sub_cube_level => { 'with' => arr } }
+          dimension_values_for_sub_cube_level = @memory_level.recursive_value_lookup_down(element[@memory_level.id], level: @sub_cube_dimension_slice)
+          merged_slice = PlainDimensionSliceDefinition.new(with: dimension_values_for_sub_cube_level).merge(@sub_cube_dimension_slice.slice_definition)
+          merged_slice.to_hash
         end
-      end
-
-      # TODO: implement
-      class MergeMetricSliceStrategy
-
       end
     end
   end

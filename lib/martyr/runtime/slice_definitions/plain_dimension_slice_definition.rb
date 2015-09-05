@@ -4,7 +4,10 @@ module Martyr
     attr_accessor :with, :without
 
     def to_hash
-      {with: with, without: without}.compact
+      hash = {}
+      hash.merge! with: with if with.present?
+      hash.merge! without: without if without.present?
+      hash
     end
 
     def merge(other)

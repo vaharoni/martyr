@@ -30,16 +30,6 @@ module MartyrSpec
     end
   end
 
-  class OneLevel < Common
-    set_cube_name :cube
-
-    has_dimension_level :customers, :city
-
-    main_query do
-      Customer.all
-    end
-  end
-
   class DegeneratesAndBottomLevels < Common
     set_cube_name :cube
 
@@ -54,6 +44,14 @@ module MartyrSpec
 
     has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
     has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+
+    has_custom_metric :commission, ->(fact) { (fact['metrics.amount'] * 0.3) }
+
+    # If one rollup is dependent on the other, make sure they are ordered correctly
+    has_custom_rollup :avg_transaction, ->(fact_set) { fact_set['metrics.amount'] / fact_set['metrics.units_sold'] }
+    has_custom_rollup :usa_amount, ->(fact_set) { fact_set.slice('customers.country', with: 'USA')['metrics.amount'] }
+    # has_custom_rollup :cross_country_avg_transaction, ->(fact_set) { fact_set.reset_slice('customers')['metrics.avg_transaction'] }
+    # has_custom_rollup :usa_avg_transaction, ->(fact_set) { fact_set.slice('customers.country', with: 'USA')['metrics.avg_transaction'] }
 
     main_query do
       InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)

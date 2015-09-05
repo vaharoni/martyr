@@ -27,10 +27,6 @@ module Martyr
         raise NotImplementedError
       end
 
-      def built_in?
-        raise NotImplementedError
-      end
-
       # @param fact_scopes [Runtime::FactScopeCollection]
       def add_to_select(fact_scopes)
         raise NotImplementedError
@@ -40,10 +36,10 @@ module Martyr
         raise NotImplementedError
       end
 
-      # @param facts [Array<Fact>]
-      def rollup(facts)
+      # @param element [Runtime::Element]
+      def rollup(element)
         value = 0
-        facts.each do |fact|
+        element.facts.each do |fact|
           case rollup_function.to_s
             when 'count'
               value += 1

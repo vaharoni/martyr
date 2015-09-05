@@ -46,6 +46,10 @@ module Martyr
         @indices[level_keys_arr] = Hash[arr]
         @indices[level_keys_arr].values
       end
+
+      def get_element(slice_hash)
+
+      end
     end
   end
 end

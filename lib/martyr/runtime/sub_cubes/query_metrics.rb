@@ -34,11 +34,15 @@ module Martyr
       end
 
       def built_in_metrics
-        values.select(&:built_in?)
+        values.select{|x| x.is_a?(Schema::BuiltInMetric)}
       end
 
       def custom_metrics
-        values.reject(&:built_in?)
+        values.select{|x| x.is_a?(Schema::CustomMetric)}
+      end
+
+      def custom_rollups
+        values.select{|x| x.is_a?(Schema::CustomRollup)}
       end
 
       def metric_ids

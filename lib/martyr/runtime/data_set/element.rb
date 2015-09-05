@@ -17,7 +17,7 @@ module Martyr
       # @param metrics [Array<BaseMetric>]
       def rollup(*metrics)
         metrics.each do |metric|
-          store metric.id, metric.rollup(facts)
+          store metric.id, metric.rollup(self)
         end
       end
 

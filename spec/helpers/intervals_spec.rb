@@ -296,4 +296,53 @@ describe Martyr::IntervalSet do
     end
   end
 
+  describe 'extract_and_fill_holes' do
+    it 'does nothing when there are no holes' do
+      set = Martyr::IntervalSet.new
+      set.add(to: 100).add(from: 101)
+
+      expect(set.extract_and_fill_holes).to eq([])
+      expect(set.set.length).to eq(2)
+      expect(set.set.first.from.to_param).to eq(-Float::INFINITY)
+      expect(set.set.first.to.to_param).to eq(100)
+      expect(set.set.second.from.to_param).to eq(101)
+      expect(set.set.second.to.to_param).to eq(Float::INFINITY)
+    end
+
+    it 'fills holes when they exist' do
+      set = Martyr::IntervalSet.new.add(from: 0, to: 100).add(from: 200, to: 300)
+      hole1 = Martyr::IntervalSet.new.add(to: 50).add(from: 50)
+      hole2 = Martyr::IntervalSet.new.add(to: 250).add(from: 250)
+      set.intersect(hole1).intersect(hole2)
+
+      expect(set.extract_and_fill_holes).to eq([50, 250])
+      expect(set.set.length).to eq(2)
+      expect(set.set.first.from.to_param).to eq(0)
+      expect(set.set.first.to.to_param).to eq(100)
+      expect(set.set.second.from.to_param).to eq(200)
+      expect(set.set.second.to.to_param).to eq(300)
+    end
+  end
+
+  describe 'extract_and_remove_points' do
+    it 'does nothing when there are no points' do
+      set = Martyr::IntervalSet.new
+      set.add(to: 100).add(from: 101)
+
+      expect(set.extract_and_remove_points).to eq([])
+      expect(set.set.length).to eq(2)
+      expect(set.set.first.from.to_param).to eq(-Float::INFINITY)
+      expect(set.set.first.to.to_param).to eq(100)
+      expect(set.set.second.from.to_param).to eq(101)
+      expect(set.set.second.to.to_param).to eq(Float::INFINITY)
+    end
+
+    it 'extract points when they exist' do
+      set = Martyr::IntervalSet.new.add(from: [50], to: [50]).add(from: [100], to: [100])
+
+      expect(set.extract_and_remove_points).to eq([50, 100])
+      expect(set.set.length).to eq(0)
+    end
+  end
+
 end

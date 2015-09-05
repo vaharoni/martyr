@@ -11,6 +11,11 @@ module Martyr
       !!@null
     end
 
+    def self.null
+      obj = new
+      obj.send(:set_null) and return obj
+    end
+
     protected
 
     def set_null

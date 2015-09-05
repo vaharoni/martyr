@@ -71,7 +71,7 @@ describe Martyr::MetricSliceDefinition do
       x = subject.new(lte: 2, gte: 2)
       expect(x.lte).to eq(nil)
       expect(x.gte).to eq(nil)
-      expect(x.eq).to eq(2)
+      expect(x.eq).to eq([2])
     end
 
     it 'handles eq together with an lte range outside' do
@@ -88,14 +88,14 @@ describe Martyr::MetricSliceDefinition do
       x = subject.new(eq: 2, gte: 1, lte: 3)
       expect(x.gte).to eq(nil)
       expect(x.lte).to eq(nil)
-      expect(x.eq).to eq(2)
+      expect(x.eq).to eq([2])
     end
 
-    it 'handles not with ranges' do
-      x = subject.new(gte: 1, lte: 3, not: 2)
+    it 'handles not within ranges' do
+      x = subject.new(gte: 1, lte: 5, not: [2, 3])
       expect(x.gte).to eq(1)
-      expect(x.lte).to eq(3)
-      expect(x.not).to eq(2)
+      expect(x.lte).to eq(5)
+      expect(x.not).to eq([2, 3])
     end
   end
 
@@ -114,7 +114,7 @@ describe Martyr::MetricSliceDefinition do
       x = subject.new(eq: 5)
       y = subject.new(eq: 5)
       z = x.merge(y)
-      expect(z.eq).to eq(5)
+      expect(z.eq).to eq([5])
     end
 
     it 'merges correctly non-equal eq' do
@@ -122,6 +122,23 @@ describe Martyr::MetricSliceDefinition do
       y = subject.new(eq: 6)
       z = x.merge(y)
       expect(z.null?).to eq(true)
+    end
+  end
+
+  describe 'combined_statements' do
+    it 'handles complex not case' do
+      x = subject.new(not: [3, 5], gte: 1, lt: 10)
+      expected_results = [
+        [{operator: '>=', value: 1}], [{operator: '<', value: 10}],
+        [{operator: '!=', value: 3}], [{operator: '!=', value: 5}]]
+
+      expect(x.combined_statements).to eq(expected_results)
+    end
+
+    it 'handles complex eq case' do
+      x = subject.new(eq: [3, 5], gte: 1, lt: 10)
+      expected_results = [[{operator: '=', value: 3}, {operator: '=', value: 5}]]
+      expect(x.combined_statements).to eq(expected_results)
     end
   end
 end

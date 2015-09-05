@@ -4,8 +4,17 @@ module Martyr
   class IntervalSet
     attr_reader :set
 
-    def initialize
+    def initialize(**options)
       @set = []
+      add(**options) if options.present?
+    end
+
+    def null?
+      set.empty?
+    end
+
+    def continuous?
+      set.length == 1
     end
 
     def add(from: -Float::INFINITY, to: Float::INFINITY)
@@ -34,6 +43,45 @@ module Martyr
       @set = set.sort_by{|interval| interval.from.x}
       self
     end
+
+    # @return [Array<Numeric>] array of holes - these are open edges that touch each other
+    # @note self will be amended to have the holes filled
+    def extract_and_fill_holes
+      holes = []
+      last_edge = nil
+      set.each do |interval|
+        holes << last_edge if interval.from.open? and interval.from.x == last_edge
+        last_edge = interval.to.x if interval.to.open?
+      end
+
+      # Fill in the holes
+      holes.each do |hole|
+        add from: [hole], to: [hole]
+      end
+
+      holes
+    end
+
+    # @return [Array<>]
+    def extract_and_remove_points
+      points = @set.select(&:point?).map{|interval| interval.from.x}
+      @set.reject!(&:point?)
+      points
+    end
+
+    # @return [nil, PointInterval]
+    def upper_bound
+      return nil if null?
+      upper_point = set.last.to
+      upper_point.infinity? ? nil : upper_point
+    end
+
+    # @return [PointInterval]
+    def lower_bound
+      return nil if null?
+      upper_point = set.first.from
+      upper_point.infinity? ? nil : upper_point
+    end
   end
 
   # The convention for a basic interval is as follows:
@@ -51,6 +99,10 @@ module Martyr
       @from = PointInterval.new(Array.wrap(from).first, from.is_a?(Array), :right)
       @to = PointInterval.new(Array.wrap(to).first, to.is_a?(Array), :left)
       raise Martyr::Error.new('from cannot be bigger than to') if @from.outside?(@to) or @from.equal_but_empty?(@to)
+    end
+
+    def point?
+      from.closed? and to.closed? and from.x == to.x
     end
 
     def overlap?(other)
@@ -89,6 +141,10 @@ module Martyr
 
     def to_param
       closed? ? Array.wrap(x) : x
+    end
+
+    def infinity?
+      x == Float::INFINITY or x == -Float::INFINITY
     end
 
     def open?

@@ -40,17 +40,17 @@ module Martyr
       #               Query 3
       #
       # @return [String] the value of the "Degenerate 1" parent
-      def recursive_value_lookup_up(degenerate_value, level:)
+      def recursive_lookup_up(degenerate_value, level:)
         return degenerate_value if name == level.name
         query_level_primary_key = query_level_below.record_primary_key(loaded_cache[degenerate_value])
-        query_level_below.recursive_value_lookup_up(query_level_primary_key, level: level)
+        query_level_below.recursive_lookup_up(query_level_primary_key, level: level)
       end
 
-      def recursive_value_lookup_down(degenerate_values, level:)
+      def recursive_lookup_down(degenerate_values, level:)
         degenerate_values = Array.wrap(degenerate_values)
         return degenerate_values if name == level.name
         query_level_records = degenerate_values.flat_map{|value| query_level_below.cached_records_by(query_level_key)[value]}
-        query_level_below.recursive_value_lookup_down(query_level_records, level: level)
+        query_level_below.recursive_lookup_down(query_level_records, level: level)
       end
 
       protected

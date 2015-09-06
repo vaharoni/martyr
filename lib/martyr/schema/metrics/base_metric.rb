@@ -19,11 +19,17 @@ module Martyr
         "metrics.#{name}"
       end
 
+      alias_method :slice_id, :id
+
       def human_name
         name.to_s.titleize
       end
 
-      def build_slice
+      def build_data_slice(*)
+        raise NotImplementedError
+      end
+
+      def build_memory_slice(*)
         raise NotImplementedError
       end
 

@@ -77,15 +77,15 @@ module Martyr
       # current level object that is identified by `primary_key_value`. It traversed the hierarchy UP until reaching
       # the desired `level`.
       #
-      # @param primary_key_value [String, Integer]
+      # @param record [String, Integer]
       # @param level [Martyr::Level] this level must be equal or above the current level
       # @return [ActiveRecord::Base, String] the record if query level, or the value if degenerate
-      def recursive_value_lookup_up(primary_key_value, level:)
+      def recursive_lookup_up(primary_key_value, level:)
         record = fetch(primary_key_value)
         return record if name == level.name
         return record.send(level.query_level_key) if level_above.degenerate?
 
-        level_above.recursive_value_lookup_up(record_parent_primary_key(record), level: level)
+        level_above.recursive_lookup_up(record_parent_primary_key(record), level: level)
       end
 
       # TODO: this is making the assumption that only degenerate levels can be above a query level
@@ -94,14 +94,14 @@ module Martyr
       #   - Single or Array of active record objects - this helps DRYing up code in this package that already obtained records
       # @param level [Martyr::Level] this level must be equal or below the current level
       # @return [Array<ActiveRecord::Base>, Array<String>]
-      def recursive_value_lookup_down(records, level:)
+      def recursive_lookup_down(records, level:)
         records = Array.wrap(records)
         records = records.flat_map{|value| cached_records_by_value[value]} if records.first.is_a?(String)
 
         return records if name == level.name
         return records.map{|r| r.send(level.query_level_key)}.uniq if level.degenerate?
         child_records = level_below.fetch_by_parent(records.map{|x| record_primary_key(x)})
-        level_below.recursive_value_lookup_down(child_records, level: level)
+        level_below.recursive_lookup_down(child_records, level: level)
       end
 
       protected

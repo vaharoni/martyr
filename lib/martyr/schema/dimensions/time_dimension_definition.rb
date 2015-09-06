@@ -11,8 +11,8 @@ module Martyr
         # end
       end
 
-      def build_slice(**slice_definition)
-        Runtime::TimeDimensionSlice.new dimension_definition: self, **slice_definition
+      def build_data_slice(*args)
+        Runtime::TimeDimensionDataSlice.new self, *args
       end
 
       def find_level(name)

@@ -49,7 +49,7 @@ module MartyrSpec
 
     # If one rollup is dependent on the other, make sure they are ordered correctly
     has_custom_rollup :avg_transaction, ->(fact_set) { fact_set['metrics.amount'] / fact_set['metrics.units_sold'] }
-    has_custom_rollup :usa_amount, ->(fact_set) { fact_set.slice('customers.country', with: 'USA')['metrics.amount'] }
+    # has_custom_rollup :usa_amount, ->(fact_set) { fact_set.slice('customers.country', with: 'USA')['metrics.amount'] }
     # has_custom_rollup :cross_country_avg_transaction, ->(fact_set) { fact_set.reset_slice('customers')['metrics.avg_transaction'] }
     # has_custom_rollup :usa_avg_transaction, ->(fact_set) { fact_set.slice('customers.country', with: 'USA')['metrics.avg_transaction'] }
 
@@ -69,7 +69,7 @@ module MartyrSpec
     has_dimension_level :customers, :city
     has_dimension_level :customers, :state
     has_dimension_level :customers, :country
-                                   
+
     has_dimension_level :invoices, :invoice_line
     has_dimension_level :invoices, :invoice
     has_dimension_level :invoices, :city
@@ -109,6 +109,80 @@ module MartyrSpec
     end
   end
 
+  class DegeneratesAndHoleAndLowLevel < Common
+    set_cube_name :cube
+
+    # Degenerates
+    has_dimension_level :genres, :name
+    has_dimension_level :media_types, :name
+
+    # Hole within customers dimension - skips city. Below hole there is a query dimension
+    has_dimension_level :customers, :country
+    has_dimension_level :customers, :state
+    has_dimension_level :customers, :last_name
+
+    # Hole within invoices dimension - skips state. Below hole there is a degenerate dimension.
+    has_dimension_level :invoices, :country
+    has_dimension_level :invoices, :city
+    has_dimension_level :invoices, :invoice
+    has_dimension_level :invoices, :invoice_line
+
+    has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
+    has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+
+    main_query do
+      InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
+    end
+  end
+
+  class DegeneratesAndNoQueryLevel < Common
+    set_cube_name :cube
+
+    # Degenerates
+    has_dimension_level :genres, :name
+    has_dimension_level :media_types, :name
+
+    # Skip high level country
+    has_dimension_level :customers, :state
+    has_dimension_level :customers, :city
+
+    # With hole - skip state
+    has_dimension_level :invoices, :country
+    has_dimension_level :invoices, :city
+
+    has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
+    has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+
+    main_query do
+      InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
+    end
+  end
+
+  class NoHighLevels < Common
+    set_cube_name :cube
+
+    # Degenerates
+    has_dimension_level :genres, :name
+    has_dimension_level :media_types, :name
+
+    # Skip high level country
+    has_dimension_level :customers, :state
+    has_dimension_level :customers, :city
+    has_dimension_level :customers, :last_name
+
+    # With hole - skip state
+    has_dimension_level :invoices, :city
+    has_dimension_level :invoices, :invoice
+    has_dimension_level :invoices, :invoice_line
+
+    has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
+    has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+
+    main_query do
+      InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
+    end
+  end
+
   class DegeneratesAndCustomersAndSubFacts < Common
     set_cube_name :cube
 
@@ -132,7 +206,7 @@ module MartyrSpec
     # Sub facts
     has_sum_metric :invoice_count, 'SUM(invoice_counts.invoice_count)'
     has_dimension_level :first_invoice, :yes_no,
-                        fact_key: 'CASE customer_first_invoices.first_invoice_id WHEN invoices.id THEN 1 ELSE 0 END'
+      fact_key: 'CASE customer_first_invoices.first_invoice_id WHEN invoices.id THEN 1 ELSE 0 END'
 
     main_query do
       InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
@@ -143,9 +217,9 @@ module MartyrSpec
       has_dimension_level :customers, :last_name, fact_key: 'invoices.customer_id'
 
       Invoice.
-          select('invoices.customer_id',
-                 'COUNT(invoices.id) AS invoice_count').
-          group('invoices.customer_id')
+        select('invoices.customer_id',
+          'COUNT(invoices.id) AS invoice_count').
+        group('invoices.customer_id')
     end
 
     sub_query :customer_first_invoices do
@@ -153,9 +227,9 @@ module MartyrSpec
       has_dimension_level :customers, :last_name, fact_key: 'invoices.customer_id'
 
       Invoice.
-          select('invoices.customer_id',
-                 'MIN(invoices.id) AS first_invoice_id').
-          group('invoices.customer_id')
+        select('invoices.customer_id',
+          'MIN(invoices.id) AS first_invoice_id').
+        group('invoices.customer_id')
     end
   end
 end

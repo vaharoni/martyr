@@ -1,17 +1,16 @@
 module Martyr
   module Runtime
-    class PlainDimensionSlice
+    class PlainDimensionDataSlice
       include Martyr::LevelComparator
 
       # @attribute level [BaseLevelDefinition]
       attr_reader :level, :slice_definition
 
-      attr_reader :dimension_definition, :dimension_bus
+      attr_reader :dimension_definition
       delegate :id, :name, to: :level, prefix: true
 
-      def initialize(dimension_definition, dimension_bus)
+      def initialize(dimension_definition)
         @dimension_definition = dimension_definition
-        @dimension_bus = dimension_bus
       end
 
       def inspect_part
@@ -28,10 +27,11 @@ module Martyr
 
       # Sets the slice if this is the first time the dimension slice was referenced or if the level is equal to or lower
       # than the existing slice's level
-      def set_slice(level:, **options)
+      # @param level [BaseLevelDefinition]
+      def set_slice(level, **options)
         @level = more_detailed_level(level, @level)
         return unless @level == level
-        @slice_definition = PlainDimensionSliceDefinition.new(options)
+        @slice_definition = PlainDimensionLevelSliceDefinition.new(options)
       end
 
       def add_to_grain(grain)
@@ -54,14 +54,15 @@ module Martyr
       #     - if degenerate - look at the query and asks for get_slice
 
       # @param fact_scopes [Runtime::FactScopeCollection]
-      def add_to_where(fact_scopes)
+      # @param dimension_bus [Runtime::QueryContext]
+      def add_to_where(fact_scopes, dimension_bus)
         scope_operator = FactScopeOperatorForDimension.new(dimension_name, level_name) do |operator|
           common_denominator_level = operator.common_denominator_level(level)
 
           if common_denominator_level.name == level_name and level.degenerate?
             add_to_where_using_fact_strategy(operator)
           else
-            add_to_where_using_join_strategy(operator, common_denominator_level)
+            add_to_where_using_join_strategy(operator, common_denominator_level, dimension_bus)
           end
         end
         fact_scopes.add_scope_operator(scope_operator)
@@ -80,7 +81,7 @@ module Martyr
         end
       end
 
-      def add_to_where_using_join_strategy(operator, common_denominator_level)
+      def add_to_where_using_join_strategy(operator, common_denominator_level, dimension_bus)
         dimension_bus.with_level_scope(level.id) do |level_scope|
           if slice_definition.null?
             level_scope.nullify

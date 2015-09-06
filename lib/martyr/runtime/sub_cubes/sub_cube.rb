@@ -33,6 +33,7 @@ module Martyr
         cube.supported_dimension_definitions
       end
 
+      # TODO: Move to QueryContext
       # @return [BaseMetric, DimensionReference, BaseLevelDefinition]
       def definition_from_id(id)
         with_standard_id(id) do |x, y|
@@ -50,13 +51,13 @@ module Martyr
         end
       end
 
-      def common_denominator_level_association(level_id)
+      def common_denominator_level_association(level_id, prefer_query: false)
         @_common_denominator_level_association ||= {}
         return @_common_denominator_level_association[level_id] if @_common_denominator_level_association[level_id]
 
         level = definition_from_id(level_id)
         dimension_association = dimension_associations.find_dimension_association(level.dimension_name)
-        level = find_common_denominator_level(level, dimension_association.level_objects)
+        level = find_common_denominator_level(level, dimension_association.level_objects, prefer_query: prefer_query)
         return nil unless level
 
         @_common_denominator_level_association[level_id] = dimension_association.levels[level.name]
@@ -95,7 +96,7 @@ module Martyr
       def slice_all_scopes
         grain.add_to_select(fact_scopes)
         metrics.add_to_select(fact_scopes)
-        sub_cube_slice.add_to_where(fact_scopes)
+        sub_cube_slice.add_to_where(fact_scopes, dimension_bus)
         grain.add_to_group_by(fact_scopes)
       end
 
@@ -109,8 +110,8 @@ module Martyr
       #   Default is all levels in the query context.
       # @option metrics [Array<String, BaseMetric>] array of metric IDs or metric objects to roll up in the elements.
       def elements(levels: nil, metrics: nil)
-        levels = (Array.wrap(levels).presence || query_context.level_ids_in_grain)
-        levels.map!{|x| x.is_a?(String) ? dimension_bus.level_scope(x) : dimension_bus.level_scope(x.id)}
+        level_ids = Array.wrap(levels).map {|x| to_id(x)}.presence || query_context.level_ids_in_grain
+        levels = query_context.levels_and_above_for(level_ids)
         metrics = Array.wrap(metrics).map{|x| x.is_a?(String) ? definition_from_id(x) : x}.presence || self.metrics.values
         fact_indexer.elements_by(levels).each{|element| element.rollup(*metrics)}
       end

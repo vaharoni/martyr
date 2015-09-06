@@ -4,8 +4,12 @@ module Martyr
 
       attr_accessor :block
 
-      def build_slice
+      def build_data_slice(*)
         raise Runtime::Error.new("Custom metrics cannot be sliced: attempted on metric `#{name}`")
+      end
+
+      def build_memory_slice(*args)
+        Runtime::MetricMemorySlice.new(self, *args)
       end
 
       # @param fact_scopes [Runtime::FactScopeCollection]

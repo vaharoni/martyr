@@ -1,6 +1,6 @@
 module Martyr
   module Runtime
-    class TimeDimensionSlice
+    class TimeDimensionDataSlice
 
       attr_accessor :before, :after
 

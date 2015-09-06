@@ -4,9 +4,9 @@ require 'active_support'
 require 'active_support/core_ext'
 require 'active_model'
 
-Dir.glob('lib/martyr/helpers/*.*').each{|x| require File.expand_path(x).split('.rb').first}
-Dir.glob('lib/martyr/level_concern/*.*').each{|x| require File.expand_path(x).split('.rb').first}
-Dir.glob('lib/martyr/**/*.*').each{|x| require File.expand_path(x).split('.rb').first}
+Dir.glob('lib/martyr/helpers/*.rb').each{|x| require File.expand_path(x).split('.rb').first}
+Dir.glob('lib/martyr/level_concern/*.rb').each{|x| require File.expand_path(x).split('.rb').first}
+Dir.glob('lib/martyr/**/*.rb').each{|x| require File.expand_path(x).split('.rb').first}
 
 # require 'martyr/base'
 # require 'martyr/errors'

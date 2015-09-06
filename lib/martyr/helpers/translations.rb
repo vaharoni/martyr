@@ -22,5 +22,10 @@ module Martyr
       Schema::BaseMetric.metric_id?(id)
     end
 
+    def to_id(object)
+      return object if object.is_a?(String)
+      object.id
+    end
+
   end
 end

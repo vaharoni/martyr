@@ -4,8 +4,12 @@ module Martyr
 
       attr_accessor :statement, :fact_alias
 
-      def build_slice
-        Runtime::MetricSlice.new(self)
+      def build_data_slice(*args)
+        Runtime::MetricDataSlice.new(self, *args)
+      end
+
+      def build_memory_slice(*args)
+        Runtime::MetricMemorySlice.new(self, *args)
       end
 
       # @param fact_scopes [Runtime::FactScopeCollection]

@@ -1,6 +1,6 @@
 module Martyr
   module Runtime
-    class MetricSlice
+    class MetricDataSlice
       attr_reader :metric, :slice_definition
 
       delegate :id, to: :metric, prefix: true
@@ -19,7 +19,7 @@ module Martyr
 
       # This allows a `between` operation with two consecutive `slice`:
       #   cube.slice(:units_sold, '>1000').slice(:units_sold, '<5000')
-      def set_slice(**options)
+      def set_slice(_metric_definition, **options)
         @slice_definition = MetricSliceDefinition.new(options)
       end
 
@@ -28,7 +28,7 @@ module Martyr
       end
 
       # @param fact_scopes [Runtime::FactScopeCollection]
-      def add_to_where(fact_scopes)
+      def add_to_where(fact_scopes, _dimension_bus)
         scope_operator = FactScopeOperatorForMetric.new(metric_id) do |operator|
           operator.decorate_scope do |scope|
             slice_definition.combined_statements.inject(scope) do |scope, or_statements|

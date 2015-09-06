@@ -1,5 +1,5 @@
 module Martyr
-  class PlainDimensionSliceDefinition < BaseSliceDefinition
+  class PlainDimensionLevelSliceDefinition < BaseSliceDefinition
 
     attr_accessor :with, :without
 

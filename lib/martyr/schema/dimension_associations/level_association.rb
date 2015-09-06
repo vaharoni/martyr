@@ -4,6 +4,7 @@ module Martyr
       include Martyr::Level
 
       attr_accessor :level, :fact_key, :fact_alias
+      alias_method :level_definition, :level
 
       delegate :to_i, to: :level    # Important so that the to_i will take into account all levels defined for the
                                     # dimension, not just the supported one

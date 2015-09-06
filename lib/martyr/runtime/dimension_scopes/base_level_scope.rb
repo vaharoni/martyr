@@ -6,7 +6,7 @@ module Martyr
 
       attr_accessor :level
       attr_reader :collection
-      delegate :name, :dimension_name, :query?, :degenerate?, :to_i, to: :level
+      delegate :level_definition, :name, :dimension_name, :query?, :degenerate?, :to_i, to: :level
 
       def initialize(collection, level)
         @collection = collection

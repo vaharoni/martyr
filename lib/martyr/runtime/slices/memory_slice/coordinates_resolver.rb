@@ -79,8 +79,8 @@ module Martyr
         end
 
         def execute(element)
-          dimension_values_for_sub_cube_level = @memory_level.recursive_value_lookup_down(element[@memory_level.id], level: @sub_cube_dimension_slice)
-          merged_slice = PlainDimensionSliceDefinition.new(with: dimension_values_for_sub_cube_level).merge(@sub_cube_dimension_slice.slice_definition)
+          dimension_values_for_sub_cube_level = @memory_level.recursive_lookup_down(element[@memory_level.id], level: @sub_cube_dimension_slice)
+          merged_slice = PlainDimensionLevelSliceDefinition.new(with: dimension_values_for_sub_cube_level).merge(@sub_cube_dimension_slice.slice_definition)
           merged_slice.to_hash
         end
       end

@@ -9,6 +9,7 @@ module Martyr
 
       include Martyr::Translations
 
+      # TODO: sub_cube here is really just needed to resolve definition objects. Change to QueryContext instead of sub cube.
       def initialize(sub_cube)
         @sub_cube = sub_cube
         @slices = {}
@@ -26,38 +27,23 @@ module Martyr
         slice_objects.inject({}) {|h,slice| h.merge! slice.to_hash}
       end
 
+      def definition_object_for(slice_on)
+        sub_cube.definition_from_id(slice_on) || raise(Query::Error.new("Could not find `#{slice_on}` to apply slice on"))
+      end
+
       # @param slice_on [String] e.g. 'customers.last_name' or 'amount_sold'
       # @param slice_definition [Hash]
       def slice(slice_on, slice_definition)
-        slice_on_object = sub_cube.definition_from_id(slice_on)
-        raise Query::Error.new("Could not find `#{slice_on}` to apply slice on") unless slice_on_object
-
-        # Treating dimension levels differently than metric slices
-        if slice_on_object.respond_to?(:level_object?)
-          dimension = slice_on_object.dimension_definition
-          @slices[dimension.name] ||= dimension.build_slice(sub_cube.dimension_bus)
-          @slices[dimension.name].set_slice(level: slice_on_object, **slice_definition.symbolize_keys)
-        else
-          @slices[slice_on] ||= slice_on_object.build_slice
-          @slices[slice_on].set_slice(**slice_definition.symbolize_keys)
-        end
+        slice_on_object = definition_object_for(slice_on)
+        @slices[slice_on_object.slice_id] ||= slice_on_object.build_data_slice
+        @slices[slice_on_object.slice_id].set_slice(slice_on_object, **slice_definition.symbolize_keys)
       end
 
       def slice_objects
         slices.values
       end
 
-      # @param hash [Hash] of the structure that is the result of applying #to_hash on the sub object,
-      #   or coordinate structure: {'customers.last_name' => {with: 'White'}}
-      # @return [SubCubeSlice] new object containing the result of the merging operation
-      def merge_with_hash(hash)
-        new_slice = self.class.new(sub_cube)
-        hash.merge(to_hash).each do |slice_on, slice_definition|
-          new_slice.slice(slice_on, slice_definition)
-        end
-      end
-
-      # @return [PlainDimensionSlice]
+      # @return [PlainDimensionDataSlice]
       def dimension_slice_for_level(level_id)
         dimension = slices[first_element_from_id(level_id)]
         raise Internal::Error.new("Cannot find level #{level_id} in sub cube slice grain") unless dimension

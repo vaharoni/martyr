@@ -6,8 +6,7 @@ module Martyr
       alias_method :scopes, :values
       delegate :set_null_scope, :null?, to: :main_fact
 
-      include Martyr::Delegators
-      each_child_delegator :add_scope_operator, to: :values
+      # = Building
 
       def add_scope_operator(operator)
         main_fact.add_scope_operator(operator.dup)
@@ -16,36 +15,7 @@ module Martyr
         true
       end
 
-      def join_sub_facts
-        return if @join_sub_facts
-        sub_facts.each {|x| x.add_to_join(main_fact)}
-        @join_sub_facts = true
-      end
-
-      def select_keys
-        combined_scope.select_values.map{|x| x.split(' AS ').last }
-      end
-
-      def combined_scope
-        join_sub_facts
-        main_fact.run_scope
-      end
-
-      def combined_sql
-        join_sub_facts
-        main_fact.scope_sql
-      end
-
-      def pretty_sql
-        combined_sql.gsub(', ', ",\n\t").
-            gsub(/from/i, "\nFROM").
-            gsub(/where/i, "\nWHERE").
-            gsub(/and/i, "AND\n\t").
-            gsub(/or/i, "OR\n\t").
-            gsub(/inner join/i, "\n\tINNER JOIN").
-            gsub(/group by/i, "\nGROUP BY").
-            gsub(/having/i, "\nHAVING")
-      end
+      # = Running
 
       def run
         ActiveRecord::Base.connection.execute(combined_sql)
@@ -65,6 +35,42 @@ module Martyr
 
       def main_fact
         fetch(:main)
+      end
+
+      # = Access to SQL
+
+      # @return [Array<String>] all select aliases in the combined SQL query
+      def select_keys
+        combined_scope.select_values.map{|x| x.split(' AS ').last }
+      end
+
+      def combined_sql
+        join_sub_facts
+        main_fact.scope_sql
+      end
+
+      def pretty_sql
+        combined_sql.gsub(', ', ",\n\t").
+            gsub(/from/i, "\nFROM").
+            gsub(/where/i, "\nWHERE").
+            gsub(/and/i, "AND\n\t").
+            gsub(/or/i, "OR\n\t").
+            gsub(/inner join/i, "\n\tINNER JOIN").
+            gsub(/group by/i, "\nGROUP BY").
+            gsub(/having/i, "\nHAVING")
+      end
+
+      private
+
+      def join_sub_facts
+        return if @join_sub_facts
+        sub_facts.each {|x| x.add_to_join(main_fact)}
+        @join_sub_facts = true
+      end
+
+      def combined_scope
+        join_sub_facts
+        main_fact.run_scope
       end
 
     end

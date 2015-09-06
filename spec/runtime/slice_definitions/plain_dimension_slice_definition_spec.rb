@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Martyr::PlainDimensionSliceDefinition do
-  let(:subject) { Martyr::PlainDimensionSliceDefinition }
+describe Martyr::PlainDimensionLevelSliceDefinition do
+  let(:subject) { Martyr::PlainDimensionLevelSliceDefinition }
 
   describe 'creation' do
     it 'keeps with if both with and without are present and different' do

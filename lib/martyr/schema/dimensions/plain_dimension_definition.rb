@@ -21,8 +21,12 @@ module Martyr
         self
       end
 
-      def build_slice(dimension_bus)
-        Runtime::PlainDimensionSlice.new(self, dimension_bus)
+      def build_data_slice(*args)
+        Runtime::PlainDimensionDataSlice.new(self, *args)
+      end
+
+      def build_memory_slice(*args)
+        Runtime::PlainDimensionMemorySlice.new(self, *args)
       end
 
     end

@@ -5,7 +5,11 @@ module Martyr
 
       attr_accessor :name, :block
 
-      def build_slice
+      def build_data_slice(*)
+        raise Runtime::Error.new("Rollups cannot be sliced: attempted on rollup `#{name}`")
+      end
+
+      def build_memory_slice(*)
         raise Runtime::Error.new("Rollups cannot be sliced: attempted on rollup `#{name}`")
       end
 

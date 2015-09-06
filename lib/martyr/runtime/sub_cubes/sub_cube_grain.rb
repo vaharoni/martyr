@@ -16,7 +16,7 @@ module Martyr
       end
 
       def inspect_part
-        "grain: #{ level_ids.inspect }"
+        "grain: #{ supported_level_associations.map(&:id).inspect }"
       end
 
       def level_ids

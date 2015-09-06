@@ -1,6 +1,7 @@
 module Martyr
   module Schema
     class DimensionDefinitionCollection < HashWithIndifferentAccess
+      include Martyr::Translations
       include Martyr::Registrable
 
       attr_reader :parent_dimension_definitions
@@ -24,6 +25,10 @@ module Martyr
 
       def find_dimension(name)
         recursive_lookup(name) || raise(Schema::Error.new("Could not find dimension `#{name}`"))
+      end
+
+      def find_level_definition(level_id)
+        with_standard_id(level_id) { |dimension, level| find_dimension(dimension).find_level(level) }
       end
 
       # @return [Hash] { dimension_name => PlainDimensionDefinition } including dimension definitions from all superclasses

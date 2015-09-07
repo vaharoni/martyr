@@ -13,6 +13,10 @@ module Martyr
         level.parent_association_name_with_default
       end
 
+      def sliceable?
+        true
+      end
+
       def nullify
         decorate_scope do |scope|
           scope.where('0=1')
@@ -27,34 +31,32 @@ module Martyr
             scope.where label_key => values
           end
         end
-        execute_query
-      end
-
-      def slice_without(values)
-        decorate_scope do |scope|
-          if label_expression
-            scope.where("#{label_expression} NOT IN (?)", values)
-          else
-            scope.where.not label_key => values
-          end
-        end
-        execute_query
+        set_bottom_sliced_level
       end
 
       def loaded?
         !!@cache
       end
 
+      # We prefer to keep reference of the lowest (biggest index) level that is sliced because load_from_level_below
+      # is more efficient than load_from_level_above (does not need to join table).
+      def set_bottom_sliced_level
+        collection.bottom_level_sliced_i = [collection.bottom_level_sliced_i, to_i].compact.max
+      end
+
       def load
         return true if loaded?
-        if !collection.sliced_level_i
-          execute_query
-        elsif to_i > collection.sliced_level_i
+        if !collection.bottom_level_sliced_i
+          set_bottom_sliced_level
+          set_cache @scope.call
+        elsif to_i == collection.bottom_level_sliced_i
+          set_cache @scope.call
+        elsif to_i > collection.bottom_level_sliced_i
           load_from_level_above
-        elsif to_i < collection.sliced_level_i
+        elsif to_i < collection.bottom_level_sliced_i
           load_from_level_below
         else
-          raise Internal::Error.new("Level `#{name}` is not marked as loaded but it was marked as the slicing level of `#{dimension_name}`")
+          raise Internal::Error.new("Inconsistency in `#{dimension_name}.#{name}` scope structure")
         end
         true
       end
@@ -163,11 +165,6 @@ module Martyr
         @scope = Proc.new do
           block.call(original_scope.call)
         end
-      end
-
-      def execute_query
-        collection.sliced_level_i = to_i
-        set_cache @scope.call
       end
 
       def set_cache(scope)

@@ -2,7 +2,7 @@ module Martyr
   module Schema
     class DegenerateLevelDefinition < BaseLevelDefinition
 
-      attr_accessor :query_level_key, :query_level_with_finder, :query_level_without_finder, :fact_key, :fact_alias
+      attr_accessor :query_level_key, :query_level_with_finder, :fact_key, :fact_alias
       attr_reader :loaded
 
       # @param collection [DimensionDefinitionCollection]
@@ -20,7 +20,6 @@ module Martyr
               fact_alias: options[:fact_alias] || "#{dimension_name}_#{name}"
 
         @query_level_with_finder = options[:query_level_with_finder] || default_query_level_with_finder
-        @query_level_without_finder = options[:query_level_without_finder] || default_query_level_without_finder
         @loaded = false
       end
 
@@ -40,10 +39,6 @@ module Martyr
 
       def default_query_level_with_finder
         ->(scope, values){ scope.where query_level_key => values }
-      end
-
-      def default_query_level_without_finder
-        ->(scope, values){ scope.where.not query_level_key => values }
       end
 
     end

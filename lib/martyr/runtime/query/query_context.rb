@@ -12,7 +12,7 @@ module Martyr
       end
 
       def inspect
-        "#<QueryContext sub_cubes=#{sub_cubes}, dimensions=#{dimension_scopes}>"
+        "#<QueryContext sub_cubes=#{sub_cubes}, dimension_levels=#{dimension_scopes}>"
       end
 
       # = As Dimension Bus Role

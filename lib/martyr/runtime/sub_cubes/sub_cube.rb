@@ -5,7 +5,7 @@ module Martyr
       include Martyr::LevelComparator
       include Martyr::Translations
 
-      attr_reader :query_context, :cube, :fact_scopes, :metrics, :grain, :sub_cube_slice
+      attr_reader :query_context, :cube, :fact_scopes, :metrics, :grain, :sub_cube_slice, :memory_slice
       delegate :combined_sql, :pretty_sql, :test, :select_keys, to: :fact_scopes
       delegate :cube_name, :dimension_associations, to: :cube
       delegate :supported_level_associations, :supported_level_definitions, :has_association_with_level?, to: :grain
@@ -98,6 +98,7 @@ module Martyr
         metrics.add_to_select(fact_scopes)
         sub_cube_slice.add_to_where(fact_scopes, dimension_bus)
         grain.add_to_group_by(fact_scopes)
+        @memory_slice = MemorySlice.new(sub_cube_slice)
       end
 
       # = Running

@@ -36,12 +36,11 @@ module Martyr
         level_keys_arr = levels_arr.map(&:id)
         return @indices[level_keys_arr].values if @indices[level_keys_arr]
 
-        coordinates_resolver = CoordinatesResolver.new(sub_cube.sub_cube_slice, levels_arr)
         arr = facts.group_by do |fact|
           level_keys_arr.map{|key| fact.fetch(key)}
         end.map do |index_key, facts_arr|
           grain_arr = level_keys_arr.each_with_index.map {|level_id, i| [level_id, index_key[i]]}
-          [index_key, Element.new(Hash[grain_arr], facts_arr, coordinates_resolver )]
+          [index_key, Element.new(Hash[grain_arr], facts_arr, sub_cube.memory_slice )]
         end
         @indices[level_keys_arr] = Hash[arr]
         @indices[level_keys_arr].values

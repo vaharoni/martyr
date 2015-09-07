@@ -2,22 +2,22 @@ module Martyr
   module Runtime
     class PlainDimensionDataSlice
       # @attribute levels [Hash<String => PlainDimensionLevelSliceDefinition>]
-      attr_reader :levels, :slice_definition
+      attr_reader :levels
 
       attr_reader :dimension_definition
-      delegate :id, :name, to: :levels, prefix: true
 
       def initialize(dimension_definition)
         @dimension_definition = dimension_definition
         @levels = {}
       end
 
-      def inspect_part
-        to_hash.inspect
+      def sorted_levels
+        arr = levels.sort_by{|_level_id, slice| slice.level.to_i}
+        Hash[arr]
       end
 
       def to_hash
-        {level_id => slice_definition.to_hash}
+        sorted_levels.values.inject({}) {|h, slice| h.merge! slice.to_hash}
       end
 
       def dimension_name
@@ -28,72 +28,73 @@ module Martyr
       # than the existing slice's level
       # @param level [BaseLevelDefinition]
       def set_slice(level, **options)
-        @levels[level.id] = PlainDimensionLevelSliceDefinition.new(options)
+        @levels[level.id] = PlainDimensionLevelSliceDefinition.new(level: level, **options)
       end
 
+      # @return [PlainDimensionLevelSliceDefinition]
+      def get_slice(level_id)
+        @levels[level_id]
+      end
+
+      # TODO: change to something like set_grain_to_null_if_level_not_supported(level_id)
       def add_to_grain(grain)
-        grain.add_granularity(level.id)
+        levels.keys.each {|level_id| grain.add_granularity(level_id) }
       end
-
-      # Add to where has two distinct strategies:
-      # FACT
-      #   if the level is directly connected to the fact, it will perform the query directly on the fact.
-      # JOIN
-      #   otherwise, the common denominator will be saught
-
-      # set_slice
-      #   - if query - run the SQL and build cache
-      #   - if degenerate - run the special set_slice_from_degenerate on the closest query
-      # get_slice
-      #   - if cache exists, use it
-      #   - if cache does not exist:
-      #     - if query - look at the slice above me to calculate my slice
-      #     - if degenerate - look at the query and asks for get_slice
 
       # @param fact_scopes [Runtime::FactScopeCollection]
       # @param dimension_bus [Runtime::QueryContext]
       def add_to_where(fact_scopes, dimension_bus)
-        scope_operator = FactScopeOperatorForDimension.new(dimension_name, level_name) do |operator|
-          apply_slice_on_level dimension_bus.level_scope(level_id)
+        levels.keys.each do |level_id|
+          scope_operator = add_one_level_to_where(level_id, dimension_bus)
+          fact_scopes.add_scope_operator(scope_operator)
+        end
+      end
 
-          common_denominator_level = operator.common_denominator_level(level)
-          if common_denominator_level.name == level_name and level.degenerate?
-            add_to_where_using_fact_strategy(operator)
+      # @return [FactScopeOperatorForDimension]
+      def add_one_level_to_where(level_id, dimension_bus)
+        level_scope = dimension_bus.level_scope(level_id)
+        slice_definition = levels[level_id]
+
+        # Slicing the dimension level
+        add_slice_to_dimension_level(level_scope, slice_definition)
+
+        # Building operator used to slice the fact
+        FactScopeOperatorForDimension.new(level_scope.dimension_name, level_scope.name) do |operator|
+          if slice_definition.null?
+            operator.decorate_scope {|fact_scope| fact_scope.where('0=1')}
+            next
+          end
+
+          common_denominator_level = operator.common_denominator_level(level_scope.level_definition)
+          if common_denominator_level.name == level_scope.name and level_scope.degenerate?
+            add_to_where_using_fact_strategy(level_scope, slice_definition, operator)
           else
             add_to_where_using_join_strategy(operator, dimension_bus.level_scope(common_denominator_level.id))
           end
         end
-        fact_scopes.add_scope_operator(scope_operator)
       end
 
-      def apply_slice_on_level(level_scope)
+      def add_slice_to_dimension_level(level_scope, slice_definition)
+        return unless level_scope.sliceable?
         if slice_definition.null?
           level_scope.nullify
         elsif slice_definition.with.present?
           level_scope.slice_with(slice_definition.with)
-        elsif slice_definition.without.present?
-          level_scope.slice_without(slice_definition.without)
         end
       end
 
-      def add_to_where_using_fact_strategy(operator)
-        level_key = operator.level_key_for_where(level.id)
-
+      def add_to_where_using_fact_strategy(level_scope, slice_definition, operator)
+        return unless slice_definition.with.present?
         operator.decorate_scope do |fact_scope|
-          if slice_definition.null?
-            fact_scope.where('0=1')
-          elsif slice_definition.with.present?
-            fact_scope.where(level_key => slice_definition.with)
-          elsif slice_definition.without.present?
-            fact_scope.where.not(level_key => slice_definition.without)
-          end
+          level_key = operator.level_key_for_where(level_scope.id)
+          fact_scope.where(level_key => slice_definition.with)
         end
       end
 
       def add_to_where_using_join_strategy(operator, common_level_scope)
-        operator.decorate_scope do |scope|
+        operator.decorate_scope do |fact_scope|
           level_key = operator.level_key_for_where(common_level_scope.id)
-          scope.where(level_key => common_level_scope.keys)
+          fact_scope.where(level_key => common_level_scope.keys)
         end
       end
     end

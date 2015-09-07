@@ -19,15 +19,22 @@ describe 'Dimension Scopes Loading and Tree Traversal' do
   end
 
   describe 'slicing and loading same level' do
+    it 'does not run the query immediately' do
+      expect(invoice_level).not_to receive(:set_cache)
+      invoice_level.slice_with('invoice-1')
+    end
+
     it 'returns true for #loaded? and #load and does not run queries if already loaded for query level' do
       invoice_level.slice_with('invoice-1')
+      expect(invoice_level.loaded?).to eq(false)
+      expect(invoice_level.load).to eq(true)
       expect(invoice_level).not_to receive(:set_cache)
       expect(invoice_level.loaded?).to eq(true)
-      expect(invoice_level.load).to eq(true)
     end
 
     it 'returns true for #loaded? if query level already loaded for degenerate level' do
       invoice_level.slice_with('invoice-1')
+      invoice_level.load
       expect(city_level.loaded?).to eq(true)
     end
 

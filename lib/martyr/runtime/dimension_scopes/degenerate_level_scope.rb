@@ -2,30 +2,28 @@ module Martyr
   module Runtime
     class DegenerateLevelScope < BaseLevelScope
 
-      delegate :query_level_with_finder, :query_level_without_finder, :query_level_key, to: :level
+      delegate :query_level_with_finder, :query_level_key, to: :level
       delegate :nullify, to: :query_level_below
+
+      def sliceable?
+        !!query_level_below
+      end
 
       def slice_with(values)
         query_level_below.send(:decorate_scope) do |scope|
           query_level_with_finder.call(scope, values)
         end
-        load_query_level_slice
-      end
-
-      def slice_without(values)
-        query_level_below.send(:decorate_scope) do |scope|
-          query_level_without_finder.call(scope, values)
-        end
-        load_query_level_slice
+        query_level_below.set_bottom_sliced_level
       end
 
       def loaded?
         query_level_below.loaded?
       end
 
+      # TODO: load from fact when sliceable? is false
       def load
         return true if loaded?
-        load_query_level_slice
+        query_level_below.load
         true
       end
 
@@ -33,6 +31,7 @@ module Martyr
         loaded_cache.keys
       end
       alias_method :keys, :all
+      alias_method :all_values, :all
 
       # Useful when the fact is attempting to resolve Degenerate 1 value:
       #   Degenerate 1
@@ -54,10 +53,6 @@ module Martyr
       end
 
       protected
-
-      def load_query_level_slice
-        query_level_below.load
-      end
 
       # The cache stored is basically one representative of the query level for each degenerate value.
       # Assuming the hierarchy is strict, i.e. the state parent of "San Francisco" is always "California", we are able

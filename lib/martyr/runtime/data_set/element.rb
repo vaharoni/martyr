@@ -2,15 +2,15 @@ module Martyr
   module Runtime
     class Element < HashWithIndifferentAccess
 
-      attr_reader :facts, :grain
+      attr_reader :facts, :grain, :memory_slice
 
       # @param grain [Hash] {level_name => level_value}
       # @param facts [Array<Fact>]
-      # @param coordinates_resolver [CoordinatesResolver]
-      def initialize(grain, facts, coordinates_resolver)
+      # @param memory_slice [MemorySlice]
+      def initialize(grain, facts, memory_slice)
         @facts = facts
         @grain = grain
-        @coordinates_resolver = coordinates_resolver
+        @memory_slice = memory_slice
         merge! grain
       end
 
@@ -21,8 +21,12 @@ module Martyr
         end
       end
 
+      def grain_coordinates
+        grain.inject({}) {|h, (level_id, level_value)| h[level_id] = {with: level_value}; h }
+      end
+
       def coordinates
-        @coordinates_resolver.resolve(self)
+        memory_slice.to_hash.merge!(grain_coordinates)
       end
 
     end

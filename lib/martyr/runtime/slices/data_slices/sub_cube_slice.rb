@@ -20,7 +20,7 @@ module Martyr
       end
 
       def inspect_part
-        to_hash.inspect
+        "slice: #{to_hash.inspect}"
       end
 
       def to_hash
@@ -41,24 +41,6 @@ module Martyr
 
       def slice_objects
         slices.values
-      end
-
-      # @return [PlainDimensionDataSlice]
-      def dimension_slice_for_level(level_id)
-        dimension = slices[first_element_from_id(level_id)]
-        raise Internal::Error.new("Cannot find level #{level_id} in sub cube slice grain") unless dimension
-        dimension
-      end
-
-      # @param level [Martyr::Level]
-      # @return [nil, Integer]
-      #   nil     the dimension does not exist in the grain
-      #   0       the dimension exists in the slice and the level in the slice is the same as `level`
-      #   1       the dimension exists in the slice and the level in the slice is lower (more detailed, higher index) than `level`
-      #   -1      the dimension exists in the slice and the level in the slice is higher (less detailed, lower index) than `level`
-      def compare_level_with_grain(level)
-        return nil unless @slices[level.dimension_name].present?
-        @slices[level.dimension_name].level.to_i <=> level.to_i
       end
 
     end

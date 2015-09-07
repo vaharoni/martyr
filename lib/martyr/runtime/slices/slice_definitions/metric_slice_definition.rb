@@ -3,14 +3,14 @@ module Martyr
   class MetricSliceDefinition < BaseSliceDefinition
 
     OPERATORS = [:gt, :lt, :gte, :lte, :eq, :not]
-    attr_accessor *OPERATORS
+    attr_accessor :metric, *OPERATORS
 
     def self.from_interval_set(interval_set)
       new interval_set_to_hash(interval_set)
     end
 
     def to_hash
-      OPERATORS.inject({}) { |h, op| send(op) ? h.merge!(op => send(op)) : h }
+      {metric.id => OPERATORS.inject({}) { |h, op| send(op) ? h.merge!(op => send(op)) : h }}
     end
 
     def merge(other)

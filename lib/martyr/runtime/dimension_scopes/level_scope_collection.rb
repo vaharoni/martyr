@@ -3,11 +3,11 @@ module Martyr
     class LevelScopeCollection < HashWithIndifferentAccess
       include Martyr::LevelCollection
 
-      attr_accessor :sliced_level_i
+      attr_accessor :bottom_level_sliced_i
 
       def initialize(*args)
         super
-        @sliced_level_i = nil
+        @bottom_level_sliced_i = nil
       end
 
       # @param level [Martyr::Level]

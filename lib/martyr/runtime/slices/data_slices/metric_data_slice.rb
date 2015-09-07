@@ -2,28 +2,24 @@ module Martyr
   module Runtime
     class MetricDataSlice
       attr_reader :metric, :slice_definition
-
+      delegate :to_hash, to: :slice_definition
       delegate :id, to: :metric, prefix: true
 
       def initialize(metric)
         @metric = metric
       end
 
-      def inspect_part
-        to_hash.inspect
-      end
-      
-      def to_hash
-        { metric_id => slice_definition.to_hash }
-      end
-
-      # This allows a `between` operation with two consecutive `slice`:
-      #   cube.slice(:units_sold, '>1000').slice(:units_sold, '<5000')
       def set_slice(_metric_definition, **options)
-        @slice_definition = MetricSliceDefinition.new(options)
+        raise Martyr::Error.new('Internal error. Inconsistent metric received') unless _metric_definition.id == metric_id
+        @slice_definition = MetricSliceDefinition.new(metric: metric, **options)
       end
 
-      def add_to_grain(grain)
+      def get_slice(_metric_id)
+        raise Martyr::Error.new('Internal error. Inconsistent metric received') unless _metric_id == metric_id
+        @slice_definition
+      end
+
+      def add_to_grain(_)
         # no-op
       end
 

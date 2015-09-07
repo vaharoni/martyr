@@ -1,16 +1,15 @@
 module Martyr
   module Runtime
     class PlainDimensionDataSlice
-      include Martyr::LevelComparator
-
-      # @attribute level [BaseLevelDefinition]
-      attr_reader :level, :slice_definition
+      # @attribute levels [Hash<String => PlainDimensionLevelSliceDefinition>]
+      attr_reader :levels, :slice_definition
 
       attr_reader :dimension_definition
-      delegate :id, :name, to: :level, prefix: true
+      delegate :id, :name, to: :levels, prefix: true
 
       def initialize(dimension_definition)
         @dimension_definition = dimension_definition
+        @levels = {}
       end
 
       def inspect_part
@@ -29,9 +28,7 @@ module Martyr
       # than the existing slice's level
       # @param level [BaseLevelDefinition]
       def set_slice(level, **options)
-        @level = more_detailed_level(level, @level)
-        return unless @level == level
-        @slice_definition = PlainDimensionLevelSliceDefinition.new(options)
+        @levels[level.id] = PlainDimensionLevelSliceDefinition.new(options)
       end
 
       def add_to_grain(grain)
@@ -57,49 +54,48 @@ module Martyr
       # @param dimension_bus [Runtime::QueryContext]
       def add_to_where(fact_scopes, dimension_bus)
         scope_operator = FactScopeOperatorForDimension.new(dimension_name, level_name) do |operator|
-          common_denominator_level = operator.common_denominator_level(level)
+          apply_slice_on_level dimension_bus.level_scope(level_id)
 
+          common_denominator_level = operator.common_denominator_level(level)
           if common_denominator_level.name == level_name and level.degenerate?
             add_to_where_using_fact_strategy(operator)
           else
-            add_to_where_using_join_strategy(operator, common_denominator_level, dimension_bus)
+            add_to_where_using_join_strategy(operator, dimension_bus.level_scope(common_denominator_level.id))
           end
         end
         fact_scopes.add_scope_operator(scope_operator)
       end
 
+      def apply_slice_on_level(level_scope)
+        if slice_definition.null?
+          level_scope.nullify
+        elsif slice_definition.with.present?
+          level_scope.slice_with(slice_definition.with)
+        elsif slice_definition.without.present?
+          level_scope.slice_without(slice_definition.without)
+        end
+      end
+
       def add_to_where_using_fact_strategy(operator)
         level_key = operator.level_key_for_where(level.id)
+
+        operator.decorate_scope do |fact_scope|
+          if slice_definition.null?
+            fact_scope.where('0=1')
+          elsif slice_definition.with.present?
+            fact_scope.where(level_key => slice_definition.with)
+          elsif slice_definition.without.present?
+            fact_scope.where.not(level_key => slice_definition.without)
+          end
+        end
+      end
+
+      def add_to_where_using_join_strategy(operator, common_level_scope)
         operator.decorate_scope do |scope|
-          if slice_definition.null?
-            scope.where('0=1')
-          elsif slice_definition.with.present?
-            scope.where(level_key => slice_definition.with)
-          elsif slice_definition.without.present?
-            scope.where.not(level_key => slice_definition.without)
-          end
+          level_key = operator.level_key_for_where(common_level_scope.id)
+          scope.where(level_key => common_level_scope.keys)
         end
       end
-
-      def add_to_where_using_join_strategy(operator, common_denominator_level, dimension_bus)
-        dimension_bus.with_level_scope(level.id) do |level_scope|
-          if slice_definition.null?
-            level_scope.nullify
-          elsif slice_definition.with.present?
-            level_scope.slice_with(slice_definition.with)
-          elsif slice_definition.without.present?
-            level_scope.slice_without(slice_definition.without)
-          end unless level_scope.loaded?
-        end
-
-        dimension_bus.with_level_scope(common_denominator_level.id) do |common_level|
-          operator.decorate_scope do |scope|
-            level_key = operator.level_key_for_where(common_level.id)
-            scope.where(level_key => common_level.keys)
-          end
-        end
-      end
-
     end
   end
 end

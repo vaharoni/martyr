@@ -59,8 +59,13 @@ module Martyr
         true
       end
 
+      # @return [Array<ActiveRecord::Base>]
       def all
-        self.load and return cached_values
+        self.load and return cached_records
+      end
+
+      def all_values
+        all.map{|x| x.send level.label_field}
       end
 
       def keys
@@ -77,7 +82,7 @@ module Martyr
       # current level object that is identified by `primary_key_value`. It traversed the hierarchy UP until reaching
       # the desired `level`.
       #
-      # @param record [String, Integer]
+      # @param primary_key_value [String,Integer]
       # @param level [Martyr::Level] this level must be equal or above the current level
       # @return [ActiveRecord::Base, String] the record if query level, or the value if degenerate
       def recursive_lookup_up(primary_key_value, level:)
@@ -171,7 +176,7 @@ module Martyr
       end
 
       # @return [Array<ActiveRecord::Base>]
-      def cached_values
+      def cached_records
         @cache.values
       end
 
@@ -196,7 +201,7 @@ module Martyr
         self.load
         @cached_records_by ||= {}
         return @cached_records_by[key] if @cached_records_by[key]
-        @cached_records_by[key] = cached_values.group_by{|x| x.send(key)}
+        @cached_records_by[key] = cached_records.group_by{|x| x.send(key)}
       end
 
       def record_primary_key(record)

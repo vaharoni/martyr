@@ -2,7 +2,7 @@ module Martyr
   module Runtime
     class PlainDimensionMemorySlice
 
-      attr_reader :dimension_definition, :data_slice
+      attr_reader :dimension_definition, :data_slice, :dimension_bus
 
       # @param dimension_definition [PlainDimensionDefinition]
       # @param dimension_bus [QueryContext] allowing translation from dimension level definition to dimension level scope
@@ -30,11 +30,17 @@ module Martyr
             # Example:
             #   data slice:         'customers.country' => 'USA'
             #   requested slice:    'customers.last_name' => 'White'
-            dimension_bus.level_scope(level.id).recursive_lookup_up()
-            dimension_bus.level_scope(data_slice.level_id).recursive_lookup_down(element[@memory_level.id], level: @sub_cube_dimension_slice)
-
+            data_slice_level_scope = dimension_bus.level_scope(data_slice.level.id)
+            drill_down_values = data_slice_level_scope.recursive_lookup_down(data_slice_level_scope.all, level: level)
+            @slice_definition = PlainDimensionLevelSliceDefinition.new(with: drill_down_values).merge(new_slice_definition)
           when 1
-
+            # The level in the data slice is lower (more detailed, higher index) than `level`
+            # Example:
+            #   data slice:         'customers.city' => ['San Francisco', 'Vancouver']
+            #   requested slice:    'customers.country' => 'USA'
+            level_scope = dimension_bus.level_scope(level.id)
+            drill_down_values = level_scope.recursive_lookup_down(level_scope.all, level: level)
+            @slice_definition = PlainDimensionLevelSliceDefinition.new(with: drill_down_values).merge(new_slice_definition)
         end
       end
 

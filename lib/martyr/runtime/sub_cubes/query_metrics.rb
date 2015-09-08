@@ -11,16 +11,18 @@ module Martyr
       include Martyr::Delegators
       each_child_delegator :add_to_select, to: :values
 
+      alias_method :find_metric, :find_or_error
+
       def initialize(sub_cube)
         @sub_cube = sub_cube
       end
 
       def inspect
-        "#<#{self.class} #{keys}>"
+        "#<#{self.class} #{to_a}>"
       end
 
-      def inspect_part
-        "metrics: #{keys}"
+      def to_a
+        keys
       end
 
       def add_metric(metric_id)

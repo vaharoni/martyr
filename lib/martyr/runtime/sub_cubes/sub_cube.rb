@@ -5,12 +5,13 @@ module Martyr
       include Martyr::LevelComparator
       include Martyr::Translations
 
-      attr_reader :query_context, :cube, :fact_scopes, :metrics, :grain, :sub_cube_slice, :memory_slice
+      attr_reader :query_context, :cube, :fact_scopes, :metrics, :grain
       delegate :combined_sql, :pretty_sql, :test, :select_keys, to: :fact_scopes
       delegate :cube_name, :dimension_associations, to: :cube
       delegate :supported_level_associations, :supported_level_definitions, :has_association_with_level?, to: :grain
-      delegate :metric_ids, :built_in_metrics, :custom_metrics, to: :metrics
+      delegate :find_metric, :metric_ids, :built_in_metrics, :custom_metrics, to: :metrics
       delegate :facts, to: :fact_indexer
+      delegate :definition_from_id, :memory_slice, to: :query_context
 
       alias_method :dimension_bus, :query_context
 
@@ -22,25 +23,18 @@ module Martyr
 
         @metrics = QueryMetrics.new(self)
         @grain = SubCubeGrain.new(self)
-        @sub_cube_slice = SubCubeSlice.new(self)
       end
 
       def inspect
-        "#{cube_name}: {#{metrics.inspect_part}, #{sub_cube_slice.inspect_part}, #{grain.inspect_part}}"
+        to_hash.inspect
+      end
+
+      def to_hash
+        {cube_name => {metrics: metrics.to_a, grain: grain.to_a}}
       end
 
       def dimension_definitions
         cube.supported_dimension_definitions
-      end
-
-      # TODO: Move to QueryContext
-      # @return [BaseMetric, DimensionReference, BaseLevelDefinition]
-      def definition_from_id(id)
-        with_standard_id(id) do |x, y|
-          return (metrics[x] || dimension_definitions[x]) if !y
-          return metrics[y] if is_metric_id?(id)
-          dimension_definitions[x].try(:levels).try(:[], y)
-        end
       end
 
       # @return [DimensionReference, LevelAssociation]
@@ -66,19 +60,14 @@ module Martyr
       # = Definitions
 
       def set_metrics(metrics_arr)
-        if metrics_arr.empty?
-          metrics.add_all
-        else
-          metrics_arr.each do |metric_id|
-            @metrics.add_metric(metric_id)
-          end
+        return unless metrics_arr.present?
+        metrics_arr.each do |metric_id|
+          @metrics.add_metric(metric_id)
         end
       end
 
-      def set_slice(slice_hash)
-        slice_hash.each do |slice_on, slice_definition|
-          @sub_cube_slice.slice(slice_on, slice_definition)
-        end
+      def set_all_metrics
+        metrics.add_all
       end
 
       def set_grain(grain_arr)
@@ -88,17 +77,15 @@ module Martyr
       end
 
       def set_defaults_and_dependencies
-        sub_cube_slice.add_to_grain(grain)
         grain.set_all_if_empty
         grain.nullify_scope_if_null(fact_scopes)
       end
 
-      def slice_all_scopes
+      def decorate_all_scopes(data_slice)
         grain.add_to_select(fact_scopes)
         metrics.add_to_select(fact_scopes)
-        sub_cube_slice.add_to_where(fact_scopes, dimension_bus)
+        data_slice.add_to_where(fact_scopes, dimension_bus)
         grain.add_to_group_by(fact_scopes)
-        @memory_slice = MemorySlice.new(sub_cube_slice)
       end
 
       # = Running
@@ -111,10 +98,10 @@ module Martyr
       #   Default is all levels in the query context.
       # @option metrics [Array<String, BaseMetric>] array of metric IDs or metric objects to roll up in the elements.
       def elements(levels: nil, metrics: nil)
-        level_ids = Array.wrap(levels).map {|x| to_id(x)}.presence || query_context.level_ids_in_grain
+        level_ids = Array.wrap(levels).map { |x| to_id(x) }.presence || query_context.level_ids_in_grain
         levels = query_context.levels_and_above_for(level_ids)
-        metrics = Array.wrap(metrics).map{|x| x.is_a?(String) ? definition_from_id(x) : x}.presence || self.metrics.values
-        fact_indexer.elements_by(levels).each{|element| element.rollup(*metrics)}
+        metrics = Array.wrap(metrics).map { |x| x.is_a?(String) ? definition_from_id(x) : x }.presence || self.metrics.values
+        fact_indexer.elements_by(levels).each { |element| element.rollup(*metrics) }
       end
 
       def pivot

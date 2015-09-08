@@ -1,6 +1,7 @@
 module Martyr
   module Runtime
     class PivotCell
+      METRIC_COORD_KEY = 'metric'
 
       attr_reader :metric_id, :metric_human_name, :element
       delegate :facts, :coordinates, to: :element
@@ -20,7 +21,7 @@ module Martyr
       end
 
       def coordinates
-        element.coordinates.merge('metric' => metric_id)
+        element.coordinates.merge(METRIC_COORD_KEY => metric_id)
       end
 
       def to_axis_values(pivot_axis, flat: true)

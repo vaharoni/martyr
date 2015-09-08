@@ -13,7 +13,7 @@ module Martyr
       end
 
       def to_hash
-        arr = @levels.sort_by{|_level_id, slice| slice.level.to_i}
+        arr = @levels.sort_by{|_level_id, slice| slice.level.to_i}.map{|level_id, slice| [level_id, slice.to_hash]}
         Hash[arr]
       end
 

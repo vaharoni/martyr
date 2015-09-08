@@ -18,10 +18,6 @@ module Martyr
       id.to_s.include?('.') ? id.to_s.split('.').last : id.to_s
     end
 
-    def is_metric_id?(id)
-      Schema::BaseMetric.metric_id?(id)
-    end
-
     def to_id(object)
       return object if object.is_a?(String)
       object.id

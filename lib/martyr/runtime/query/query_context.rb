@@ -1,18 +1,56 @@
 module Martyr
   module Runtime
     class QueryContext
-      attr_accessor :sub_cubes, :dimension_scopes, :level_ids_in_grain
+      include Martyr::Translations
+
+      attr_accessor :sub_cubes_hash, :dimension_scopes, :level_ids_in_grain
+      attr_reader :data_slice
       delegate :level_scope, :level_scopes, :with_level_scope, :lowest_level_of, :lowest_level_ids_of,
         :levels_and_above_for, :level_ids_and_above_for, :level_loaded?, to: :dimension_scopes
 
-      # @param level_ids_in_grain [Array<String>]
-      def initialize(level_ids_in_grain)
-        @level_ids_in_grain = level_ids_in_grain
-        @sub_cubes = []
+      def initialize
+        @data_slice = DataSlice.new(self)
+        @sub_cubes_hash = {}
       end
 
       def inspect
-        "#<QueryContext sub_cubes=#{sub_cubes}, dimension_levels=#{dimension_scopes}>"
+        "#<QueryContext grain: #{level_ids_in_grain}, memory_slice: #{memory_slice.to_hash}, data_slice: #{data_slice.to_hash}, sub_cubes: #{sub_cubes}>"
+      end
+
+      def sub_cubes
+        sub_cubes_hash.values
+      end
+
+      # = Run
+
+      def facts
+        map_reduce_sub_cubes(&:facts)
+      end
+
+      def elements(*args)
+        map_reduce_sub_cubes{|x| x.elements(*args)}
+      end
+
+      # = Memory slices
+
+      def memory_slice
+        @memory_slice ||= MemorySlice.new(data_slice)
+      end
+
+      def slice(*args)
+        memory_slice.slice(*args)
+        self
+      end
+
+      # = Dispatcher
+
+      # @return [BaseMetric, DimensionReference, BaseLevelDefinition]
+      def definition_from_id(id)
+        with_standard_id(id) do |x, y|
+          return dimension_scopes[x].try(:dimension_definition) if !y
+          return sub_cubes_hash[x].find_metric(y) if sub_cubes_hash[x]
+          dimension_scopes.find_level(id).try(:level_definition)
+        end
       end
 
       # = As Dimension Bus Role
@@ -40,22 +78,14 @@ module Martyr
         end
       end
 
-      def facts
-        map_reduce_sub_cubes(&:facts)
-      end
-
-      def elements
-        map_reduce_sub_cubes(&:elements)
-      end
-
       private
 
       def map_reduce_sub_cubes
-        if sub_cubes.length == 1
+        if sub_cubes_hash.length == 1
           yield sub_cubes.first
         else
-          arr = sub_cubes.map do |sub_cube|
-            [sub_cube.cube_name, yield(sub_cube)]
+          arr = sub_cubes_hash.map do |sub_cube_name, sub_cube|
+            [sub_cube_name, yield(sub_cube)]
           end
           Hash[arr]
         end

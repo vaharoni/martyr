@@ -3,6 +3,7 @@ module Martyr
     class MetricDataSlice
       attr_reader :metric, :slice_definition
       delegate :to_hash, to: :slice_definition
+      delegate :cube_name, to: :metric
       delegate :id, to: :metric, prefix: true
 
       def initialize(metric)
@@ -24,7 +25,7 @@ module Martyr
       end
 
       # @param fact_scopes [Runtime::FactScopeCollection]
-      def add_to_where(fact_scopes, _dimension_bus)
+      def add_to_where(fact_scopes, *)
         scope_operator = FactScopeOperatorForMetric.new(metric_id) do |operator|
           operator.decorate_scope do |scope|
             slice_definition.combined_statements.inject(scope) do |scope, or_statements|

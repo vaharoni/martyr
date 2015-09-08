@@ -15,8 +15,9 @@ module Martyr
 
       alias_method :hash_fetch, :fetch
 
-      def fetch(key)
-        value = hash_fetch(key)
+      # @param id [String] either metric id or level id
+      def fetch(id)
+        value = hash_fetch(fully_qualify_id(id))
         value.is_a?(FutureFactValue) ? value.value : value
       end
       alias_method :[], :fetch
@@ -72,6 +73,12 @@ module Martyr
           [metric.id, metric.extract(self)]
         end
         Hash[arr]
+      end
+
+      def fully_qualify_id(id)
+        with_standard_id(id) do |dimension_or_cube_or_metric, level_or_metric|
+          level_or_metric ? id : "#{sub_cube.cube_name}.#{dimension_or_cube_or_metric}"
+        end
       end
 
     end

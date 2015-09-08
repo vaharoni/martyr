@@ -45,10 +45,10 @@ module MartyrSpec
     has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
     has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
 
-    has_custom_metric :commission, ->(fact) { (fact['metrics.amount'] * 0.3) }
+    # has_custom_metric :commission, ->(fact) { (fact['amount'] * 0.3) }
 
     # If one rollup is dependent on the other, make sure they are ordered correctly
-    has_custom_rollup :avg_transaction, ->(fact_set) { fact_set['metrics.amount'] / fact_set['metrics.units_sold'] }
+    # has_custom_rollup :avg_transaction, ->(fact_set) { fact_set['amount'] / fact_set['units_sold'] }
     # has_custom_rollup :usa_amount, ->(fact_set) { fact_set.slice('customers.country', with: 'USA')['metrics.amount'] }
     # has_custom_rollup :cross_country_avg_transaction, ->(fact_set) { fact_set.reset_slice('customers')['metrics.avg_transaction'] }
     # has_custom_rollup :usa_avg_transaction, ->(fact_set) { fact_set.slice('customers.country', with: 'USA')['metrics.avg_transaction'] }

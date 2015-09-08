@@ -82,7 +82,8 @@ describe 'Runtime Queries' do
 
     it 'sets up WHERE for degenerate levels that are connected to the fact' do
       sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).
-          slice('media_types.name' => {with: 'AAC audio file'}, 'genres.name' => {with: 'Rock'}).build.sub_cubes.first
+          slice('media_types.name' => {with: 'AAC audio file'}, 'genres.name' => {with: 'Rock'}).
+          granulate('media_types.name', 'genres.name').build.sub_cubes.first
       sub_cube.test
 
       expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
@@ -104,7 +105,8 @@ describe 'Runtime Queries' do
 
     it 'adds an extra level to SELECT and GROUP BY for degenerate levels that are connected to the fact when additional grain is provided' do
       sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).
-          slice('media_types.name' => {with: 'AAC audio file'}, 'genres.name' => {with: 'Rock'}).granulate('customers.country').build.sub_cubes.first
+          slice('media_types.name' => {with: 'AAC audio file'}, 'genres.name' => {with: 'Rock'}).
+          granulate('customers.country', 'media_types.name', 'genres.name').build.sub_cubes.first
 
       sub_cube.test
       expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
@@ -145,7 +147,7 @@ describe 'Runtime Queries' do
     end
 
     it 'sets up WHERE on keys when slicing on query level that is connected to the fact' do
-      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('albums.track' => {with: 'Fast As a Shark'}).build.sub_cubes.first
+      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('albums.track' => {with: 'Fast As a Shark'}).granulate('albums.track').build.sub_cubes.first
       sub_cube.test
 
       track = Track.find_by(name: 'Fast As a Shark')
@@ -164,7 +166,7 @@ describe 'Runtime Queries' do
     end
 
     it 'sets up WHERE on keys when slicing on query level that is connected to the fact with custom label expression' do
-      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('invoices.invoice_line' => {with: 'invoice-line-5'}).build.sub_cubes.first
+      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('invoices.invoice_line' => {with: 'invoice-line-5'}).granulate('invoices.invoice_line').build.sub_cubes.first
       sub_cube.test
 
       expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
@@ -182,7 +184,7 @@ describe 'Runtime Queries' do
     end
 
     it 'sets up WHERE on keys when slicing on query level that is not connected to the fact' do
-      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('albums.album' => {with: 'Restless and Wild'}).build.sub_cubes.first
+      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('albums.album' => {with: 'Restless and Wild'}).granulate('albums.album').build.sub_cubes.first
       sub_cube.test
 
       track_ids = Album.find_by(title: 'Restless and Wild').track_ids.join(', ')
@@ -201,7 +203,7 @@ describe 'Runtime Queries' do
     end
 
     it 'sets up WHERE on keys when slicing on degenerate level that is not connected to the fact' do
-      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('customers.country' => {with: 'USA'}).build.sub_cubes.first
+      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('customers.country' => {with: 'USA'}).granulate('customers.country').build.sub_cubes.first
       sub_cube.test
 
       customer_ids = Customer.where(country: 'USA').map(&:id).join(', ')
@@ -220,7 +222,7 @@ describe 'Runtime Queries' do
     end
 
     it 'sets up WHERE on keys when slicing on degenerate level whose query-level-below is not connected to the fact' do
-      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('invoices.country' => {with: 'USA'}).build.sub_cubes.first
+      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('invoices.country' => {with: 'USA'}).granulate('invoices.country').build.sub_cubes.first
       sub_cube.test
 
       invoice_line_ids = Invoice.includes(:invoice_lines).where(billing_country: 'USA').flat_map(&:invoice_line_ids).join(', ')
@@ -247,7 +249,7 @@ describe 'Runtime Queries' do
   describe 'sub facts' do
     it 'sets up JOIN, SELECT, and GROUP BY correctly for sub facts that expose metrics and dimensions without propagating unsuported dimensions' do
       sub_cube = MartyrSpec::DegeneratesAndCustomersAndSubFacts.
-          slice('media_types.name' => {with: 'AAC audio file'}, 'genres.name' => {with: 'Rock'}).granulate('first_invoice.yes_no').build.sub_cubes.first
+          slice('media_types.name' => {with: 'AAC audio file'}, 'genres.name' => {with: 'Rock'}).granulate('first_invoice.yes_no', 'media_types.name', 'genres.name').build.sub_cubes.first
       sub_cube.test
 
       expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
@@ -280,7 +282,7 @@ describe 'Runtime Queries' do
     end
 
     it 'propagates dimension slices to the sub fact when level is supported for both main query and sub query' do
-      sub_cube = MartyrSpec::DegeneratesAndCustomersAndSubFacts.select(:units_sold).slice('customers.last_name' => {with: 'Tremblay'}).build.sub_cubes.first
+      sub_cube = MartyrSpec::DegeneratesAndCustomersAndSubFacts.select(:units_sold).slice('customers.last_name' => {with: 'Tremblay'}).granulate('customers.last_name').build.sub_cubes.first
       sub_cube.test
 
       customer_id = Customer.find_by(last_name: 'Tremblay').id
@@ -314,7 +316,7 @@ describe 'Runtime Queries' do
 
 
     it 'propagates dimension slices to the sub fact when level is supported by main query but not by sub query' do
-      sub_cube = MartyrSpec::DegeneratesAndCustomersAndSubFacts.select(:units_sold).slice('customers.country' => {with: 'USA'}).build.sub_cubes.first
+      sub_cube = MartyrSpec::DegeneratesAndCustomersAndSubFacts.select(:units_sold).slice('customers.country' => {with: 'USA'}).granulate('customers.country').build.sub_cubes.first
       sub_cube.test
 
       customer_ids = Customer.where(country: 'USA').map(&:id).join(', ')

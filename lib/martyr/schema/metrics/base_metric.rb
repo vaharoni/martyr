@@ -6,17 +6,8 @@ module Martyr
 
       attr_accessor :cube_name, :name, :rollup_function
 
-      # @return [Boolean] true for both generic 'metrics' and single metric ids such as 'metric.units_sold'
-      def self.metric_id?(id)
-        first_element_from_id(id) == 'metrics'
-      end
-
-      def unique_id
-        "#{cube_name}.#{id}"
-      end
-
       def id
-        "metrics.#{name}"
+        "#{cube_name}.#{name}"
       end
 
       alias_method :slice_id, :id

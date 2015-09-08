@@ -12,11 +12,11 @@ module Martyr
       end
 
       def inspect
-        "#<#{self.class} #{inspect_part}>"
+        "#<#{self.class} #{to_a}>"
       end
 
-      def inspect_part
-        "grain: #{ supported_level_associations.map(&:id).inspect }"
+      def to_a
+        supported_level_associations.map(&:id)
       end
 
       def level_ids
@@ -25,6 +25,10 @@ module Martyr
 
       def null?
         @null
+      end
+
+      def dimension_names
+        grain.keys
       end
 
       # Maintains for every dimension the lowest supported level

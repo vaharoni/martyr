@@ -11,7 +11,7 @@ module Martyr
       delegate :supported_level_associations, :supported_level_definitions, :has_association_with_level?, to: :grain
       delegate :find_metric, :metric_ids, :built_in_metrics, :custom_metrics, to: :metrics
       delegate :facts, to: :fact_indexer
-      delegate :definition_from_id, :memory_slice, to: :query_context
+      delegate :definition_from_id, to: :query_context
 
       alias_method :dimension_bus, :query_context
 
@@ -94,14 +94,15 @@ module Martyr
         @fact_indexer ||= FactIndexer.new(self, grain.null? ? [] : fact_scopes.run.map { |hash| Fact.new(self, hash) })
       end
 
+      # @param memory_slice [MemorySlice]
       # @option levels [Array<String, Martyr::Level>] array of level IDs or any type of level to group facts by.
       #   Default is all levels in the query context.
       # @option metrics [Array<String, BaseMetric>] array of metric IDs or metric objects to roll up in the elements.
-      def elements(levels: nil, metrics: nil)
+      def elements(memory_slice, levels: nil, metrics: nil)
         level_ids = Array.wrap(levels).map { |x| to_id(x) }.presence || query_context.level_ids_in_grain
         levels = query_context.levels_and_above_for(level_ids)
         metrics = Array.wrap(metrics).map { |x| x.is_a?(String) ? definition_from_id(x) : x }.presence || self.metrics.values
-        fact_indexer.elements_by(levels).each { |element| element.rollup(*metrics) }
+        fact_indexer.elements_by(memory_slice, levels).each { |element| element.rollup(*metrics) }
       end
 
       def pivot

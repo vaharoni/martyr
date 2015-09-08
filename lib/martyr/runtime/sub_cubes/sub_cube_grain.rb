@@ -27,10 +27,6 @@ module Martyr
         @null
       end
 
-      def dimension_names
-        grain.keys
-      end
-
       # Maintains for every dimension the lowest supported level
       def add_granularity(level_id)
         level_to_add = sub_cube.common_denominator_level_association(level_id)

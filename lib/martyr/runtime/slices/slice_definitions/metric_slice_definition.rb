@@ -6,7 +6,8 @@ module Martyr
     attr_accessor :metric, *OPERATORS
 
     def self.from_interval_set(interval_set)
-      new interval_set_to_hash(interval_set)
+      base = {metric: metric}
+      new base.merge!(interval_set_to_hash(interval_set))
     end
 
     def to_hash
@@ -27,12 +28,12 @@ module Martyr
     #
     def combined_statements
       statements = []
-      statements << [{operator: gt_operator, value: gt_value}] if gt_operator
-      statements << [{operator: lt_operator, value: lt_value}] if lt_operator
-      statements << Array.wrap(eq).map {|value| {operator: '=', value: value} } if eq
+      statements << [{data_operator: gt_operator, memory_operator: gt_operator, value: gt_value}] if gt_operator
+      statements << [{data_operator: lt_operator, memory_operator: lt_operator, value: lt_value}] if lt_operator
+      statements << Array.wrap(eq).map {|value| {data_operator: '=', memory_operator: '==', value: value} } if eq
 
       Array.wrap(self.not).each do |value|
-        statements << [{operator: '!=', value: value}]
+        statements << [{data_operator: '!=', memory_operator: '!=', value: value}]
       end
 
       statements

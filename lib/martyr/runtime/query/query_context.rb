@@ -1,12 +1,14 @@
 module Martyr
   module Runtime
     class QueryContext
+      include Martyr::LevelComparator
       include Martyr::Translations
 
       attr_accessor :sub_cubes_hash, :dimension_scopes, :level_ids_in_grain
       attr_reader :data_slice
       delegate :level_scope, :level_scopes, :with_level_scope, :lowest_level_of, :lowest_level_ids_of,
         :levels_and_above_for, :level_ids_and_above_for, :level_loaded?, to: :dimension_scopes
+      delegate :slice, :reset, to: :memory_slice
 
       def initialize
         @data_slice = DataSlice.new(self)
@@ -21,14 +23,18 @@ module Martyr
         sub_cubes_hash.values
       end
 
-      # = Run
+      # = Grain
 
-      def facts
-        map_reduce_sub_cubes(&:facts)
+      def supported_level_ids
+        @_supported_level_ids ||= levels_and_above_for(level_ids_in_grain).map(&:id)
       end
 
-      def elements(*args)
-        map_reduce_sub_cubes{|x| x.elements(*args)}
+      def validate_slice_on!(slice_on)
+        slice_on_object = definition_from_id(slice_on)
+        raise Query::Error.new("Cannot find `#{slice_on}`") unless slice_on_object
+        raise Query::Error.new("Cannot slice on `#{slice_on}`: it is not in the grain") if
+          slice_on_object.is_a?(Martyr::Level) and !supported_level_ids.include?(slice_on)
+        true
       end
 
       # = Memory slices
@@ -37,9 +43,24 @@ module Martyr
         @memory_slice ||= MemorySlice.new(data_slice)
       end
 
+      # @return [QueryContext] for chaining
       def slice(*args)
         memory_slice.slice(*args)
         self
+      end
+
+      # = Run
+
+      def facts
+        map_reduce_sub_cubes(&:facts)
+      end
+
+      def elements(**options)
+        map_reduce_sub_cubes do |sub_cube|
+          memory_slice.for_cube_name(sub_cube.cube_name) do |scoped_memory_slice|
+            sub_cube.elements(scoped_memory_slice, **options)
+          end
+        end
       end
 
       # = Dispatcher

@@ -10,6 +10,10 @@ module Martyr
         @metric = metric
       end
 
+      def keys
+        [metric_id]
+      end
+
       def set_slice(_metric_definition, **options)
         raise Martyr::Error.new('Internal error. Inconsistent metric received') unless _metric_definition.id == metric_id
         @slice_definition = MetricSliceDefinition.new(metric: metric, **options)
@@ -40,7 +44,7 @@ module Martyr
 
       def compile_or_statement_group(or_statement_group)
         or_statement_group.map do |slice_statement|
-          "#{metric.statement} #{slice_statement[:operator]} #{slice_statement[:value]}"
+          "#{metric.statement} #{slice_statement[:data_operator]} #{slice_statement[:value]}"
         end.join(' OR ')
       end
     end

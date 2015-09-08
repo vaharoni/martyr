@@ -2,7 +2,8 @@ module Martyr
   module Runtime
     class MetricMemorySlice
       attr_reader :metric
-      delegate :to_hash, to: :slice_definition
+      delegate :to_hash, to: :get_slice
+      delegate :cube_name, to: :metric
       delegate :id, to: :metric, prefix: true
 
       # @param metric [BaseMetricDefinition]
@@ -10,6 +11,10 @@ module Martyr
       def initialize(metric, data_slice = nil)
         @metric = metric
         @data_slice = data_slice
+      end
+
+      def keys
+        [metric_id]
       end
 
       def set_slice(_metric_definition, **options)
@@ -23,8 +28,31 @@ module Martyr
       end
 
       def get_slice(_metric_id)
-        raise Martyr::Error.new('Internal error. Inconsistent metric received') unless _metric_id == metric_id
-        @slice_definition
+        validate_consistency!(_metric_id) and @slice_definition
+      end
+
+      # @return [true] notify the parent that the elements should be completely removed from the holder
+      def reset(_metric_id)
+        validate_consistency!(_metric_id)
+      end
+
+      # = Applying
+
+      def apply_on(facts)
+        get_slice.combined_statements.inject(facts) do |selected_facts, or_statement_group|
+          selected_facts.select! do |fact|
+            or_statement_group.inject(false) do |logic_resolve, statement|
+              logic_resolve or fact.fetch(metric_id).send(statement[:memory_operator], statement[:value])
+            end
+          end
+        end
+      end
+
+      private
+
+      def validate_consistency!(metric_id)
+        raise Martyr::Error.new('Internal error. Inconsistent metric received') unless metric_id == metric_id
+        true
       end
 
     end

@@ -3,6 +3,7 @@ module Martyr
     class PlainDimensionMemorySlice
 
       attr_reader :dimension_definition, :data_slice, :levels
+      delegate :keys, to: :levels
 
       # @param dimension_definition [PlainDimensionDefinition]
       # @option data_slice [PlainDimensionDataSlice, nil] data slice from sub cube if exists
@@ -13,7 +14,7 @@ module Martyr
       end
 
       def to_hash
-        arr = @levels.sort_by{|_level_id, slice| slice.level.to_i}.map{|level_id, slice| [level_id, slice.to_hash]}
+        arr = @levels.values.sort_by{|slice| slice.level.to_i}.inject({}){|h, slice| h.merge!(slice.to_hash) }
         Hash[arr]
       end
 
@@ -29,6 +30,20 @@ module Martyr
       # @return [PlainDimensionLevelSliceDefinition]
       def get_slice(level_id)
         @levels[level_id]
+      end
+
+      # @return [Boolean] whether the slice object should be removed from the holding parent
+      def reset(level_id)
+        @levels.delete(level_id)
+        @levels.length == 0
+      end
+
+      def apply_on(facts)
+        levels.keys.inject(facts) do |selected_facts, level_id|
+          selected_facts.select! do |fact|
+            get_slice(level_id).with.include? fact[level_id]
+          end
+        end
       end
 
     end

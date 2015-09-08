@@ -10,6 +10,7 @@ module Martyr
         @indices = {}
       end
 
+      # @param memory_slice [MemorySlice] scoped to the current cube
       # @param levels_arr [Array<BaseLevelScope>] levels used to group facts by
       # @return [Array<Element>] creates an array of elements. Each elements holds multiple facts based on
       #   level_keys_arr.
@@ -32,18 +33,19 @@ module Martyr
       #
       # In addition, each element will have the metrics, rolled-up based on their roll-up function
       #
-      def elements_by(levels_arr)
+      def elements_by(memory_slice, levels_arr)
         level_keys_arr = levels_arr.map(&:id)
-        return @indices[level_keys_arr].values if @indices[level_keys_arr]
+        index_key = {slice: memory_slice.to_hash, levels: level_keys_arr}
+        return @indices[index_key].values if @indices[index_key]
 
-        arr = facts.group_by do |fact|
+        arr = memory_slice.apply_on(facts).group_by do |fact|
           level_keys_arr.map{|key| fact.fetch(key)}
         end.map do |index_key, facts_arr|
           grain_arr = level_keys_arr.each_with_index.map {|level_id, i| [level_id, index_key[i]]}
-          [index_key, Element.new(Hash[grain_arr], facts_arr, sub_cube.memory_slice )]
+          [index_key, Element.new(Hash[grain_arr], facts_arr, memory_slice )]
         end
-        @indices[level_keys_arr] = Hash[arr]
-        @indices[level_keys_arr].values
+        @indices[index_key] = Hash[arr]
+        @indices[index_key].values
       end
 
       def get_element(slice_hash)

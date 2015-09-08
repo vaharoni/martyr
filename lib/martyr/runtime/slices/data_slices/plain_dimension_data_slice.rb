@@ -5,6 +5,7 @@ module Martyr
       attr_reader :levels
 
       attr_reader :dimension_definition
+      delegate :keys, to: :sorted_levels
 
       def initialize(dimension_definition)
         @dimension_definition = dimension_definition

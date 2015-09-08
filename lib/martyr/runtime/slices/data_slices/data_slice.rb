@@ -4,6 +4,8 @@ module Martyr
 
       attr_accessor :slices
 
+      attr_reader :definition_resolver
+
       include Martyr::Delegators
       each_child_delegator :add_to_grain, :add_to_where, to: :slice_objects_scoped_to_cube
 
@@ -29,8 +31,13 @@ module Martyr
         slice_objects.inject({}) {|h,slice| h.merge! slice.to_hash}
       end
 
+      # @return [Array<String>] with either metric ID or level ID (contrast with dimension name)
+      def keys
+        slice_objects.flat_map(&:keys)
+      end
+
       def definition_object_for(slice_on)
-        @definition_resolver.definition_from_id(slice_on) || raise(Query::Error.new("Could not find `#{slice_on}` to apply slice on"))
+        definition_resolver.definition_from_id(slice_on) || raise(Query::Error.new("Could not find `#{slice_on}` to apply slice on"))
       end
 
       # @param slice_on [String] e.g. 'customers.last_name' or 'amount_sold'
@@ -60,7 +67,7 @@ module Martyr
 
       def slice_objects_scoped_to_cube
         return slice_objects unless @cube_name_scope
-        slice_objects.select{|x| x.respond_to?(:cube_name) ? x.cube_name == @cube_name_scope : true}
+        slice_objects.select{|x| x.respond_to?(:cube_name) ? x.cube_name == cube_name : true}
       end
 
     end

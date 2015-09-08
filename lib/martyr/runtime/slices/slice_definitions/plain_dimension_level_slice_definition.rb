@@ -11,7 +11,7 @@ module Martyr
     def merge(other)
       raise 'Cannot merge two different levels' unless level.id == other.level.id
       merged_with = with.present? && other.with.present? ? with & other.with : with + other.with
-      self.class.new(with: merged_with)
+      self.class.new(level: level, with: merged_with)
     end
 
     private

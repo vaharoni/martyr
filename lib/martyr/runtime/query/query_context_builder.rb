@@ -26,7 +26,7 @@ module Martyr
 
       # select(:a, :b, :c)
       def select(*arr)
-        fully_qualify_metrics_array(arr).each do |metric_id|
+        standardize(arr).each do |metric_id|
           cube_name = first_element_from_id(metric_id)
           @select_args_by_cube[cube_name] ||= []
           @select_args_by_cube[cube_name] << metric_id
@@ -43,11 +43,11 @@ module Martyr
       def slice(*several_variants)
         if several_variants.length == 1 and several_variants.first.is_a?(Hash)
           several_variants.first.stringify_keys.except(PivotCell::METRIC_COORD_KEY).each do |slice_on, slice_definition|
-            @data_slice.merge! fully_qualify(slice_on) => slice_definition
+            @data_slice.merge! standardize(slice_on) => slice_definition
           end
         elsif several_variants.length == 2
           slice_on, slice_definition = several_variants
-          @data_slice.merge! fully_qualify(slice_on) => slice_definition
+          @data_slice.merge! standardize(slice_on) => slice_definition
         else
           ArgumentError.new("wrong number of arguments (#{several_variants.length} for 1..2)")
         end
@@ -87,7 +87,7 @@ module Martyr
       end
 
       def setup_context_sub_cubes_metrics_and_grain(context)
-        cube_lookup_by_name.each do |cube_name, cube_class|
+        cube.contained_cube_classes.index_by(&:cube_name).each do |cube_name, cube_class|
           sub_cube = Runtime::SubCube.new(context, cube_class)
           context.sub_cubes_hash[cube_name] = sub_cube
           if @select_args_by_cube.present?
@@ -117,34 +117,13 @@ module Martyr
         end
       end
 
-      # = Helpers
+      private
 
-      def fully_qualify_metrics_array(array)
-        array.map do |metric_name|
-          fully_qualified_id = fully_qualify(metric_name)
-          raise Query::Error.new("Invalid metric #{metric_name}") unless metric?(fully_qualified_id)
-          fully_qualified_id
-        end
-      end
+      def standardize(object)
+        @standardizer ||= Martyr::MetricIdStandardizer.new(cube.contained_cube_classes.first.cube_name,
+          raise_if_not_ok: cube.contained_cube_classes.length > 1)
 
-      def fully_qualify(id)
-        with_standard_id(id) do |dimension_or_cube_or_metric, level_or_metric|
-          level_or_metric ? id : add_cube_name_to_metric(dimension_or_cube_or_metric)
-        end
-      end
-
-      def add_cube_name_to_metric(metric_name)
-        cube_classes = cube.contained_cube_classes
-        raise Query::Error.new("Invalid metric #{metric_name}: must be preceded with cube name") if cube_classes.length > 1
-        "#{cube_classes.first.cube_name}.#{metric_name}"
-      end
-
-      def metric?(fully_qualified_id)
-        !!cube_lookup_by_name[first_element_from_id(fully_qualified_id)]
-      end
-
-      def cube_lookup_by_name
-        @_cube_lookup_by_name ||= cube.contained_cube_classes.index_by(&:cube_name)
+        @standardizer.standardize(object)
       end
 
     end

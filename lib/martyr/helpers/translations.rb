@@ -14,8 +14,14 @@ module Martyr
       id.to_s.include?('.') ? id.to_s.split('.').first : id.to_s
     end
 
-    def second_element_from_id(id)
-      id.to_s.include?('.') ? id.to_s.split('.').last : id.to_s
+    # @param id [String]
+    # @option fallback [Boolean] if true, will return the id if only one element exists in the id
+    def second_element_from_id(id, fallback: false)
+      if id.to_s.include?('.')
+        id.to_s.split('.').last
+      else
+        fallback ? id.to_s : nil
+      end
     end
 
     def to_id(object)

@@ -51,6 +51,8 @@ module Martyr
 
       # = Run
 
+      # TODO: support multiple sub cubes
+
       def facts
         map_reduce_sub_cubes(&:facts)
       end
@@ -61,6 +63,10 @@ module Martyr
             sub_cube.elements(scoped_memory_slice, **options)
           end
         end
+      end
+
+      def pivot
+        Runtime::PivotTableBuilder.new(self)
       end
 
       # = Dispatcher

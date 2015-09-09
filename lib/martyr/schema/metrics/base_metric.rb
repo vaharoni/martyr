@@ -12,6 +12,11 @@ module Martyr
 
       alias_method :slice_id, :id
 
+      # Used for reflection
+      def metric?
+        true
+      end
+
       def human_name
         name.to_s.titleize
       end

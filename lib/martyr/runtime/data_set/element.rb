@@ -24,25 +24,24 @@ module Martyr
         end
       end
 
-      # @option standardize_id [Proc] default is identity
+      # @option standardizer [MetricIdStandardizer] default is identity
       # @option exclude_metric_ids [String, Array<String>] default is []
       def locate(*several_variants)
         if several_variants.length == 2
-          standardize_id = several_variants[1].delete(:standardize_id) || ->(x){x}
+          standardizer = several_variants[1].delete(:standardizer) || MetricIdStandardizer.new
           exclude_metric_ids = several_variants[1].delete(:exclude_metric_ids)
-          standardized_slice_hash = {standardize_id.call(several_variants[0]) => several_variants[1]}
-          standardized_reset_arr = []
+          slice_hash = { several_variants[0] => several_variants[1] }
+          reset_arr = []
         elsif several_variants.length == 1 and several_variants.first.is_a?(Hash)
-          hash = several_variants.first
-          standardize_id = hash.delete(:standardize_id) || ->(x){x}
-          exclude_metric_ids = hash.delete(:exclude_metric_ids)
-          reset_arr = Array.wrap(hash.delete(:reset))
-          standardized_slice_hash = Hash[hash.map{|k,v| [standardize_id.call(k), v]}]
-          standardized_reset_arr = reset_arr.map{|x| standardize_id.call(x)}
+          slice_hash = several_variants.first
+          standardizer = slice_hash.delete(:standardizer) || MetricIdStandardizer.new
+          exclude_metric_ids = slice_hash.delete(:exclude_metric_ids)
+          reset_arr = Array.wrap(slice_hash.delete(:reset))
         else
           raise ArgumentError.new("wrong number of arguments #{several_variants.length} for (1..2)")
         end
-        new_coords = coordinates_object.locate(standardized_slice_hash, reset: standardized_reset_arr)
+
+        new_coords = coordinates_object.locate(standardizer.standardize(slice_hash), reset: standardizer.standardize(reset_arr))
         element_by_address(new_coords, exclude_metric_ids: Array.wrap(exclude_metric_ids))
       end
 

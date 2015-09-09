@@ -14,7 +14,7 @@ module Martyr
       end
 
       def supports_metric?(metric_name)
-        has_key? second_element_from_id(metric_name)
+        has_key? second_element_from_id(metric_name, fallback: true)
       end
 
       def has_sum_metric(name, statement, fact_alias: name)

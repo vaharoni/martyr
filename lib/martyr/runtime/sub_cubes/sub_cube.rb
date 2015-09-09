@@ -105,10 +105,6 @@ module Martyr
         fact_indexer.elements_by(memory_slice, levels.map(&:id)).each { |element| element.rollup(*metrics) }
       end
 
-      def pivot
-        Runtime::PivotTableBuilder.new(self)
-      end
-
     end
   end
 end

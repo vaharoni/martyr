@@ -1,8 +1,6 @@
 module Martyr
   module Schema
     class CustomRollup < BaseMetric
-      include ActiveModel::Model
-
       attr_accessor :cube_name, :name, :block
 
       def build_data_slice(*)

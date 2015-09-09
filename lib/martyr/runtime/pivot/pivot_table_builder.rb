@@ -2,18 +2,19 @@ module Martyr
   module Runtime
     class PivotTableBuilder
 
-      attr_reader :sub_cube, :on_columns_args, :on_rows_args, :in_cells_arg
+      attr_reader :query_context, :on_columns_args, :on_rows_args, :in_cells_arg
+      delegate :definition_from_id, to: :query_context
 
       delegate :cells, :elements, to: :table
 
-      def initialize(sub_cube)
-        @sub_cube = sub_cube
+      def initialize(query_context)
+        @query_context = query_context
         @on_columns_args = []
         @on_rows_args = []
       end
 
       def select(*metric_ids)
-        raise Query::Error.new('Invalid metric sent to `select`') unless metric_ids.all? { |x| Schema::BaseMetric.metric_id?(x) }
+        raise Query::Error.new('Invalid metric sent to `select`') unless metric_ids.all? { |x| definition_from_id(x).respond_to?(:metric?) }
         @metrics = metric_ids
         self
       end

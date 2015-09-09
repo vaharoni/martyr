@@ -20,6 +20,5 @@ module Martyr
         levels_hash.values.max_by(&:to_i)
       end
     end
-
   end
 end

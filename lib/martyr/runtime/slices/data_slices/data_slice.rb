@@ -20,10 +20,6 @@ module Martyr
       end
 
       def inspect
-        "#<#{self.class} #{inspect_part}>"
-      end
-
-      def inspect_part
         to_hash.inspect
       end
 
@@ -67,7 +63,7 @@ module Martyr
 
       def slice_objects_scoped_to_cube
         return slice_objects unless @cube_name_scope
-        slice_objects.select{|x| x.respond_to?(:cube_name) ? x.cube_name == cube_name : true}
+        slice_objects.select{|x| x.respond_to?(:cube_name) ? x.cube_name == @cube_name_scope : true}
       end
 
     end

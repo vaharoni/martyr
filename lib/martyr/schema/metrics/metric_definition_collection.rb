@@ -34,7 +34,7 @@ module Martyr
       end
 
       def has_custom_rollup(name, block)
-        register CustomRollup.new name: name, block: block
+        register CustomRollup.new cube_name: cube_name, name: name, block: block
       end
 
     end

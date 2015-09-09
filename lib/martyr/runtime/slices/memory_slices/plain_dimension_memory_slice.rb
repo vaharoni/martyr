@@ -40,7 +40,7 @@ module Martyr
 
       def apply_on(facts)
         levels.keys.inject(facts) do |selected_facts, level_id|
-          selected_facts.select! do |fact|
+          selected_facts.select do |fact|
             get_slice(level_id).with.include? fact[level_id]
           end
         end

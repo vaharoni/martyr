@@ -1,13 +1,26 @@
 module Martyr
   module Runtime
     class MemorySlice
+      include Martyr::Translations
 
-      attr_reader :data_slice
+      attr_reader :data_slice, :memory_slice_overrides
       delegate :definition_resolver, :definition_object_for, to: :data_slice
 
       def initialize(data_slice)
         @data_slice = data_slice
         @memory_slice_overrides = {}
+      end
+
+      def inspect
+        to_hash.inspect
+      end
+
+      def dup
+        new_slice = self.class.new(@data_slice)
+        @memory_slice_overrides.each do |slice_id, slice_object|
+          new_slice.memory_slice_overrides[slice_id] = slice_object.dup
+        end
+        new_slice
       end
 
       def to_hash
@@ -29,13 +42,21 @@ module Martyr
         @memory_slice_overrides[slice_id].set_slice(slice_on_object, **slice_definition.symbolize_keys)
       end
 
-      def reset(slice_on)
-        slice_on_object = definition_object_for(slice_on)
-        slice_id = slice_on_object.slice_id
-        return false unless @memory_slice_overrides[slice_id]
-        to_remove = @memory_slice_overrides[slice_id].reset(slice_on_object.id)
-        @memory_slice_overrides.delete(slice_id) if to_remove
-        true
+      # FIXME: the #reset_* methods have a knowledge on the slice_id, which #slice delegated to the definition objects
+
+      def reset_dimension(dimension_name)
+        @memory_slice_overrides.delete(dimension_name)
+      end
+
+      def reset_level(level_id)
+        level_definition = definition_object_for(level_id)
+        return unless @memory_slice_overrides[level_definition.slice_id]
+        should_remove_dimension = @memory_slice_overrides[level_definition.slice_id].reset(level_id)
+        @memory_slice_overrides.delete(level_definition.slice_id) if should_remove_dimension
+      end
+
+      def reset_metric(metric_id)
+        @memory_slice_overrides.delete(metric_id)
       end
 
       # = Applying slices

@@ -102,7 +102,7 @@ module Martyr
         level_ids = Array.wrap(levels).map { |x| to_id(x) }.presence || query_context.level_ids_in_grain
         levels = query_context.levels_and_above_for(level_ids)
         metrics = Array.wrap(metrics).map { |x| x.is_a?(String) ? definition_from_id(x) : x }.presence || self.metrics.values
-        fact_indexer.elements_by(memory_slice, levels).each { |element| element.rollup(*metrics) }
+        fact_indexer.elements_by(memory_slice, levels.map(&:id)).each { |element| element.rollup(*metrics) }
       end
 
       def pivot

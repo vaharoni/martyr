@@ -31,16 +31,11 @@ module Martyr
         validate_consistency!(_metric_id) and @slice_definition
       end
 
-      # @return [true] notify the parent that the elements should be completely removed from the holder
-      def reset(_metric_id)
-        validate_consistency!(_metric_id)
-      end
-
       # = Applying
 
       def apply_on(facts)
         get_slice.combined_statements.inject(facts) do |selected_facts, or_statement_group|
-          selected_facts.select! do |fact|
+          selected_facts.select do |fact|
             or_statement_group.inject(false) do |logic_resolve, statement|
               logic_resolve or fact.fetch(metric_id).send(statement[:memory_operator], statement[:value])
             end

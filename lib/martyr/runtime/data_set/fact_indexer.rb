@@ -3,6 +3,7 @@ module Martyr
     class FactIndexer
 
       attr_reader :sub_cube, :facts
+      delegate :dimension_bus, to: :sub_cube
 
       def initialize(sub_cube, facts)
         @sub_cube = sub_cube
@@ -11,7 +12,7 @@ module Martyr
       end
 
       # @param memory_slice [MemorySlice] scoped to the current cube
-      # @param levels_arr [Array<BaseLevelScope>] levels used to group facts by
+      # @param level_ids [Array<String>] level ids used to group facts by
       # @return [Array<Element>] creates an array of elements. Each elements holds multiple facts based on
       #   level_keys_arr.
       #
@@ -33,23 +34,32 @@ module Martyr
       #
       # In addition, each element will have the metrics, rolled-up based on their roll-up function
       #
-      def elements_by(memory_slice, levels_arr)
-        level_keys_arr = levels_arr.map(&:id)
-        index_key = {slice: memory_slice.to_hash, levels: level_keys_arr}
-        return @indices[index_key].values if @indices[index_key]
-
-        arr = memory_slice.apply_on(facts).group_by do |fact|
-          level_keys_arr.map{|key| fact.fetch(key)}
-        end.map do |index_key, facts_arr|
-          grain_arr = level_keys_arr.each_with_index.map {|level_id, i| [level_id, index_key[i]]}
-          [index_key, Element.new(Hash[grain_arr], facts_arr, memory_slice )]
-        end
-        @indices[index_key] = Hash[arr]
-        @indices[index_key].values
+      def elements_by(memory_slice, level_ids)
+        elements_hash(memory_slice, level_ids).values
       end
 
-      def get_element(slice_hash)
+      # @param coordinates [Coordinates]
+      # @return [Element] that resides in the provided coordinates
+      def get_element(coordinates)
+        elements_hash(coordinates.memory_slice, coordinates.grain_hash.keys)[coordinates.grain_hash.values]
+      end
 
+      private
+
+      # @return [Hash] { element_key => Element }
+      #   where element_key is array of values for levels in the same order of level_ids.
+      def elements_hash(memory_slice, level_ids)
+        sorted_level_ids = level_ids.sort
+        index_key = {slice: memory_slice.to_hash, levels: sorted_level_ids}
+        return @indices[index_key] if @indices[index_key]
+
+        arr = memory_slice.apply_on(facts).group_by do |fact|
+          level_ids.map{|id| fact.fetch(id)}
+        end.map do |element_key, facts_arr|
+          grain_arr = element_key.each_with_index.map {|value, i| [level_ids[i], value]}
+          [element_key, Element.new(self, Hash[grain_arr], facts_arr, memory_slice )]
+        end
+        @indices[index_key] = Hash[arr]
       end
     end
   end

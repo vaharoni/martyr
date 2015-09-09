@@ -3,6 +3,7 @@ module Martyr
     class Element < HashWithIndifferentAccess
 
       attr_reader :facts
+      delegate :grain_hash, to: :coordinates_object
 
       # @param address_resolver [#element_by_memory_slice]
       # @param grain [Hash] {level_name => level_value}

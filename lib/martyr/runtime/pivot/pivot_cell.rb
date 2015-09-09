@@ -17,7 +17,7 @@ module Martyr
       end
 
       def to_hash
-        {'metric_human_name' => metric_human_name, 'value' => value}.merge!(element.grain)
+        {'metric_human_name' => metric_human_name, 'value' => value}.merge!(element.grain_hash)
       end
 
       def coordinates

@@ -10,9 +10,9 @@ module Martyr
       attr_accessor :metrics, :row_axis, :column_axis, :pivot_grain
       attr_reader :elements
 
-      def initialize(sub_cube, *args)
+      def initialize(query_context, *args)
         super(*args)
-        @elements = sub_cube.elements(levels: pivot_grain, metrics: metrics)
+        @elements = query_context.elements(levels: pivot_grain, metrics: metrics)
         row_axis.load_values(cells)
         column_axis.load_values(cells)
       end

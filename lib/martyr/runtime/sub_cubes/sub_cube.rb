@@ -9,7 +9,7 @@ module Martyr
       delegate :combined_sql, :pretty_sql, :test, :select_keys, to: :fact_scopes
       delegate :cube_name, :dimension_associations, to: :cube
       delegate :supported_level_associations, :supported_level_definitions, :has_association_with_level?, to: :grain
-      delegate :find_metric, :metric_ids, :built_in_metrics, :custom_metrics, to: :metrics
+      delegate :find_metric, :metric_ids, :metric_objects, :built_in_metrics, :custom_metrics, to: :metrics
       delegate :facts, to: :fact_indexer
       delegate :definition_from_id, to: :query_context
 

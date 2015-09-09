@@ -23,6 +23,24 @@ module Martyr
         sub_cubes_hash.values
       end
 
+      def metrics
+        sub_cubes.flat_map{|sub_cube| sub_cube.metric_objects}
+      end
+
+      def metric_ids
+        metrics.map(&:id)
+      end
+
+      # @param id [String] has to be fully qualified (cube_name.metric_name)
+      def metric(id)
+        metric_ids_lookup[id]
+      end
+
+       # @param id [String] has to be fully qualified (cube_name.metric_name)
+      def metric?(id)
+        !!metric(id)
+      end
+
       # = Grain
 
       def supported_level_ids
@@ -74,7 +92,7 @@ module Martyr
       # @return [BaseMetric, DimensionReference, BaseLevelDefinition]
       def definition_from_id(id)
         with_standard_id(id) do |x, y|
-          return dimension_scopes[x].try(:dimension_definition) if !y
+          return dimension_scopes[x].try(:dimension_definition) || sub_cubes.first.metrics[x] if !y
           return sub_cubes_hash[x].find_metric(y) if sub_cubes_hash[x]
           dimension_scopes.find_level(id).try(:level_definition)
         end
@@ -105,6 +123,10 @@ module Martyr
         end
       end
 
+      def standardizer
+        @standardizer ||= Martyr::MetricIdStandardizer.new(sub_cubes.first.cube_name, raise_if_not_ok: sub_cubes.length > 1)
+      end
+
       private
 
       def map_reduce_sub_cubes
@@ -116,6 +138,10 @@ module Martyr
           end
           Hash[arr]
         end
+      end
+
+      def metric_ids_lookup
+        @metric_ids_lookup ||= metrics.index_by(&:id)
       end
 
     end

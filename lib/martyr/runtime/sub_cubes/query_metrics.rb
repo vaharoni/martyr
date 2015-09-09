@@ -50,6 +50,10 @@ module Martyr
       def metric_ids
         values.map(&:id)
       end
+
+      def metric_objects
+        values
+      end
     end
   end
 end

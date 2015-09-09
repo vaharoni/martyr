@@ -53,7 +53,7 @@ module Martyr
       return {} if interval_set.null?
       not_arr = interval_set.extract_and_fill_holes.presence
       eq_arr = interval_set.extract_and_remove_points.presence
-      raise Martyr::Error.new('Unexpected interval set format') unless interval_set.null? or interval_set.continuous?
+      raise Internal::Error.new('Unexpected interval set format') unless interval_set.null? or interval_set.continuous?
 
       upper_point = interval_set.upper_bound
       lte = upper_point.x if upper_point.try(:closed?)

@@ -2,14 +2,17 @@ module Martyr
   module Runtime
     class PivotCell
       METRIC_COORD_KEY = 'metric'
+      TOTAL_VALUE = '(total)'
 
       attr_reader :metric_id, :metric_human_name, :element
       delegate :facts, :coordinates, to: :element
 
-      def initialize(metric, element)
+      # @param sub_total_levels [Array<String>]
+      def initialize(metric, element, sub_total_levels = [])
         @metric_id = metric.id
         @metric_human_name = metric.human_name
         @element = element
+        @sub_total_levels = sub_total_levels
       end
 
       def inspect
@@ -39,7 +42,7 @@ module Martyr
           when 'value'
             value
           else
-            element.fetch(key)
+            @sub_total_levels.include?(key.to_s) ? TOTAL_VALUE : element.fetch(key)
         end
       end
     end

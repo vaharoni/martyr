@@ -6,11 +6,37 @@ module Martyr
       attr_accessor :grain_elements
       attr_reader :values
 
-      # TODO: order elements
+      def inspect
+        grain_elements.inspect
+      end
+
+      def ids
+        grain_elements.map(&:id)
+      end
+
+      # = CSV
+
+      # Run on column axis only
+      def add_header_column_cells_to_csv(csv, row_axis)
+        grain_elements.each do |grain|
+          prev_value = nil
+          column_values = values.map do |x|
+            # #chomp is just a trick to avoid removing consecutive (total)
+            prev_value.try(:chomp, PivotCell::TOTAL_VALUE) == x[grain.id] ? nil : prev_value = x[grain.id]
+          end
+          csv << row_axis.csv_empty_row_axis_cells + column_values
+        end
+      end
+
+      # Run on row axis only
+      def csv_empty_row_axis_cells
+        [nil] * grain_elements.length
+      end
 
       # @return [Array<Hash>] where each hash is of format {level_id_1 => value_1, ... }
-      def load_values(cells)
-        @values ||= cells.map { |cell| hash_grain_value_for(cell) }.uniq!
+      def load_values(cells, reset: false)
+        @values = nil if reset
+        @values ||= cells.map { |cell| hash_grain_value_for(cell) }.uniq
       end
 
       def flat_values_nil_hash

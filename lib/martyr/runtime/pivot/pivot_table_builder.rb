@@ -3,7 +3,7 @@ module Martyr
     class PivotTableBuilder
       ALL_METRICS_KEY = 'metrics'
 
-      attr_reader :query_context, :on_columns_args, :on_rows_args, :in_cells_arg
+      attr_reader :query_context, :on_columns_args, :on_rows_args, :in_cells_arg, :row_totals, :column_totals
       delegate :standardizer, :definition_from_id, to: :query_context
 
       delegate :cells, :elements, :to_chart, to: :table
@@ -12,6 +12,8 @@ module Martyr
         @query_context = query_context
         @on_columns_args = []
         @on_rows_args = []
+        @row_totals = true
+        @column_totals = true
       end
 
       def select(*metric_ids)
@@ -31,6 +33,12 @@ module Martyr
         self
       end
 
+      def with_totals(rows: true, columns: true)
+        @row_totals = !!rows
+        @column_totals = !!columns
+        self
+      end
+
       def in_cells(metric_id)
         raise Query::Error.new('Cannot have more than one metric in cells') if metric_id.to_s == ALL_METRICS_KEY
         raise Query::Error.new("#{metric_id} is not a metric") unless metric?(metric_id)
@@ -44,7 +52,8 @@ module Martyr
         raise Query::Error.new('At least one metric has to be defined in pivot') unless metric_definition_count > 0
         raise Query::Error.new('Metrics can either be on columns or rows or in cells') if metric_definition_count > 1
         PivotTable.new query_context, metrics: metrics, pivot_grain: pivot_grain,
-                       row_axis: axis_for(on_rows_args), column_axis: axis_for(on_columns_args)
+                       row_axis: axis_for(on_rows_args), column_axis: axis_for(on_columns_args),
+                       row_totals: row_totals, column_totals: column_totals
       end
       alias_method :table, :build
 

@@ -5,6 +5,10 @@ module Martyr
 
       attr_accessor :id, :metrics, :level_definition
 
+      def inspect
+        id.inspect
+      end
+
       def cell_value(cell)
         if metrics.present?
           cell.metric_human_name

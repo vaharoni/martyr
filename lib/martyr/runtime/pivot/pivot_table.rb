@@ -7,7 +7,7 @@ module Martyr
       # @attribute row_axis [PivotAxis]
       # @attribute column_axis [PivotAxis]
       # @attribute pivot_grain [Array<String>] array of level ids
-      attr_accessor :metrics, :row_axis, :column_axis, :pivot_grain
+      attr_accessor :metrics, :row_axis, :column_axis, :pivot_grain, :row_totals, :column_totals
       attr_reader :elements
 
       def initialize(query_context, *args)
@@ -17,24 +17,67 @@ module Martyr
         column_axis.load_values(cells)
       end
 
+      def reload
+        @_cells = nil
+        @_lowest_cells = nil
+        row_axis.load_values(cells, reset: true)
+        column_axis.load_values(cells, reset: true)
+        self
+      end
+
+      def inspect
+        {metrics: metrics.map(&:id), levels: pivot_grain, on_rows: row_axis, on_columns: column_axis}.inspect
+      end
+
       def cells
-        @_cells ||= metrics.flat_map do |metric|
+        @_cells ||= sort_cells(lowest_cells + sub_totals)
+      end
+
+      def lowest_cells
+        @_lowest_cells ||= metrics.flat_map do |metric|
           elements.map do |element|
             PivotCell.new metric, element
           end
         end
       end
 
+      def sub_totals
+        resettable_grain = row_totals ? row_axis.ids : []
+        resettable_grain += column_totals ? column_axis.ids : []
+        (0...resettable_grain.length).flat_map do |x|
+          reset = resettable_grain[x..-1]
+          elements.index_by do |element|
+            (pivot_grain - reset).map{|level_id| element[level_id]}
+          end.flat_map do |_sub_total_key, representative|
+            element = representative.locate reset: reset
+            metrics.map do |metric|
+              PivotCell.new(metric, element, reset)
+            end
+          end
+        end
+      end
+
       def transpose
         self.row_axis, self.column_axis = column_axis, row_axis
+        reload
       end
 
       def to_chart
-        cells.group_by do |cell|
+        lowest_cells.group_by do |cell|
           cell.to_axis_values(row_axis)
         end.map do |row_grain_values, cells|
           data = cells.inject(column_axis.flat_values_nil_hash) { |h, cell| h.merge! cell.to_axis_values(column_axis) => cell.value }
           {name: row_grain_values, data: data}
+        end
+      end
+
+      def to_csv
+        CSV.generate do |csv|
+          column_axis.add_header_column_cells_to_csv(csv, row_axis)
+          prev_row = nil
+          rows.each do |row|
+            csv << prev_row = row.to_a(previous: prev_row)
+          end
         end
       end
 
@@ -43,6 +86,14 @@ module Martyr
           cell.to_axis_values(row_axis, flat: false)
         end.map do |row_grain_values, cells|
           PivotRow.new(self, row_grain_values, cells)
+        end
+      end
+
+      private
+
+      def sort_cells(cells_arr)
+        cells_arr.sort_by do |cell|
+          pivot_grain.map{|level_id| cell[level_id] }
         end
       end
 

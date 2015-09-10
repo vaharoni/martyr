@@ -7,7 +7,7 @@ module Martyr
       attr_reader :definition_resolver
 
       include Martyr::Delegators
-      each_child_delegator :add_to_grain, :add_to_where, to: :slice_objects_scoped_to_cube
+      each_child_delegator :add_to_grain, :add_to_where, :add_to_dimension_scope, to: :slice_objects_scoped_to_cube
 
       include Martyr::Translations
 

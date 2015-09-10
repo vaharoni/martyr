@@ -7,7 +7,8 @@ module Martyr
         if operator.supported?
           operator.execute
         else
-          set_null_scope
+          # TODO: delete
+          # set_null_scope
         end
       end
     end

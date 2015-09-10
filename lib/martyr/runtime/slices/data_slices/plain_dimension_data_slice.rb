@@ -37,6 +37,28 @@ module Martyr
         @levels[level_id]
       end
 
+      # = Slicing the dimension
+
+      def add_to_dimension_scope(dimension_bus)
+        levels.keys.each do |level_id|
+          level_scope = dimension_bus.level_scope(level_id)
+          slice_definition = levels[level_id]
+
+          add_slice_to_dimension_level(level_scope, slice_definition)
+        end
+      end
+
+      def add_slice_to_dimension_level(level_scope, slice_definition)
+        return unless level_scope.sliceable?
+        if slice_definition.null?
+          level_scope.nullify
+        elsif slice_definition.with.present?
+          level_scope.slice_with(slice_definition.with)
+        end
+      end
+
+      # = Slicing the fact
+
       # TODO: change to something like set_grain_to_null_if_level_not_supported(level_id)
       def add_to_grain(grain)
         levels.keys.each {|level_id| grain.add_granularity(level_id) }
@@ -56,9 +78,6 @@ module Martyr
         level_scope = dimension_bus.level_scope(level_id)
         slice_definition = levels[level_id]
 
-        # Slicing the dimension level
-        add_slice_to_dimension_level(level_scope, slice_definition)
-
         # Building operator used to slice the fact
         FactScopeOperatorForDimension.new(level_scope.dimension_name, level_scope.name) do |operator|
           if slice_definition.null?
@@ -72,15 +91,6 @@ module Martyr
           else
             add_to_where_using_join_strategy(operator, dimension_bus.level_scope(common_denominator_level.id))
           end
-        end
-      end
-
-      def add_slice_to_dimension_level(level_scope, slice_definition)
-        return unless level_scope.sliceable?
-        if slice_definition.null?
-          level_scope.nullify
-        elsif slice_definition.with.present?
-          level_scope.slice_with(slice_definition.with)
         end
       end
 

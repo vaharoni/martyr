@@ -3,7 +3,7 @@ module Martyr
     class FactIndexer
 
       attr_reader :sub_cube, :facts
-      delegate :dimension_bus, to: :sub_cube
+      delegate :dimension_bus, :cube_name, to: :sub_cube
 
       def initialize(sub_cube, facts)
         @sub_cube = sub_cube

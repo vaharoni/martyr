@@ -13,8 +13,6 @@ module Martyr
       def initialize(query_context, *args)
         super(*args)
         @elements = query_context.elements(levels: pivot_grain, metrics: metrics)
-        row_axis.load_values(cells)
-        column_axis.load_values(cells)
       end
 
       def reload
@@ -49,11 +47,13 @@ module Martyr
           elements.index_by do |element|
             (pivot_grain - reset).map{|level_id| element[level_id]}
           end.flat_map do |_sub_total_key, representative|
-            element = representative.locate reset: reset
-            metrics.map do |metric|
-              PivotCell.new(metric, element, reset)
+            catch(:empty_element) do
+              element = representative.locate reset: reset
+              metrics.map do |metric|
+                PivotCell.new(metric, element, reset)
+              end
             end
-          end
+          end.compact
         end
       end
 
@@ -93,7 +93,7 @@ module Martyr
 
       def sort_cells(cells_arr)
         cells_arr.sort_by do |cell|
-          pivot_grain.map{|level_id| cell[level_id] }
+          pivot_grain.map{|level_id| cell[level_id] || '' }
         end
       end
 

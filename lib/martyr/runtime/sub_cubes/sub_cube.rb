@@ -7,7 +7,7 @@ module Martyr
 
       attr_reader :query_context, :cube, :fact_scopes, :metrics, :grain
       delegate :combined_sql, :pretty_sql, :test, :select_keys, to: :fact_scopes
-      delegate :cube_name, :dimension_associations, to: :cube
+      delegate :cube_name, :dimension_associations, :select_supported_level_ids, to: :cube
       delegate :supported_level_associations, :supported_level_definitions, :has_association_with_level?, to: :grain
       delegate :find_metric, :metric_ids, :metric_objects, :built_in_metrics, :custom_metrics, to: :metrics
       delegate :facts, to: :fact_indexer
@@ -71,14 +71,15 @@ module Martyr
       end
 
       def set_grain(grain_arr)
-        grain_arr.each do |level_id|
+        select_supported_level_ids(grain_arr).each do |level_id|
           @grain.add_granularity(level_id)
         end
       end
 
       def set_defaults_and_dependencies
         grain.set_all_if_empty
-        grain.nullify_scope_if_null(fact_scopes)
+        # TODO: delete
+        # grain.nullify_scope_if_null(fact_scopes)
       end
 
       def decorate_all_scopes(data_slice)
@@ -100,8 +101,13 @@ module Martyr
       # @option metrics [Array<String, BaseMetric>] array of metric IDs or metric objects to roll up in the elements.
       def elements(memory_slice, levels: nil, metrics: nil)
         level_ids = Array.wrap(levels).map { |x| to_id(x) }.presence || query_context.level_ids_in_grain
+        level_ids = select_supported_level_ids(level_ids)
         levels = query_context.levels_and_above_for(level_ids)
-        metrics = Array.wrap(metrics).map { |x| x.is_a?(String) ? definition_from_id(x) : x }.presence || self.metrics.values
+
+        metric_ids = Array.wrap(metrics).map { |x| to_id(x) }.presence || self.metrics.metric_ids
+        metric_ids = metric_ids & self.metrics.metric_ids
+        metrics = metric_ids.map {|id| query_context.metric(id) }
+
         fact_indexer.elements_by(memory_slice, levels.map(&:id)).each { |element| element.rollup(*metrics) }
       end
 

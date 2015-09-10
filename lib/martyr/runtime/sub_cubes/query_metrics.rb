@@ -54,6 +54,7 @@ module Martyr
       def metric_objects
         values
       end
+
     end
   end
 end

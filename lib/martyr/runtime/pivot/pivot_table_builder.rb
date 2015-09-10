@@ -59,22 +59,22 @@ module Martyr
         raise Query::Error.new('No rows were selected') unless on_rows_args.present?
         raise Query::Error.new('At least one metric has to be defined in pivot') unless metric_definition_count > 0
         raise Query::Error.new('Metrics can either be on columns or rows or in cells') if metric_definition_count > 1
-        PivotTable.new query_context, metrics: metrics, pivot_grain: pivot_grain,
+        PivotTable.new(query_context, metrics: metrics, pivot_grain: pivot_grain,
                        row_axis: axis_for(on_rows_args), column_axis: axis_for(on_columns_args),
-                       row_totals: row_totals, column_totals: column_totals
+                       row_totals: row_totals, column_totals: column_totals).reload
       end
       alias_method :table, :build
 
       private
 
       def metric?(id)
-        return true if id == ALL_METRICS_KEY
+        return true if id.to_s == ALL_METRICS_KEY
         query_context.metric? standardizer.standardize(id)
       end
 
       def validate_metrics_in_level_ids(level_ids)
         level_ids.each do |level_id|
-          next if level_id == ALL_METRICS_KEY
+          next if level_id.to_s == ALL_METRICS_KEY
           level_id = standardizer.standardize(level_id)
           raise Query::Error.new("#{level_id}: Cannot pivot on individual metrics. " +
                                      "Use 'metrics' for `on_columns` or `on_rows`, " +

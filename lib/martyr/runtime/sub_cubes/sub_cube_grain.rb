@@ -42,9 +42,10 @@ module Martyr
         end
       end
 
-      def nullify_scope_if_null(fact_scopes)
-        fact_scopes.set_null_scope if null?
-      end
+      # TODO: delete
+      # def nullify_scope_if_null(fact_scopes)
+      #   fact_scopes.set_null_scope if null?
+      # end
 
       # Adds all supported levels including and above the sliced level
       # @param fact_scopes [Runtime::FactScopeCollection]

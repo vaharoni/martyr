@@ -9,7 +9,7 @@ module Martyr
     end
 
     def find_or_error(name)
-      find_or_nil(name) || raise(Schema::Error.new "Could not find `#{name}`")
+      find_or_nil(name) || raise(Schema::Error.new "#{self.class.name}: Could not find `#{name}`")
     end
   end
 end

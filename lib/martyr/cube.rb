@@ -1,5 +1,6 @@
 module Martyr
-  class Cube
+  class Cube < BaseCube
+    extend Martyr::Translations
 
     def self.contained_cube_classes
       [self]
@@ -11,11 +12,10 @@ module Martyr
 
     # @return [Schema::Dimensions::DefinitionCollection]
     def self.dimension_definitions
-      @dimension_definitions ||= Schema::DimensionDefinitionCollection.new(parent_schema_class)
-    end
-
-    def self.new_query_context_builder
-      Runtime::QueryContextBuilder.new(self)
+      return @dimension_definitions if @dimension_definitions
+      @dimension_definitions = Schema::DimensionDefinitionCollection.new
+      @dimension_definitions.merge! parent_schema_class.dimension_definitions if parent_schema_class.present?
+      @dimension_definitions
     end
 
     def self.set_cube_name(value)
@@ -52,19 +52,15 @@ module Martyr
       dimension_definitions.all.slice(*dimension_associations.keys)
     end
 
-    def self.level_associations
-      dimension_associations.flat_map { |_name, dimension_association| dimension_association.level_objects }
+    # @param level_ids [Array<String>]
+    # @return [Array<String>] all ids that are supported by the cube through the dimension
+    def self.select_supported_level_ids(level_ids)
+      dimension_names = supported_dimension_definitions.keys
+      level_ids.select{|id| dimension_names.include? first_element_from_id(id) }
     end
 
-    # @param dimension_names
-    # @return [Runtime::DimensionScopeCollection] a collection with dimensions that maintain SQL scoped queries and
-    #   their results. All dimensions that have at least one level supported by the cube are included.
-    def self.build_dimension_scopes(dimension_names)
-      dimension_scopes = Runtime::DimensionScopeCollection.new(dimension_definitions)
-      supported_dimension_definitions.slice(*dimension_names).values.flat_map(&:level_objects).each do |level|
-        dimension_scopes.register_level(level)
-      end
-      dimension_scopes
+    def self.level_associations
+      dimension_associations.flat_map { |_name, dimension_association| dimension_association.level_objects }
     end
 
   end

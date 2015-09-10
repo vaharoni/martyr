@@ -24,7 +24,11 @@ module Martyr
         @slice_definition
       end
 
-      def add_to_grain(_)
+      def add_to_dimension_scope(*)
+        # no-op
+      end
+
+      def add_to_grain(*)
         # no-op
       end
 

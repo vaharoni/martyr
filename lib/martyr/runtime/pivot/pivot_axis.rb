@@ -39,6 +39,14 @@ module Martyr
         @values ||= cells.map { |cell| hash_grain_value_for(cell) }.uniq
       end
 
+      def index_values_lookup
+        @index_values_lookup ||= Hash[values.each_with_index.map{|value_hash, i| [value_hash, i]}]
+      end
+
+      def sort_cells_by_values(cells)
+        cells.sort_by{|cell| index_values_lookup[hash_grain_value_for(cell)]}
+      end
+
       def flat_values_nil_hash
         Hash[values.map{|hash| [hash.values.join(' : '), nil]}]
       end

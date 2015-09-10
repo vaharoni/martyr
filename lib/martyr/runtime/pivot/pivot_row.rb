@@ -10,7 +10,7 @@ module Martyr
       def initialize(pivot_table, header, cells)
         @pivot_table = pivot_table
         @header = header
-        @cells = cells
+        @cells = column_axis.sort_cells_by_values(cells)
       end
 
       def inspect
@@ -22,7 +22,8 @@ module Martyr
       def to_a(previous: nil)
         row_arr = header.values + cells_by_column_headers.values.map(&:value)
         return row_arr unless previous
-        row_arr.each_with_index.map{|x, i| i < header.length && x.chomp(PivotCell::TOTAL_VALUE) == previous[i] ? nil : x}
+        row_arr
+        # row_arr.each_with_index.map{|x, i| i < header.length && x.try(:chomp, PivotCell::TOTAL_VALUE) == previous[i] ? nil : x}
       end
 
       # = Value retrieval

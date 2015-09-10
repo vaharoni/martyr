@@ -24,7 +24,7 @@ module Martyr
       end
 
       def metrics
-        sub_cubes.flat_map{|sub_cube| sub_cube.metric_objects}
+        sub_cubes.flat_map { |sub_cube| sub_cube.metric_objects }
       end
 
       def metric_ids
@@ -36,7 +36,7 @@ module Martyr
         metric_ids_lookup[id]
       end
 
-       # @param id [String] has to be fully qualified (cube_name.metric_name)
+      # @param id [String] has to be fully qualified (cube_name.metric_name)
       def metric?(id)
         !!metric(id)
       end
@@ -50,8 +50,7 @@ module Martyr
       def validate_slice_on!(slice_on)
         slice_on_object = definition_from_id(slice_on)
         raise Query::Error.new("Cannot find `#{slice_on}`") unless slice_on_object
-        raise Query::Error.new("Cannot slice on `#{slice_on}`: it is not in the grain") if
-          slice_on_object.is_a?(Martyr::Level) and !supported_level_ids.include?(slice_on)
+        raise Query::Error.new("Cannot slice on `#{slice_on}`: it is not in the grain") if slice_on_object.is_a?(Martyr::Level) and !supported_level_ids.include?(slice_on)
         true
       end
 
@@ -69,18 +68,24 @@ module Martyr
 
       # = Run
 
-      # TODO: support multiple sub cubes
-
-      def facts
-        map_reduce_sub_cubes(&:facts)
+      # @option cube_name [String, Symbol] default is first cube 
+      # @return [Array<Fact>] of the chosen cube
+      def facts(cube_name = nil)
+        cube_name ||= default_cube.cube_name
+        sub_cubes_hash[cube_name.to_s].facts
       end
 
       def elements(**options)
-        map_reduce_sub_cubes do |sub_cube|
+        builder = VirtualElementsBuilder.new
+        sub_cubes.each do |sub_cube|
           memory_slice.for_cube_name(sub_cube.cube_name) do |scoped_memory_slice|
-            sub_cube.elements(scoped_memory_slice, **options)
+            builder.add elements: sub_cube.elements(scoped_memory_slice, **options),
+              cube_name: sub_cube.cube_name,
+              memory_slice: scoped_memory_slice,
+              fact_indexer: sub_cube.fact_indexer
           end
         end
+        builder.build
       end
 
       def pivot
@@ -92,7 +97,7 @@ module Martyr
       # @return [BaseMetric, DimensionReference, BaseLevelDefinition]
       def definition_from_id(id)
         with_standard_id(id) do |x, y|
-          return dimension_scopes[x].try(:dimension_definition) || sub_cubes.first.metrics[x] if !y
+          return dimension_scopes[x].try(:dimension_definition) || default_cube.metrics[x] if !y
           return sub_cubes_hash[x].find_metric(y) if sub_cubes_hash[x]
           dimension_scopes.find_level(id).try(:level_definition)
         end
@@ -124,24 +129,21 @@ module Martyr
       end
 
       def standardizer
-        @standardizer ||= Martyr::MetricIdStandardizer.new(sub_cubes.first.cube_name, raise_if_not_ok: sub_cubes.length > 1)
+        @standardizer ||= Martyr::MetricIdStandardizer.new(default_cube.cube_name, raise_if_not_ok: virtual_cube?)
       end
 
       private
 
-      def map_reduce_sub_cubes
-        if sub_cubes_hash.length == 1
-          yield sub_cubes.first
-        else
-          arr = sub_cubes_hash.map do |sub_cube_name, sub_cube|
-            [sub_cube_name, yield(sub_cube)]
-          end
-          Hash[arr]
-        end
-      end
-
       def metric_ids_lookup
         @metric_ids_lookup ||= metrics.index_by(&:id)
+      end
+
+      def virtual_cube?
+        sub_cubes.length > 1
+      end
+
+      def default_cube
+        sub_cubes.first
       end
 
     end

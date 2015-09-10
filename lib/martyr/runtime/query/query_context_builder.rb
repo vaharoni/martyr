@@ -9,7 +9,7 @@ module Martyr
       include Martyr::Translations
 
       attr_reader :cube
-      delegate :elements, :facts, to: :build
+      delegate :elements, :facts, :pivot, to: :build
 
       def initialize(cube)
         @cube = cube
@@ -66,7 +66,7 @@ module Martyr
         setup_context_dimension_scopes(context)
         setup_context_sub_cubes_metrics_and_grain(context)
         setup_context_data_slice(context)
-        setup_all_sub_cube_scopes(context)
+        decorate_all_scopes(context)
         context
       end
 
@@ -78,11 +78,10 @@ module Martyr
         if @granulate_args.present?
           context.level_ids_in_grain = @granulate_args
         else
-          # Finding common denominator of levels across all cubes
-          levels_per_cube = cube.contained_cube_classes.map do |cube_class|
+          all_level_ids_from_cubes = cube.contained_cube_classes.flat_map do |cube_class|
             lowest_level_of(cube_class.level_associations).flat_map { |assoc| assoc.level_definition.level_and_above.map(&:id) }
           end
-          context.level_ids_in_grain = levels_per_cube.inject(levels_per_cube.first) { |arr, next_cube_levels| arr & next_cube_levels }
+          context.level_ids_in_grain = all_level_ids_from_cubes.uniq
         end
       end
 
@@ -111,7 +110,8 @@ module Martyr
         context.dimension_scopes = cube.build_dimension_scopes(relevant_dimensions.uniq)
       end
 
-      def setup_all_sub_cube_scopes(context)
+      def decorate_all_scopes(context)
+        context.data_slice.add_to_dimension_scope(context)
         context.sub_cubes_hash.each do |cube_name, sub_cube|
           context.data_slice.for_cube_name(cube_name) { |scoped_data_slice| sub_cube.decorate_all_scopes(scoped_data_slice) }
         end

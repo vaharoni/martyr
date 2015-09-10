@@ -2,10 +2,11 @@ module Martyr
   module Runtime
     class Element < HashWithIndifferentAccess
 
-      attr_reader :facts
+      attr_reader :facts, :metrics
       delegate :grain_hash, to: :coordinates_object
+      delegate :cube_name, to: :@address_resolver
 
-      # @param address_resolver [#element_by_memory_slice]
+      # @param address_resolver [#dimension_bus, #get_element, #cube_name]
       # @param grain [Hash] {level_name => level_value}
       # @param facts [Array<Fact>]
       # @param memory_slice [MemorySlice]
@@ -34,7 +35,7 @@ module Martyr
           slice_hash = { several_variants[0] => several_variants[1] }
           reset_arr = []
         elsif several_variants.length == 1 and several_variants.first.is_a?(Hash)
-          slice_hash = several_variants.first
+          slice_hash = several_variants.first.dup
           standardizer = slice_hash.delete(:standardizer) || MetricIdStandardizer.new
           exclude_metric_ids = slice_hash.delete(:exclude_metric_ids)
           reset_arr = Array.wrap(slice_hash.delete(:reset))

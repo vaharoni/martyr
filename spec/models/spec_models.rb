@@ -28,6 +28,10 @@ module MartyrSpec
       query_level :invoice, -> { Invoice.all }, label_expression: "'invoice-' || invoices.id", fact_key: 'invoices.id', fact_alias: 'invoice_id'
       query_level :invoice_line, -> { InvoiceLine.all }, label_expression: "'invoice-line-' || invoice_lines.id", fact_key: 'invoice_lines.id', fact_alias: 'invoice_line_id'
     end
+
+    define_dimension :playlists do
+      query_level :name, -> { Playlist.all }, label_key: 'name'
+    end
   end
 
   class DegeneratesAndBottomLevels < Common
@@ -232,4 +236,46 @@ module MartyrSpec
         group('invoices.customer_id')
     end
   end
+
+  # = Virtual Cubes
+
+  class InvoiceCube < Common
+    set_cube_name :invoices_cube
+
+    # Degenerates
+    has_dimension_level :genres, :name
+    has_dimension_level :media_types, :name
+
+    # Bottom levels
+    has_dimension_level :customers, :last_name
+    has_dimension_level :invoices, :invoice_line
+    has_dimension_level :albums, :track
+
+    has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
+    has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+
+    main_query do
+      InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
+    end
+  end
+
+  class PlaylistCube < Common
+    set_cube_name :playlists_cube
+
+    has_dimension_level :playlists, :name, fact_key: 'playlists.id', fact_alias: 'playlist_id'
+    has_dimension_level :genres, :name
+    has_dimension_level :media_types, :name
+
+    has_sum_metric :tracks_count, 'COUNT(playlists.id)'
+
+    main_query do
+      Playlist.joins(tracks: [:genre, :media_type])
+    end
+  end
+
+  class VirtualCubeTest < Martyr::VirtualCube
+    use_cube 'MartyrSpec::PlaylistCube'
+    use_cube 'MartyrSpec::InvoiceCube'
+  end
+
 end

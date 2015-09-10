@@ -69,7 +69,7 @@ module Martyr
       end
 
       def for_cube_name(cube_name)
-        @cube_name_scope = cube_name
+        @cube_name_scope = cube_name.to_s
         return_value = yield self
         @cube_name_scope = nil
         return_value

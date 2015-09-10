@@ -6,37 +6,45 @@ module Martyr
       attr_reader :query_context, :on_columns_args, :on_rows_args, :in_cells_arg, :row_totals, :column_totals
       delegate :standardizer, :definition_from_id, to: :query_context
 
-      delegate :cells, :elements, :to_chart, to: :table
+      delegate :cells, :elements, :to_chart, :to_csv, to: :table
 
       def initialize(query_context)
         @query_context = query_context
         @on_columns_args = []
         @on_rows_args = []
-        @row_totals = true
-        @column_totals = true
+        @row_totals = false
+        @column_totals = false
       end
 
       def select(*metric_ids)
-        @metrics = standardizer.standardize(metric_ids)
-        self
+        dup.instance_eval do
+          @metrics = standardizer.standardize(metric_ids)
+          self
+        end
       end
 
       def on_columns(*level_ids)
-        validate_metrics_in_level_ids(level_ids)
-        @on_columns_args = level_ids.uniq
-        self
+        dup.instance_eval do
+          validate_metrics_in_level_ids(level_ids)
+          @on_columns_args = level_ids.uniq
+          self
+        end
       end
 
       def on_rows(*level_ids)
-        validate_metrics_in_level_ids(level_ids)
-        @on_rows_args = level_ids.uniq
-        self
+        dup.instance_eval do
+          validate_metrics_in_level_ids(level_ids)
+          @on_rows_args = level_ids.uniq
+          self
+        end
       end
 
       def with_totals(rows: true, columns: true)
-        @row_totals = !!rows
-        @column_totals = !!columns
-        self
+        dup.instance_eval do
+          @row_totals = !!rows
+          @column_totals = !!columns
+          self
+        end
       end
 
       def in_cells(metric_id)

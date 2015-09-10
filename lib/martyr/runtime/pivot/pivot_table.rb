@@ -26,7 +26,7 @@ module Martyr
       end
 
       def inspect
-        {metrics: metrics.map(&:id), levels: pivot_grain, on_rows: row_axis, on_columns: column_axis}.inspect
+        {metrics: metrics.map(&:id), levels: pivot_grain, on_rows: row_axis, on_columns: column_axis, totals: {rows: row_totals, columns: column_totals}}.inspect
       end
 
       def cells
@@ -63,7 +63,7 @@ module Martyr
       end
 
       def to_chart
-        lowest_cells.group_by do |cell|
+        cells.group_by do |cell|
           cell.to_axis_values(row_axis)
         end.map do |row_grain_values, cells|
           data = cells.inject(column_axis.flat_values_nil_hash) { |h, cell| h.merge! cell.to_axis_values(column_axis) => cell.value }

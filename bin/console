@@ -8,10 +8,56 @@ require_relative "../spec/models/spec_models"
 
 ActiveRecord::Base.logger = Logger.new(STDOUT)
 
-# You can add fixtures and/or initialization code here to make experimenting
-# with your gem easier. You can also use a different console, if you like.
+module Martyr
+  def self.reload!
+    Reloader.new(self).reload
+  end
 
-# (If you use this, don't forget to add pry to your Gemfile!)
+  class Reloader
+    def initialize(top)
+      @top = top
+    end
+
+    def reload
+      cleanup
+      load_all
+    end
+
+    private
+
+    def all_project_objects_lookup
+      @_all_project_objects_lookup ||= Hash[all_project_objects.map{|x| [x, true]}]
+    end
+
+    def all_project_objects(current = @top)
+      if current.is_a?(Module) and current.to_s.split('::').first == @top.to_s
+        [current] + current.constants.flat_map{|x| all_project_objects(current.const_get(x))}
+      else
+        []
+      end
+    end
+
+    def cleanup(parent = Object, current = @top)
+      return unless all_project_objects_lookup[current]
+      current.constants.each {|const| cleanup current, current.const_get(const)}
+      parent.send(:remove_const, current.to_s.split('::').last.to_sym)
+    end
+
+    def loaded_files
+      $LOADED_FEATURES.select{|x| x.starts_with?(File.expand_path('../../lib/martyr'))}
+    end
+
+    def load_all
+      loaded_files.each{|x| load x}
+      true
+    end
+  end
+end
+
+def reload!
+  Martyr.reload!
+end
+
 require "pry"
 Pry.start
 

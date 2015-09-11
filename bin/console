@@ -30,11 +30,8 @@ module Martyr
     end
 
     def all_project_objects(current = @top)
-      if current.is_a?(Module) and current.to_s.split('::').first == @top.to_s
-        [current] + current.constants.flat_map{|x| all_project_objects(current.const_get(x))}
-      else
-        []
-      end
+      return [] unless current.is_a?(Module) and current.to_s.split('::').first == @top.to_s
+      [current] + current.constants.flat_map{|x| all_project_objects(current.const_get(x))}
     end
 
     def cleanup(parent = Object, current = @top)

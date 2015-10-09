@@ -74,6 +74,10 @@ module Martyr
 
       # = Building steps
 
+      # Step 1
+      # Add all levels to the query grain. If the user provided the grain using #granulate, simply add it.
+      # If not - all levels will be added to the query, in a hierarchy-aware way. Namely, if a dimension has levels
+      # L1, L2, L3 and the cube has L2 in its grain, the higher level (less-detailed) L1 will also be added.
       def setup_context_grain(context)
         if @granulate_args.present?
           context.level_ids_in_grain = @granulate_args
@@ -85,6 +89,19 @@ module Martyr
         end
       end
 
+      # Step 2 (relies on Step 1)
+      # Build the dimension scope objects supported by the grain.
+      def setup_context_dimension_scopes(context)
+        relevant_dimensions = context.level_ids_in_grain.map { |x| first_element_from_id(x) }
+        context.dimension_scopes = cube.build_dimension_scopes(relevant_dimensions.uniq)
+      end
+
+      # Step 3
+      # Setup the sub cubes, metrics, and grain for all cubes. Note that each cube only takes the levels of dimensions
+      # it supports. That said, if dimension has levels L1, L2, L3 and a cube supports only L1 and L2, if L3 is
+      # requested it will yield an empty cube.
+      # If no metrics were given, select all.
+      # If no grain was given, select all levels - separately for each cube.
       def setup_context_sub_cubes_metrics_and_grain(context)
         cube.contained_cube_classes.index_by(&:cube_name).each do |cube_name, cube_class|
           sub_cube = Runtime::SubCube.new(context, cube_class)
@@ -95,21 +112,21 @@ module Martyr
             sub_cube.set_all_metrics
           end
           sub_cube.set_grain(@granulate_args)
-          sub_cube.set_defaults_and_dependencies
+          sub_cube.set_grain_to_all_if_empty
         end
       end
 
+      # Step 4
+      # Sets the data slice. Note that no slicing actually occurs - only setup.
       def setup_context_data_slice(context)
         @data_slice.each do |slice_on, slice_definition|
           context.data_slice.slice(slice_on, slice_definition)
         end
       end
 
-      def setup_context_dimension_scopes(context)
-        relevant_dimensions = context.level_ids_in_grain.map { |x| first_element_from_id(x) } + context.data_slice.dimension_names
-        context.dimension_scopes = cube.build_dimension_scopes(relevant_dimensions.uniq)
-      end
-
+      # Step 5 (depends on steps 3 and 4)
+      # All scopes are altered to represent the necessary queries - fact scopes (select, where, and group by) and
+      # dimension scopes (where)
       def decorate_all_scopes(context)
         context.data_slice.add_to_dimension_scope(context)
         context.sub_cubes_hash.each do |cube_name, sub_cube|

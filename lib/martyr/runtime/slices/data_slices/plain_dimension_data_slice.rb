@@ -25,8 +25,6 @@ module Martyr
         dimension_definition.name
       end
 
-      # Sets the slice if this is the first time the dimension slice was referenced or if the level is equal to or lower
-      # than the existing slice's level
       # @param level [BaseLevelDefinition]
       def set_slice(level, **options)
         @levels[level.id] = PlainDimensionLevelSliceDefinition.new(level: level, **options)

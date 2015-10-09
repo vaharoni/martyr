@@ -15,6 +15,7 @@ module Martyr
       def build
         return collections.first.elements if collections.length == 1
         locators = @collections.map(&:to_locator)
+
         level_values.first.product(*level_values[1..-1]).map do |grain_values|
           grain_arr = levels.each_with_index.map { |level, i| [level, grain_values[i]] }
           elm = VirtualElement.new(Hash[grain_arr], locators)
@@ -55,7 +56,7 @@ module Martyr
 
       class ElementsFromOneSubCube
         include ActiveModel::Model
-        attr_accessor :elements, :cube_name, :memory_slice, :fact_indexer
+        attr_accessor :elements, :cube_name, :memory_slice, :address_resolver
 
         def default_element
           elements.first
@@ -77,15 +78,10 @@ module Martyr
           levels.include?(level) ? elements.map { |x| x[level] }.uniq : []
         end
 
-        def select_supported_levels(levels_arr)
-          levels_arr & levels
-        end
-
         def to_locator
-          RealElementLocator.new grain_levels: levels, cube_name: cube_name, memory_slice: memory_slice,
-            fact_indexer: fact_indexer, metrics: metrics
+          ElementLocator.new cube_name: cube_name, memory_slice: memory_slice, address_resolver: address_resolver,
+            metrics: metrics, restrict_levels: levels
         end
-
       end
 
     end

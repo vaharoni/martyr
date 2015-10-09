@@ -76,10 +76,8 @@ module Martyr
         end
       end
 
-      def set_defaults_and_dependencies
+      def set_grain_to_all_if_empty
         grain.set_all_if_empty
-        # TODO: delete
-        # grain.nullify_scope_if_null(fact_scopes)
       end
 
       def decorate_all_scopes(data_slice)

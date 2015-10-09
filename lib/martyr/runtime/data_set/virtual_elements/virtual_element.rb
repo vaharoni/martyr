@@ -1,5 +1,26 @@
 module Martyr
   module Runtime
+
+    # A virtual element is an element that does not really exist, because its grain is comprised of multiple cubes
+    # that do not make sense together.
+    #
+    # It is only useful in the context of relaxing some dimensions in the process of building totals.
+    #
+    # Example:
+    #
+    #     Cube 1
+    #       genres.name     media_types.name    playlists.name      tracks_count
+    #       Rock            CD                  My playlist         10
+    #
+    #     Cube 2
+    #        genres.name    media_types.name    customers.country   units_sold
+    #        Rock           CD                  France              95
+    #
+    #     Virtual elements
+    #        genres.name    media_types.name    playlists.name    customers.country       tracks_count    units_sold
+    #        Rock           CD                  My playlist
+    #
+
     class VirtualElement
 
       attr_reader :grain_hash, :locators, :real_elements

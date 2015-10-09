@@ -347,4 +347,3 @@ describe 'Runtime Queries' do
 
 
 end
-

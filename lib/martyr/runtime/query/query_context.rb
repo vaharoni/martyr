@@ -78,12 +78,12 @@ module Martyr
       def elements(**options)
         builder = VirtualElementsBuilder.new
         sub_cubes.each do |sub_cube|
-          memory_slice.for_cube_name(sub_cube.cube_name) do |scoped_memory_slice|
-            builder.add elements: sub_cube.elements(scoped_memory_slice, **options),
-              cube_name: sub_cube.cube_name,
-              memory_slice: scoped_memory_slice,
-              fact_indexer: sub_cube.fact_indexer
+          elements = memory_slice.for_cube_name(sub_cube.cube_name) do |scoped_memory_slice|
+            sub_cube.elements(scoped_memory_slice, **options)
           end
+
+          builder.add elements: elements, cube_name: sub_cube.cube_name, memory_slice: memory_slice,
+                      address_resolver: sub_cube.fact_indexer
         end
         builder.build
       end

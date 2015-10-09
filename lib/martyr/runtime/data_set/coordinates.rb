@@ -1,8 +1,25 @@
 module Martyr
   module Runtime
+
+    # This is a data object that reflects a coordinate of a real or virtual element.
+    # Use the #locate method to change the coordinate by adding a slice or resetting.
+
     class Coordinates
       include ActiveModel::Model
       include Martyr::Translations
+
+      # @attribute grain_hash [Hash] hash representing the grain level ids and current value for each. This is the
+      #   "address" of the element.
+      #
+      # @attribute memory_slice [MemorySlice] a memory slice is really the base of any address. If the memory slice is
+      #   {'customers.country' => 'USA'}, then a grain that includes {'genres.name' => 'Rock'} will have to be merged
+      #   with the memory slice to form the coordinates {'customers.country' => 'USA', 'genres.name' => 'Rock'}.
+      #   This is particularly useful when 'customers.country' is sliced on "in the background", not as part of the
+      #   columns and rows the user is building a report on.
+      #
+      # @attribute dimension_bus [#definition_from_id] used to know whether the user is asking to change a metric or
+      #   a level.
+      #
 
       attr_accessor :grain_hash, :memory_slice, :dimension_bus
       delegate :definition_from_id, to: :dimension_bus
@@ -19,10 +36,6 @@ module Martyr
         memory_slice.to_hash.merge!(grain_coordinates)
       end
 
-      def locate(*args)
-        dup.locate!(*args)
-      end
-
       # @examples
       #   locate('customers.city', with: 'Dover')
       #   locate('customers.city' => {with: 'Dover'}, 'customers.country' => {with: 'USA'}, 'cube.amount' => {gt: 10}, reset: ['genres.name', 'media_types.*'])
@@ -33,6 +46,12 @@ module Martyr
       # contain 'customers.city' in neither examples, even though in the first two example it might be convenient to
       # have customers.city in the grain.
       #
+      def locate(*args)
+        dup.locate!(*args)
+      end
+
+      private
+
       def locate!(slice_hash={}, reset: [])
         reset.each { |reset_on| reset!(reset_on) }
         set!(slice_hash)
@@ -64,8 +83,6 @@ module Martyr
         end
         self
       end
-
-      private
 
       def grain_coordinates
         grain_hash.inject({}) { |h, (level_id, level_value)| h[level_id] = {with: level_value}; h }

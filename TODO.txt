@@ -1,0 +1,43 @@
+- QueryContext currently only supports one #slice operation. It should really return a decorator of itself that allies
+  the memory slice on it.
+
+- The #for_cube_name method on both memory slices and data slices is dangerous - once the block returns the object's
+  scoping is useless. Create either one decorator for both, or a different decorator for each one that acts as a filter.
+
+- Coordinate currently communicate with the memory slice in order to reset and set its values. This is useless, memory
+  slice should be immutable to the cells, otherwise custom rollups that reset dimension level on a memory slice 2:
+  <data slice 1> + <memory slice 2> will return a different value than the same custom rollup on data slice 3:
+  <data slice 3> = <data slice 1> + <memory slice 2> though they should be the same.
+
+  E.g., the rollup:
+  has_custom_rollup :usa_amount, ->(fact_set) { fact_set.locate('customers.country', with: 'USA')['amount'] }
+
+  Will have different result for these two:
+  Cube.slice('customers.country', with: 'France').build   # => rollup will not be able to locate USA element
+  Cube.build.slice('customers.country', with: 'France')   # => rollup will be able to locate USA element
+
+- Virtual cube builder needs fixing. The #build method with all combinations is not working right. It should be
+  transitioned to something more performing that does not rely on all possible combinations.
+
+- Coordinate, ElementLocator and FactIndexer all do things very similar. Why do we need ElementLocator when we have
+  FactIndexer? Does Coordinates really need to know about MemorySlice? Can ElementLocator have an #all method?
+
+
+  If memory slice is immutable, while FactIndexer holds all facts and is able to address multiple memory slices,
+  it makes sense to have an element locator that is cube-specific and memory-slice-specific, so the user does not need
+  to provide the memory slice every time a cell is needed.
+  In this case, the locator is injected to the element to perform location search operations.
+
+  Coordinates does not need to contain a memory slice. Any attempt to go outside the slice will yield an empty cell.
+  So it's simply a hash. We can further remove the knowledge of coordinates about what is a level and what is a
+  metric by having this be resolved by the ElementLocator (it has to know fact indexer anyways).
+
+  VirtualElement #locate will continue to be as today - delegating to the individual locators.
+
+  VirtualElementBuilder can be simplified - it can simply be provided with the locators, which now will know how to
+  fetch all elements if necessary. --> Although: locator should not hold the level ids.. elements grain is really
+  based on the pivot grain which can be different than the sub cube grain, and can change dynamically based on whether
+  totals are calculated. So perhaps it's better to have the locator be unrelated to the #elements operation.
+  Actually, it can be injected into elements instead of memory slice!
+
+  Standardization of metric names can be moved to the locator too, so "dirty" user input is handled in one place.

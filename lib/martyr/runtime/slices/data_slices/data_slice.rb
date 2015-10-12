@@ -3,11 +3,10 @@ module Martyr
     class DataSlice
 
       attr_accessor :slices
-
       attr_reader :definition_resolver
 
       include Martyr::Delegators
-      each_child_delegator :add_to_grain, :add_to_where, :add_to_dimension_scope, to: :slice_objects_scoped_to_cube
+      each_child_delegator :add_to_grain, :add_to_where, :add_to_dimension_scope, to: :slice_objects
 
       include Martyr::Translations
 
@@ -16,7 +15,7 @@ module Martyr
       # @param definition_resolver [#definition_from_id]
       def initialize(definition_resolver)
         @definition_resolver = definition_resolver
-        @slices = {}
+        @slices = ScopeableSliceData.new
       end
 
       def inspect
@@ -40,8 +39,8 @@ module Martyr
       # @param slice_definition [Hash]
       def slice(slice_on, slice_definition)
         slice_on_object = definition_object_for(slice_on)
-        @slices[slice_on_object.slice_id] ||= slice_on_object.build_data_slice
-        @slices[slice_on_object.slice_id].set_slice(slice_on_object, **slice_definition.symbolize_keys)
+        slices[slice_on_object.slice_id] ||= slice_on_object.build_data_slice
+        slices[slice_on_object.slice_id].set_slice(slice_on_object, **slice_definition.symbolize_keys)
       end
 
       def slice_objects
@@ -53,17 +52,17 @@ module Martyr
         slices.reject{|_slice_id, slice_object| slice_object.is_a?(MetricDataSlice)}.keys
       end
 
-      # = Applying slices
-
+      # @param cube_name [String]
+      # @return [DataSlice] new object with a new ScopeableDataSliceData object set to be scoped to cube_name
       def for_cube_name(cube_name)
-        @cube_name_scope = cube_name
-        yield self
-        @cube_name_scope = nil
+        dup.for_cube_name!(cube_name)
       end
 
-      def slice_objects_scoped_to_cube
-        return slice_objects unless @cube_name_scope
-        slice_objects.select{|x| x.respond_to?(:cube_name) ? x.cube_name == @cube_name_scope : true}
+      # @param cube_name [String]
+      # @return [DataSlice] same object with a new ScopeableDataSliceData object set to be scoped to cube_name
+      def for_cube_name!(cube_name)
+        self.slices = slices.scope(cube_name)
+        self
       end
 
     end

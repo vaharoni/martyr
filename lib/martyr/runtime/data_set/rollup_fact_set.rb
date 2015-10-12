@@ -17,6 +17,7 @@ module Martyr
       end
       alias_method :[], :fetch
 
+
       # @return [FactSet]
       def locate(*args, **options)
         new_element = @element.locate(*args, standardizer: standardizer, exclude_metric_ids: metric_id, **options)

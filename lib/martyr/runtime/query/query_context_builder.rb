@@ -89,10 +89,11 @@ module Martyr
         end
       end
 
-      # Step 2 (relies on Step 1)
-      # Build the dimension scope objects supported by the grain.
+      # Step 2 (relies on Steps 1)
+      # Build the dimension scope objects supported by the grain AND slices.
+      #   DegeneratesAndBottomLevels.granulate('genres.name', 'media_types.name').slice('customers.country', with: 'USA')
       def setup_context_dimension_scopes(context)
-        relevant_dimensions = context.level_ids_in_grain.map { |x| first_element_from_id(x) }
+        relevant_dimensions = (context.level_ids_in_grain + @data_slice.keys).map { |x| first_element_from_id(x) }
         context.dimension_scopes = cube.build_dimension_scopes(relevant_dimensions.uniq)
       end
 
@@ -130,7 +131,7 @@ module Martyr
       def decorate_all_scopes(context)
         context.data_slice.add_to_dimension_scope(context)
         context.sub_cubes_hash.each do |cube_name, sub_cube|
-          context.data_slice.for_cube_name(cube_name) { |scoped_data_slice| sub_cube.decorate_all_scopes(scoped_data_slice) }
+          sub_cube.decorate_all_scopes context.data_slice.for_cube_name(cube_name)
         end
       end
 

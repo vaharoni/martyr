@@ -80,6 +80,7 @@ module Martyr
         grain.set_all_if_empty
       end
 
+      # @param data_slice [DataSlice] that is scoped to the cube
       def decorate_all_scopes(data_slice)
         grain.add_to_select(fact_scopes)
         metrics.add_to_select(fact_scopes)
@@ -89,24 +90,37 @@ module Martyr
 
       # = Running
 
-      def fact_indexer
-        @fact_indexer ||= FactIndexer.new(self, grain.null? ? [] : fact_scopes.run.map { |hash| Fact.new(self, hash) })
-      end
-
       # @param memory_slice [MemorySlice]
       # @option levels [Array<String, Martyr::Level>] array of level IDs or any type of level to group facts by.
       #   Default is all levels in the query context.
       # @option metrics [Array<String, BaseMetric>] array of metric IDs or metric objects to roll up in the elements.
       def elements(memory_slice, levels: nil, metrics: nil)
-        level_ids = Array.wrap(levels).map { |x| to_id(x) }.presence || query_context.level_ids_in_grain
-        level_ids = select_supported_level_ids(level_ids)
-        levels = query_context.levels_and_above_for(level_ids)
+        element_locator_for(memory_slice, metrics: metrics).all(sanitize_levels(levels: levels).map(&:id))
+      end
 
+      def element_locator_for(memory_slice, metrics: nil)
+        ElementLocator.new memory_slice: memory_slice, metrics: sanitize_metrics(metrics: metrics),
+          fact_indexer: fact_indexer, restrict_level_ids: sanitize_metrics.map(&:id)
+      end
+
+      def fact_indexer
+        @fact_indexer ||= FactIndexer.new(self, grain.null? ? [] : fact_scopes.run.map { |hash| Fact.new(self, hash) })
+      end
+
+      # @option metrics [Array<String, BaseMetric>] array of metric IDs or metric objects
+      def sanitize_metrics(metrics: nil)
         metric_ids = Array.wrap(metrics).map { |x| to_id(x) }.presence || self.metrics.metric_ids
         metric_ids = metric_ids & self.metrics.metric_ids
-        metrics = metric_ids.map {|id| query_context.metric(id) }
+        metric_ids.map {|id| query_context.metric(id) }
+      end
 
-        fact_indexer.elements_by(memory_slice, levels.map(&:id)).each { |element| element.rollup(*metrics) }
+      # @option levels [Array<String, Martyr::Level>] array of level IDs or any type of level to group facts by.
+      #   Default is all levels in the query context.
+      # @return [Array<BaseLevelScope>]
+      def sanitize_levels(levels: nil)
+        level_ids = Array.wrap(levels).map { |x| to_id(x) }.presence || query_context.level_ids_in_grain
+        level_ids = select_supported_level_ids(level_ids)
+        query_context.levels_and_above_for(level_ids)
       end
 
     end

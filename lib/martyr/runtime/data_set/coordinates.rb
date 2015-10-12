@@ -1,56 +1,54 @@
 module Martyr
   module Runtime
-
-    # This is a data object that reflects a coordinate of a real or virtual element.
-    # Use the #locate method to change the coordinate by adding a slice or resetting.
-
     class Coordinates
       include ActiveModel::Model
       include Martyr::Translations
 
-      # @attribute grain_hash [Hash] hash representing the grain level ids and current value for each. This is the
-      #   "address" of the element.
-      #
-      # @attribute memory_slice [MemorySlice] a memory slice is really the base of any address. If the memory slice is
-      #   {'customers.country' => 'USA'}, then a grain that includes {'genres.name' => 'Rock'} will have to be merged
-      #   with the memory slice to form the coordinates {'customers.country' => 'USA', 'genres.name' => 'Rock'}.
-      #   This is particularly useful when 'customers.country' is sliced on "in the background", not as part of the
-      #   columns and rows the user is building a report on.
-      #
-      # @attribute dimension_bus [#definition_from_id] used to know whether the user is asking to change a metric or
-      #   a level.
-      #
+      # @attribute coordinates_hash [Hash] with keys of the form:
+      #     'dimension_name.level_name'
+      #     'cube_name.metric_name'
+      #   and values representing the slice
 
-      attr_accessor :grain_hash, :memory_slice, :dimension_bus
-      delegate :definition_from_id, to: :dimension_bus
+      attr_reader :grain_hash, :memory_slice_hash
 
-      def inspect
-        to_hash.inspect
+      # @param grain_hash [Hash] of the structure level_id => value.
+      #   Note that it does not include metrics, and other background restrictions on the slice
+      # @param memory_slice_hash [Hash]
+      def initialize(grain_hash, memory_slice_hash)
+        @grain_hash = grain_hash
+        @memory_slice_hash = memory_slice_hash
+      end
+
+      # @return [Hash] of coordinates that can get the same element when sent to a QueryContextBuilder#slice
+      def to_hash
+        memory_slice_hash.merge(grain_coordinates)
+      end
+
+      # @return [Array<String>]
+      def grain_level_ids
+        grain_hash.keys
+      end
+
+      # @return [Hash] of the grain in a format that is understood by QueryContextBuilder#slice
+      def grain_coordinates
+        grain_hash.inject({}) { |h, (level_id, level_value)| h[level_id] = {with: level_value}; h }
       end
 
       def dup
-        self.class.new(grain_hash: grain_hash.dup, memory_slice: memory_slice.dup, dimension_bus: dimension_bus)
+        super.dup_internals
       end
 
-      def to_hash
-        memory_slice.to_hash.merge!(grain_coordinates)
+      def reset(*args)
+        dup.reset!(*args)
       end
 
-      # @examples
-      #   locate('customers.city', with: 'Dover')
-      #   locate('customers.city' => {with: 'Dover'}, 'customers.country' => {with: 'USA'}, 'cube.amount' => {gt: 10}, reset: ['genres.name', 'media_types.*'])
-      #   locate('customers.city' => {without: 'Dover'})
-      #
-      # Note that the address returned DOES NOT contain coordinates of levels that were sliced on, so that the last
-      # example above can be handled. The element's coordinates will be safe to use, but the grain of the element won't
-      # contain 'customers.city' in neither examples, even though in the first two example it might be convenient to
-      # have customers.city in the grain.
-      #
+      def set(*args)
+        dup.set!(*args)
+      end
+
       def locate(*args)
         dup.locate!(*args)
       end
-
-      private
 
       def locate!(slice_hash={}, reset: [])
         reset.each { |reset_on| reset!(reset_on) }
@@ -58,49 +56,53 @@ module Martyr
         self
       end
 
-      def set!(slice_hash)
-        return self unless slice_hash.present?
-
-        slice_hash.group_by { |k, v| first_element_from_id(k) }.each do |cube_or_dimension_name, slice_hashes_arr|
-          reset_dimension(cube_or_dimension_name) if definition_from_id(slice_hash.keys.first).respond_to?(:level_object?)
-          slice_hashes_arr.each do |slice_on, slice_definition|
-            memory_slice.slice(slice_on, slice_definition)
-          end
-        end
-        self
-      end
-
+      # @param reset_on [String, Array<String>]
+      #   The caller must guarantee that only levels and dimensions are sent to #reset!.
+      #   Since this object is not hierarchy-aware, the caller must send all levels below the level asked to be reset.
+      #
+      #   There are two acceptable formats:
+      #   'dimension_name.level_name' - to remove a particular level
+      #   'dimension_name.*' - to remove a dimension with all its levels
+      #
       def reset!(reset_on)
         if second_element_from_id(reset_on) == '*'
           reset_dimension first_element_from_id(reset_on)
         else
-          reset_on_object = definition_from_id(reset_on)
-          if reset_on_object.respond_to?(:level_object?)
-            reset_on_object.level_and_below.map(&:id).each { |level_id| reset_level(level_id) }
-          else
-            reset_metric(reset_on)
+          grain_hash.except!(reset_on)
+        end
+        self
+      end
+
+      # @param slice_hash [Hash] of one of the formats:
+      #   'dimension_name.level_name' => {with: 'value'}
+      #   'dimension_name.level_name' => {'with' => 'value'}
+      #
+      #   The caller must guarantee that only levels and dimensions are sent.
+      #
+      def set!(slice_hash)
+        slice_hash.group_by { |k, _| first_element_from_id(k) }.each do |dimension_name, slice_hashes_arr|
+          reset_dimension dimension_name
+          slice_hashes_arr.each do |slice_on, slice_definition|
+            raise Query::Error.new('incorrect usage of locate') unless slice_definition.stringify_keys.keys == ['with']
+            grain_hash.merge! slice_on => slice_definition.stringify_keys['with']
           end
         end
         self
       end
 
-      def grain_coordinates
-        grain_hash.inject({}) { |h, (level_id, level_value)| h[level_id] = {with: level_value}; h }
+      protected
+
+      def dup_internals
+        @grain_hash = @grain_hash.dup
+        self
       end
+
+      private
 
       def reset_dimension(dimension_name)
         grain_hash.reject! { |k, _| first_element_from_id(k) == dimension_name }
-        memory_slice.reset_dimension(dimension_name)
       end
 
-      def reset_level(level_id)
-        grain_hash.except!(level_id)
-        memory_slice.reset_level(level_id)
-      end
-
-      def reset_metric(metric_id)
-        memory_slice.reset_metric(metric_id)
-      end
     end
   end
 end

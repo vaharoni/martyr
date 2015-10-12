@@ -45,7 +45,7 @@ pivot_table = PostCube.slice('post.created_at', gt: 3.days.ago).pivot.on_columns
 first_row = pivot_table.rows.first
 cell = first_row.cell_at['post_count']
 cell.coordinates
-# => { 'metric' => 'posts_cube.post_count', 'post.created_at' => {gt: 3.days.ago}, 'authors.email' => 'first_row@domain.com'}
+# => { 'metric' => 'posts_cube.post_count', 'post.created_at' => {gt: 3.days.ago}, 'authors.email' => {with: 'first_row@domain.com'} }
 ```
 
   So an ERB partial that renders this cell as a link to another report - number of comments per post-type for that particular author and created_at constraints - may look like this:

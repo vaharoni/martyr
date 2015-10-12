@@ -75,17 +75,18 @@ module Martyr
         sub_cubes_hash[cube_name.to_s].facts
       end
 
+      # TODO: implement
       def elements(**options)
-        builder = VirtualElementsBuilder.new
-        sub_cubes.each do |sub_cube|
-          elements = memory_slice.for_cube_name(sub_cube.cube_name) do |scoped_memory_slice|
-            sub_cube.elements(scoped_memory_slice, **options)
-          end
-
-          builder.add elements: elements, cube_name: sub_cube.cube_name, memory_slice: memory_slice,
-                      address_resolver: sub_cube.fact_indexer
-        end
-        builder.build
+        # builder = VirtualElementsBuilder.new
+        # sub_cubes.each do |sub_cube|
+        #   elements = memory_slice.for_cube_name(sub_cube.cube_name) do |scoped_memory_slice|
+        #     sub_cube.elements(scoped_memory_slice, **options)
+        #   end
+        #
+        #   builder.add elements: elements, cube_name: sub_cube.cube_name, memory_slice: memory_slice,
+        #               address_resolver: sub_cube.fact_indexer
+        # end
+        # builder.build
       end
 
       def pivot

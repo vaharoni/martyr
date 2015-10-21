@@ -35,12 +35,13 @@ module Martyr
         @grain[dimension] = more_detailed_level(@grain[dimension], level_to_add)
       end
 
-      def set_all_if_empty
-        return if @grain.present?
-        sub_cube.dimension_associations.each do |dimension_name, dimension_object|
-          @grain[dimension_name.to_s] = dimension_object.lowest_level
-        end
-      end
+      # TODO: remove
+      # def set_all_if_empty
+      #   return if @grain.present?
+      #   sub_cube.dimension_associations.each do |dimension_name, dimension_object|
+      #     @grain[dimension_name.to_s] = dimension_object.lowest_level
+      #   end
+      # end
 
       # TODO: delete
       # def nullify_scope_if_null(fact_scopes)

@@ -41,6 +41,5 @@ module Martyr
       LevelDefinitionsByDimension.new(levels).lowest_levels
     end
 
-
   end
 end

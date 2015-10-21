@@ -66,6 +66,16 @@ module Martyr
         self
       end
 
+      # @return [Array<String>] array of level IDs that are in the memory slice
+      def sliced_level_ids
+        memory_slice.keys.reject{|id| metric?(id)}
+      end
+
+      # @return [Array<String>] array of level IDs that are in the grain but not sliced
+      def unsliced_level_ids_in_grain
+        level_ids_in_grain - sliced_level_ids
+      end
+
       # = Run
 
       # @option cube_name [String, Symbol] default is first cube 
@@ -75,18 +85,21 @@ module Martyr
         sub_cubes_hash[cube_name.to_s].facts
       end
 
-      # TODO: implement
+      # A cube that has no grain and no metric doesn't matter - it will end up having one "useless" element with
+      # no levels in the grain.
+      # TODO: ignore cubes that do not share a grain or slice. Here is an algorithm:
+      #   Start with a set of all metrics that are needed to be fetched.
+      #   Add all cubes with metric-slices on them.
+      #   If the shared grain is missing a level in the grain - add all cubes that support that level.
+      #   If the shared grain is missing a level in ths slice - add all cubes that support that level.
       def elements(**options)
-        # builder = VirtualElementsBuilder.new
-        # sub_cubes.each do |sub_cube|
-        #   elements = memory_slice.for_cube_name(sub_cube.cube_name) do |scoped_memory_slice|
-        #     sub_cube.elements(scoped_memory_slice, **options)
-        #   end
-        #
-        #   builder.add elements: elements, cube_name: sub_cube.cube_name, memory_slice: memory_slice,
-        #               address_resolver: sub_cube.fact_indexer
-        # end
-        # builder.build
+        builder = VirtualElementsBuilder.new unsliced_level_ids_in_grain: unsliced_level_ids_in_grain
+        sub_cubes.each do |sub_cube|
+          next unless sub_cube.metric_objects.present? or sub_cube.level_ids_in_grain.present?
+          memory_slice_for_cube = memory_slice.for_cube(sub_cube)
+          builder.add sub_cube.elements(memory_slice_for_cube, **options), sliced: memory_slice_for_cube.to_hash.present?
+        end
+        builder.build
       end
 
       def pivot

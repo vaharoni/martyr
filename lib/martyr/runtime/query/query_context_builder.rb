@@ -113,7 +113,6 @@ module Martyr
             sub_cube.set_all_metrics
           end
           sub_cube.set_grain(@granulate_args)
-          sub_cube.set_grain_to_all_if_empty
         end
       end
 
@@ -130,8 +129,8 @@ module Martyr
       # dimension scopes (where)
       def decorate_all_scopes(context)
         context.data_slice.add_to_dimension_scope(context)
-        context.sub_cubes_hash.each do |cube_name, sub_cube|
-          sub_cube.decorate_all_scopes context.data_slice.for_cube_name(cube_name)
+        context.sub_cubes_hash.each do |_cube_name, sub_cube|
+          sub_cube.decorate_all_scopes context.data_slice.for_cube(sub_cube)
         end
       end
 

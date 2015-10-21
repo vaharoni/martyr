@@ -41,3 +41,7 @@
   Actually, it can be injected into elements instead of memory slice!
 
   Standardization of metric names can be moved to the locator too, so "dirty" user input is handled in one place.
+
+- Due to the way the grain is initialized in cubes, I'm not sure if currently a virtual cube containing 2 cubes one
+  of which contains one more detailed level of granularity is going to work (select_supported_level_ids selects
+  all levels in supported dimensions, regardless of whether the level itself can actually be fetched)

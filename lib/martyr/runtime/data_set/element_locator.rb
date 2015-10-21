@@ -16,7 +16,7 @@ module Martyr
       # @attribute restrict_level_ids [Array<String>] level IDs that are supported by the cube this locator is
       attr_accessor :metrics, :memory_slice, :fact_indexer, :restrict_level_ids
 
-      delegate :dimension_bus, to: :fact_indexer
+      delegate :dimension_bus, :cube_name, to: :fact_indexer
       delegate :definition_from_id, to: :dimension_bus
 
       # @param level_ids [Array<String>] the granularity at which the elements need to be fetched
@@ -26,6 +26,8 @@ module Martyr
       end
 
       # Get an element based on existing coordinates hash
+      # @param coordinates [Coordinates] coordinates at which the element resides
+      # @param exclude_metric_id [nil, String, Array<String>] @see #finalize_elements
       def get(coordinates, exclude_metric_id: nil)
         elm = fact_indexer.get_element(coordinates)
         return nil unless elm
@@ -33,6 +35,19 @@ module Martyr
       end
 
       # Get an element based on existing coordinates hash AND changes instructions sent to #locate
+      # @param coordinates [Coordinates] base coordinates that are to be manipulated
+      # @param *several_variants
+      # Variant 1:
+      #   level_id [String] level ID to slice
+      #   with [String] value at level
+      # Variant 2:
+      #   slice_hash [Hash] level IDs and their values to slice
+      # @option reset [String, Array<String>] level ids to remove from coordinates
+      # @option standardizer [MetricIdStandardizer]
+      # @option exclude_metric_ids [String, Array<String>] @see finalize_element
+      #
+      # @examples
+      #   locate(coords, 'customers.country', with: 'USA', reset: '')
       def locate(coordinates, *several_variants)
         slice_hash, reset_arr, options = sanitize_args_for_locate(*several_variants)
         new_coords = coordinates.locate slice_hash, reset_arr
@@ -46,7 +61,7 @@ module Martyr
       # @return [Element] fully initialized
       def finalize_element(element, exclude_metric_id: nil)
         exclude_metric_id ||= []
-        element.rollup *(metrics - exclude_metric_id)
+        element.rollup *(metrics - Array.wrap(exclude_metric_id))
         element.element_locator = self
         element
       end

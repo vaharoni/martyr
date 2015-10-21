@@ -1,6 +1,7 @@
 module Martyr
   class Cube < BaseCube
     extend Martyr::Translations
+    extend Martyr::LevelComparator
 
     def self.contained_cube_classes
       [self]
@@ -36,7 +37,7 @@ module Martyr
     #   Cube1.dimension_definitions.keys
     #   # => ['shared_dimension_1', 'shared_dimension_2']
     #
-    # @return [Schema::Dimensions::DefinitionCollection]
+    # @return [Schema::DimensionDefinitionCollection]
     def self.dimension_definitions
       return @dimension_definitions if @dimension_definitions
       @dimension_definitions = Schema::DimensionDefinitionCollection.new
@@ -74,22 +75,10 @@ module Martyr
 
     # @see comment for #dimension_definitions
     #
-    # @return [Hash] { dimension_name => PlainDimensionDefinition } including dimensions that have at least one level
+    # @return [Schema::DimensionDefinitionCollection] including dimensions that have at least one level
     #   supported by the cube through #has_dimension_level
     def self.supported_dimension_definitions
-      dimension_definitions.all.slice(*dimension_associations.keys)
-    end
-
-    # Helper methods used to filter out unsupported +dimensions+.
-    # It does not apply understanding of dimension hierarchy. If a dimension has 3 levels: L1, L2, L3, and the cube
-    # called #has_dimension_level on L2, all levels L1, L2, L3 will pass the filter, despite the more detailed L3
-    # is not supported in the cube grain.
-    #
-    # @param level_ids [Array<String>]
-    # @return [Array<String>] all ids that are supported by the cube through the dimension
-    def self.select_supported_level_ids(level_ids)
-      dimension_names = supported_dimension_definitions.keys
-      level_ids.select{|id| dimension_names.include? first_element_from_id(id) }
+      dimension_definitions.slice(*dimension_associations.keys)
     end
 
     # Return all levels that are directly connected to the cube with #has_dimension_level.
@@ -97,6 +86,27 @@ module Martyr
     # @return [Array<LevelAssociation>]
     def self.level_associations
       dimension_associations.flat_map { |_name, dimension_association| dimension_association.level_objects }
+    end
+
+    # @return [Array<BaseLevelDefinition>]
+    def self.supported_level_definitions
+      lowest_level_of(level_associations).flat_map do |level_association|
+        level_association.level_definition.level_and_above
+      end
+    end
+
+    def self.supported_level_ids
+      supported_level_definitions.map(&:id)
+    end
+
+    # Helper methods used to filter out unsupported levels.
+    #
+    # @param level_ids [Array<String>]
+    # @return [Array<String>] all ids that are supported by the cube through the dimension
+    def self.select_supported_level_ids(level_ids)
+      level_ids = Array.wrap(level_ids)
+      unsupported = level_ids - supported_level_ids
+      level_ids - unsupported
     end
 
   end

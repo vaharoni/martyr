@@ -1,6 +1,8 @@
 module Martyr
   module Runtime
     class PlainDimensionDataSlice
+      include Martyr::Runtime::HasScopedLevels
+
       # @attribute levels [Hash<String => PlainDimensionLevelSliceDefinition>]
       attr_reader :levels
 
@@ -13,7 +15,7 @@ module Martyr
       end
 
       def sorted_levels
-        arr = levels.sort_by{|_level_id, slice| slice.level.to_i}
+        arr = scoped_levels.sort_by{|_level_id, slice| slice.level.to_i}
         Hash[arr]
       end
 
@@ -32,13 +34,13 @@ module Martyr
 
       # @return [PlainDimensionLevelSliceDefinition]
       def get_slice(level_id)
-        @levels[level_id]
+        scoped_levels[level_id]
       end
 
       # = Slicing the dimension
 
       def add_to_dimension_scope(dimension_bus)
-        levels.keys.each do |level_id|
+        scoped_levels.keys.each do |level_id|
           level_scope = dimension_bus.level_scope(level_id)
           slice_definition = levels[level_id]
 
@@ -57,15 +59,14 @@ module Martyr
 
       # = Slicing the fact
 
-      # TODO: change to something like set_grain_to_null_if_level_not_supported(level_id)
       def add_to_grain(grain)
-        levels.keys.each {|level_id| grain.add_granularity(level_id) }
+        scoped_levels.keys.each {|level_id| grain.add_granularity(level_id) }
       end
 
       # @param fact_scopes [Runtime::FactScopeCollection]
       # @param dimension_bus [Runtime::QueryContext]
       def add_to_where(fact_scopes, dimension_bus)
-        levels.keys.each do |level_id|
+        scoped_levels.keys.each do |level_id|
           scope_operator = add_one_level_to_where(level_id, dimension_bus)
           fact_scopes.add_scope_operator(scope_operator)
         end
@@ -74,7 +75,7 @@ module Martyr
       # @return [FactScopeOperatorForDimension]
       def add_one_level_to_where(level_id, dimension_bus)
         level_scope = dimension_bus.level_scope(level_id)
-        slice_definition = levels[level_id]
+        slice_definition = get_slice(level_id)
 
         # Building operator used to slice the fact
         FactScopeOperatorForDimension.new(level_scope.dimension_name, level_scope.name) do |operator|

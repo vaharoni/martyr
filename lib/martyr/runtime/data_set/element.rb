@@ -6,6 +6,8 @@ module Martyr
       attr_accessor :element_locator
 
       attr_reader :facts, :metrics
+      delegate :cube_name, to: :element_locator
+      delegate :grain_level_ids, to: :@coordinates
 
       # @param coordinates [Coordinates]
       # @param facts [Array<Fact>]

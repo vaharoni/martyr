@@ -7,8 +7,14 @@ module Martyr
 
       attr_reader :query_context, :cube, :fact_scopes, :metrics, :grain
       delegate :combined_sql, :pretty_sql, :test, :select_keys, to: :fact_scopes
+
+      # TODO: supported_* methods are delegated to the grain, but there are equivalent methods in the cube that mean
+      #       something else and sometimes needed. #select_supported_level_ids, for instance, is relying on those
+      #       methods in the cube, not the grain.
+      #       This is confusing.
       delegate :cube_name, :dimension_associations, :select_supported_level_ids, to: :cube
       delegate :supported_level_associations, :supported_level_definitions, :has_association_with_level?, to: :grain
+
       delegate :find_metric, :metric_ids, :metric_objects, :built_in_metrics, :custom_metrics, to: :metrics
       delegate :facts, to: :fact_indexer
       delegate :definition_from_id, to: :query_context
@@ -76,9 +82,14 @@ module Martyr
         end
       end
 
-      def set_grain_to_all_if_empty
-        grain.set_all_if_empty
+      def level_ids_in_grain
+        grain.level_ids
       end
+
+      # TODO: remove
+      # def set_grain_to_all_if_empty
+      #   grain.set_all_if_empty
+      # end
 
       # @param data_slice [DataSlice] that is scoped to the cube
       def decorate_all_scopes(data_slice)

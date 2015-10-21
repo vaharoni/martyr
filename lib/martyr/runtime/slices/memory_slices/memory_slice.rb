@@ -47,19 +47,19 @@ module Martyr
         end
       end
 
-      # @param cube_name [String]
+      # @param sub_cube [SubCube]
       # @return [MemorySlice] new object with new DataSlice and ScopeableDataSliceData objects, both set to be scoped
-      #   to cube_name
-      def for_cube_name(cube_name)
-        dup.for_cube_name!(cube_name)
+      #   to the sub cube
+      def for_cube(sub_cube)
+        dup.for_cube!(sub_cube)
       end
 
-      # @param cube_name [String]
+      # @param sub_cube [SubCube]
       # @return [MemorySlice] same object with new DataSlice and ScopeableDataSliceData objects, both set to be scoped
-      #   to cube_name
-      def for_cube_name!(cube_name)
-        self.data_slice = data_slice.for_cube_name(cube_name)
-        self.memory_slice_overrides = memory_slice_overrides.scope(cube_name)
+      #   to the sub cube
+      def for_cube!(sub_cube)
+        self.data_slice = data_slice.for_cube(sub_cube)
+        self.memory_slice_overrides = memory_slice_overrides.scope(sub_cube)
         self
       end
 

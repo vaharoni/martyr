@@ -2,6 +2,8 @@ module Martyr
   module Runtime
     class PlainDimensionMemorySlice
 
+      include Martyr::Runtime::HasScopedLevels
+
       attr_reader :dimension_definition, :data_slice, :levels
       delegate :keys, to: :levels
 
@@ -14,7 +16,7 @@ module Martyr
       end
 
       def to_hash
-        arr = @levels.values.sort_by{|slice| slice.level.to_i}.inject({}){|h, slice| h.merge!(slice.to_hash) }
+        arr = scoped_levels.values.sort_by{|slice| slice.level.to_i}.inject({}){|h, slice| h.merge!(slice.to_hash) }
         Hash[arr]
       end
 
@@ -29,17 +31,11 @@ module Martyr
 
       # @return [PlainDimensionLevelSliceDefinition]
       def get_slice(level_id)
-        @levels[level_id]
-      end
-
-      # @return [Boolean] whether the slice object should be removed from the holding parent
-      def reset(level_id)
-        @levels.delete(level_id)
-        @levels.length == 0
+        scoped_levels[level_id]
       end
 
       def apply_on(facts)
-        levels.keys.inject(facts) do |selected_facts, level_id|
+        scoped_levels.keys.inject(facts) do |selected_facts, level_id|
           selected_facts.select do |fact|
             get_slice(level_id).with.include? fact[level_id]
           end

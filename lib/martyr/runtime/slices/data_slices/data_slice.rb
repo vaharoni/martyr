@@ -52,16 +52,16 @@ module Martyr
         slices.reject{|_slice_id, slice_object| slice_object.is_a?(MetricDataSlice)}.keys
       end
 
-      # @param cube_name [String]
-      # @return [DataSlice] new object with a new ScopeableDataSliceData object set to be scoped to cube_name
-      def for_cube_name(cube_name)
-        dup.for_cube_name!(cube_name)
+      # @param sub_cube [SubCube]
+      # @return [DataSlice] new object with a new ScopeableDataSliceData object set to be scoped to the sub cube
+      def for_cube(sub_cube)
+        dup.for_cube!(sub_cube)
       end
 
-      # @param cube_name [String]
-      # @return [DataSlice] same object with a new ScopeableDataSliceData object set to be scoped to cube_name
-      def for_cube_name!(cube_name)
-        self.slices = slices.scope(cube_name)
+      # @param sub_cube [SubCube]
+      # @return [DataSlice] same object with a new ScopeableDataSliceData object set to be scoped to the sub cube
+      def for_cube!(sub_cube)
+        self.slices = slices.scope(sub_cube)
         self
       end
 

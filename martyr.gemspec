@@ -9,15 +9,15 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Amit Aharoni"]
   spec.email         = ["amit.sites@gmail.com"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{Add data mart and pivoting functionality to Active Record models}
+  spec.description   = %q{A multi-dimensional semantic layer on top of ActiveRecord that allows running pivot table queries and rendering them as CSV, HTML, or KickChart-ready hashes. Supports time dimensions, cohort analysis, custom rollups, and drilling through to the underlying ActiveRecord objects.}
+  spec.homepage      = "https://github.com/vaharoni/martyr"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.
   if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com'"
+    spec.metadata['allowed_push_host'] = "http://www.rubygems.org"
   else
     raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
   end

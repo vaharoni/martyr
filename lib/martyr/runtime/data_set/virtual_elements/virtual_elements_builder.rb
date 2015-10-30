@@ -1,10 +1,12 @@
 module Martyr
   module Runtime
     class VirtualElementsBuilder
+      include Martyr::Translations
 
-      def initialize(unsliced_level_ids_in_grain:)
+      def initialize(memory_slice, unsliced_level_ids_in_grain:)
         @entries = []
         @unsliced_level_ids_in_grain = unsliced_level_ids_in_grain
+        @memory_slice = memory_slice
         @lookups_by_level_id = {}
       end
 
@@ -119,17 +121,28 @@ module Martyr
         return @entries.first.elements if @entries.length == 1
         @entries.each(&:restrict)
         @entries.flat_map do |entry|
-          entry.restricted_elements.each do |element|
-            VirtualElement.new
-          end
+          entry.restricted_elements.map do |element|
+            next if (level_ids_in_grain - element.grain_level_ids).present?
+
+            # TODO: remove grain_hash_with_nils.merge! since now we don't return null virtual elements
+            VirtualElement.new grain_hash_with_nils.merge!(element.grain_hash), @memory_slice, @entries.map(&:element_locator)
+          end.compact
         end
+      end
+
+      def level_ids_in_grain
+        @level_ids_in_grain ||= @entries.map(&:level_ids).flatten.uniq.sort_by{|x| first_element_from_id(x)}
+      end
+
+      def grain_hash_with_nils
+        Hash[level_ids_in_grain.map{|level_id| [level_id, nil]}]
       end
 
       class ElementsFromSubCube
         include ActiveModel::Model
 
         attr_accessor :element_locator, :elements, :sliced
-        attr_reader :lookups_by_level_id, :unsliced_level_ids_in_grain
+        attr_reader :lookups_by_level_id, :unsliced_level_ids_in_grain, :level_ids
 
         def initialize(elements, sliced, lookups_by_level_id, unsliced_level_ids_in_grain)
           @elements = elements
@@ -138,7 +151,8 @@ module Martyr
 
           representative = @elements.first
           @element_locator = representative.element_locator
-          @unsliced_level_ids_in_grain = representative.grain_level_ids - (representative.grain_level_ids - unsliced_level_ids_in_grain)
+          @level_ids = representative.grain_level_ids
+          @unsliced_level_ids_in_grain = @level_ids - (@level_ids - unsliced_level_ids_in_grain)
         end
 
         def restrict
@@ -148,11 +162,16 @@ module Martyr
           end
         end
 
+        # @return [Array<Element>] elements whose non-sliced levels are restricted to the
+        #   intersection of all participating cubes
         def restricted_elements
           unsliced_level_ids_in_grain.inject(elements) do |selected_elements, level_id|
             selected_elements.select do |element|
+              restricted_values = lookups_by_level_id[level_id]
+              next(true) unless restricted_values.present?
+
               value_in_element_for_level = element[level_id]
-              lookups_by_level_id[level_id][value_in_element_for_level]
+              restricted_values[value_in_element_for_level]
             end
           end
         end
@@ -161,8 +180,10 @@ module Martyr
 
         def restrict_one_level(level_id)
           if lookups_by_level_id.has_key?(level_id)
+            # Restrict if the level already exists
             lookups_by_level_id[level_id].slice! *(lookups_by_level_id[level_id].keys & values_for(level_id))
           else
+            # Add to lookup if this is first time the level_id is encountered
             lookup_arr = values_for(level_id).map{|x| [x, true]}
             lookups_by_level_id[level_id] = Hash[lookup_arr]
           end

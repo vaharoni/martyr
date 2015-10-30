@@ -111,7 +111,7 @@ module Martyr
 
       def element_locator_for(memory_slice, metrics: nil)
         ElementLocator.new memory_slice: memory_slice, metrics: sanitize_metrics(metrics: metrics),
-          fact_indexer: fact_indexer, restrict_level_ids: sanitize_metrics.map(&:id)
+          fact_indexer: fact_indexer, restrict_level_ids: sanitize_levels.map(&:id)
       end
 
       def fact_indexer
@@ -127,7 +127,7 @@ module Martyr
 
       # @option levels [Array<String, Martyr::Level>] array of level IDs or any type of level to group facts by.
       #   Default is all levels in the query context.
-      # @return [Array<BaseLevelScope>]
+      # @return [Array<String, BaseLevelScope>]
       def sanitize_levels(levels: nil)
         level_ids = Array.wrap(levels).map { |x| to_id(x) }.presence || query_context.level_ids_in_grain
         level_ids = select_supported_level_ids(level_ids)

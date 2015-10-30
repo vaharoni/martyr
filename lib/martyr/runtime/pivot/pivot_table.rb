@@ -12,7 +12,9 @@ module Martyr
 
       def initialize(query_context, *args)
         super(*args)
-        @elements = query_context.elements(levels: pivot_grain, metrics: metrics)
+
+        # We don't restrict metrics since custom rollups may have dependencies
+        @elements = query_context.elements(levels: pivot_grain)
       end
 
       def reload
@@ -42,6 +44,7 @@ module Martyr
       def sub_totals
         resettable_grain = row_totals ? row_axis.ids : []
         resettable_grain += column_totals ? column_axis.ids : []
+        resettable_grain -= [:metrics]
         (0...resettable_grain.length).flat_map do |x|
           reset = resettable_grain[x..-1]
           elements.index_by do |element|

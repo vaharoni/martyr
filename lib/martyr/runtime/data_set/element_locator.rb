@@ -4,16 +4,17 @@ module Martyr
     # This is a service object that allows locating an element given element coordinates and "locate instructions".
     # It is structured to allow locating elements even in the absence of a real element to "start from".
 
-    # A locator is associated with real elements - meaning belonging to one cube.
+    # A locator deals with real elements - meaning belonging to one cube.
 
     class ElementLocator
       include ActiveModel::Model
       include Martyr::Translations
 
       # @attribute metrics [Array<BaseMetric>] the metrics that should be rolled up on the located element
-      # @attribute memory_slice [MemorySlice] the current slice memory slice. Used to produce Coordianates.
-      # @attribute fact_indexer [#dimension_bud, #get_element] currently a FactIndexer.
-      # @attribute restrict_level_ids [Array<String>] level IDs that are supported by the cube this locator is
+      # @attribute memory_slice [MemorySlice] the current memory slice. Sent to FactIndexer and used to build
+      #   Coordinate objects.
+      # @attribute fact_indexer [#dimension_bus, #get_element, #cube_name]
+      # @attribute restrict_level_ids [Array<String>] level IDs that are supported by the cube this locator belongs to.
       attr_accessor :metrics, :memory_slice, :fact_indexer, :restrict_level_ids
 
       delegate :dimension_bus, :cube_name, to: :fact_indexer
@@ -25,17 +26,20 @@ module Martyr
         fact_indexer.elements_by(memory_slice, level_ids).map {|element| finalize_element(element)}
       end
 
-      # Get an element based on existing coordinates hash
-      # @param coordinates [Coordinates] coordinates at which the element resides
+      # Get an element based on coordinates.
+      # If the coordinates contain an unsupported level, it returns nil.
+      # @param grain_hash [Hash] see Coordinates. We do not need Coordinates here so we prefer to allow sending in a
+      #   Hash.
       # @param exclude_metric_id [nil, String, Array<String>] @see #finalize_elements
-      def get(coordinates, exclude_metric_id: nil)
-        elm = fact_indexer.get_element(coordinates)
-        return nil unless elm
+      def get(grain_hash, exclude_metric_id: nil)
+        throw(:empty_element) if restrict_level_ids.present? and (grain_hash.keys - restrict_level_ids).present?
+        elm = fact_indexer.get_element(memory_slice, grain_hash)
+        throw(:empty_element) unless elm
         finalize_element(elm, exclude_metric_id: exclude_metric_id)
       end
 
       # Get an element based on existing coordinates hash AND changes instructions sent to #locate
-      # @param coordinates [Coordinates] base coordinates that are to be manipulated
+      # @param grain_hash [Hash] base coordinates that are to be manipulated.
       # @param *several_variants
       # Variant 1:
       #   level_id [String] level ID to slice
@@ -44,25 +48,30 @@ module Martyr
       #   slice_hash [Hash] level IDs and their values to slice
       # @option reset [String, Array<String>] level ids to remove from coordinates
       # @option standardizer [MetricIdStandardizer]
-      # @option exclude_metric_ids [String, Array<String>] @see finalize_element
+      # @option exclude_metric_id [String, Array<String>] @see finalize_element
       #
       # @examples
       #   locate(coords, 'customers.country', with: 'USA', reset: '')
-      def locate(coordinates, *several_variants)
+      def locate(grain_hash, *several_variants)
         slice_hash, reset_arr, options = sanitize_args_for_locate(*several_variants)
-        new_coords = coordinates.locate slice_hash, reset_arr
-        return nil if restrict_level_ids.present? and (new_coords.grain_level_ids - restrict_level_ids).present?
-        get(new_coords, **options)
+        new_coords = coordinates_from_grain_hash(grain_hash).locate(slice_hash, reset: reset_arr)
+        get(new_coords.grain_hash, **options)
       end
 
       private
 
+      # @param grain_hash [Hash]
+      # @return [Coordinates]
+      def coordinates_from_grain_hash(grain_hash)
+        Coordinates.new(grain_hash, memory_slice.to_hash)
+      end
+
       # @param element [Hash] element that does not have metrics rolled up and whose element_locator is missing
       # @return [Element] fully initialized
       def finalize_element(element, exclude_metric_id: nil)
-        exclude_metric_id ||= []
-        element.rollup *(metrics - Array.wrap(exclude_metric_id))
+        exclude_metric_id = Array.wrap(exclude_metric_id)
         element.element_locator = self
+        element.rollup *metrics.reject{|m| exclude_metric_id.include? m.id.to_s }
         element
       end
 
@@ -77,12 +86,12 @@ module Martyr
         end
         standardizer = options.delete(:standardizer) || MetricIdStandardizer.new
 
-        [validate_ids(standardizer.standardize(slice_hash), :values),
+        [validate_ids(standardizer.standardize(slice_hash), :keys),
           validate_ids(standardizer.standardize(reset_arr), :to_a), options]
       end
 
       def extract_options_for_locate(hash)
-        option_keys = [:standardizer, :exclude_metric_ids]
+        option_keys = [:standardizer, :exclude_metric_id]
         hash_dup = hash.dup
 
         options = hash_dup.slice(*option_keys)
@@ -95,7 +104,7 @@ module Martyr
       def validate_ids(object, iterator_method)
         object.send(iterator_method).each do |id|
           raise Query::Error.new('Can only call locate on dimensions') unless
-            definition_from_id(first_element_from_id(id)).is_a?(DimensionReference)
+            definition_from_id(first_element_from_id(id)).respond_to?(:dimension?)
         end
         object
       end

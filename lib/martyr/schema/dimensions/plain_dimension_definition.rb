@@ -21,6 +21,11 @@ module Martyr
         self
       end
 
+      # For reflection
+      def dimension?
+        true
+      end
+
       def build_data_slice(*args)
         Runtime::PlainDimensionDataSlice.new(self, *args)
       end

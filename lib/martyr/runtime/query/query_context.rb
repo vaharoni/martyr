@@ -93,7 +93,7 @@ module Martyr
       #   If the shared grain is missing a level in the grain - add all cubes that support that level.
       #   If the shared grain is missing a level in ths slice - add all cubes that support that level.
       def elements(**options)
-        builder = VirtualElementsBuilder.new unsliced_level_ids_in_grain: unsliced_level_ids_in_grain
+        builder = VirtualElementsBuilder.new memory_slice, unsliced_level_ids_in_grain: unsliced_level_ids_in_grain
         sub_cubes.each do |sub_cube|
           next unless sub_cube.metric_objects.present? or sub_cube.level_ids_in_grain.present?
           memory_slice_for_cube = memory_slice.for_cube(sub_cube)

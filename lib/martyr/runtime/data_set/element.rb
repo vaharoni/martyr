@@ -5,25 +5,38 @@ module Martyr
       # @attribute element_locator [ElementLocator] this is added to an element in the process of building it
       attr_accessor :element_locator
 
-      attr_reader :facts, :metrics
+      attr_reader :facts
       delegate :cube_name, to: :element_locator
-      delegate :grain_level_ids, to: :@coordinates
+      delegate :grain_level_ids, :grain_hash, to: :@coordinates
 
       # @param coordinates [Coordinates]
       # @param facts [Array<Fact>]
       def initialize(coordinates, facts)
         @coordinates = coordinates
         @facts = facts
-        @metrics = []
+        @metrics_hash = {}
+
         merge! coordinates.grain_hash
       end
 
+      # @param key [String] either metric id or level id
+      def fetch(key)
+        value = super(key)
+        value.is_a?(FutureElementMetric) ? value.value : value
+      end
+      alias_method :[], :fetch
+
       # @param metrics [Array<BaseMetric>]
       def rollup(*metrics)
-        @metrics = metrics
         metrics.each do |metric|
-          store metric.id, metric.rollup(self)
+          next if @metrics_hash[metric.id]
+          store metric.id, FutureElementMetric.wrap(self, metric)
+          @metrics_hash[metric.id] = metric
         end
+      end
+
+      def metrics
+        @metrics_hash.values
       end
 
       def coordinates
@@ -35,7 +48,7 @@ module Martyr
       end
 
       def locate(*args)
-        @element_locator.locate(coordinates, *args)
+        element_locator.locate(grain_hash, *args)
       end
 
     end

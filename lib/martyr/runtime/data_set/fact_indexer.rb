@@ -38,10 +38,12 @@ module Martyr
         elements_hash(memory_slice, level_ids).values
       end
 
-      # @param coordinates [Coordinates]
+      # @param memory_slice [MemorySlice]
+      # @param grain_hash [Hash] see Coordinates
       # @return [Element] that resides in the provided coordinates
-      def get_element(coordinates)
-        elements_hash(coordinates.memory_slice, coordinates.grain_hash.keys)[coordinates.grain_hash.values]
+      def get_element(memory_slice, grain_hash)
+        grain_hash_values_sorted_by_level_id = grain_hash.keys.sort.map{|x| grain_hash[x]}
+        elements_hash(memory_slice, grain_hash.keys)[grain_hash_values_sorted_by_level_id]
       end
 
       private
@@ -54,9 +56,9 @@ module Martyr
         return @indices[index_key] if @indices[index_key]
 
         arr = memory_slice.apply_on(facts).group_by do |fact|
-          level_ids.map{|id| fact.fetch(id)}
+          sorted_level_ids.map{|id| fact.fetch(id)}
         end.map do |element_key, facts_arr|
-          grain_arr = element_key.each_with_index.map {|value, i| [level_ids[i], value]}
+          grain_arr = sorted_level_ids.each_with_index.map{|level_id, i| [level_id, element_key[i]]}
           coordinates = Coordinates.new(Hash[grain_arr], memory_slice.to_hash)
           [element_key, Element.new(coordinates, facts_arr)]
         end

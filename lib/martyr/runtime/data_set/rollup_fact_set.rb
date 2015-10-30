@@ -20,7 +20,7 @@ module Martyr
 
       # @return [FactSet]
       def locate(*args, **options)
-        new_element = @element.locate(*args, standardizer: standardizer, exclude_metric_ids: metric_id, **options)
+        new_element = @element.locate(*args, standardizer: standardizer, exclude_metric_id: metric_id, **options)
         self.class.new(cube_name, metric_id, new_element)
       end
 

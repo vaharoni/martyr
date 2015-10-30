@@ -35,6 +35,10 @@ module Martyr
         element.fetch(metric_id)
       end
 
+      def warning
+        element.warning(metric_id)
+      end
+
       def [](key)
         case key.to_s
           when 'metric'

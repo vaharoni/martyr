@@ -69,6 +69,19 @@ module Martyr
         VirtualElement.new(new_real_elements.first.grain_hash, memory_slice, locators, new_real_elements)
       end
 
+      def warnings
+        arr = real_elements.flat_map do |elm|
+          elm.metrics.map{|metric| [metric.id, warning(metric.id)]}
+        end
+        Hash[arr]
+      end
+
+      def warning(metric_id)
+        unsupported_keys_in_memory_slice = memory_slice.keys - coordinates(metric_id).keys
+        return [] if unsupported_keys_in_memory_slice.blank?
+        "Metric `#{metric_id}` does not support slice on: `#{unsupported_keys_in_memory_slice.join('`, `')}`"
+      end
+
       private
 
       # @param method_name [:get, :locate]

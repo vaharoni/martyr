@@ -24,7 +24,7 @@ module Martyr
       end
 
       def coordinates
-        element.coordinates.merge(METRIC_COORD_KEY => metric_id)
+        element.coordinates(metric_id).merge(METRIC_COORD_KEY => metric_id)
       end
 
       def to_axis_values(pivot_axis, flat: true)

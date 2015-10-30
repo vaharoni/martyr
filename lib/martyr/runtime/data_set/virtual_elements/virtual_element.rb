@@ -42,12 +42,12 @@ module Martyr
         real_elements.empty?
       end
 
-      def coordinates
-        coordinates_object.to_hash
+      def coordinates(metric_id)
+        coordinates_object(metric_id).to_hash
       end
 
-      def coordinates_object
-        @coordinates_object ||= Coordinates.new(grain_hash, memory_slice.to_hash)
+      def coordinates_object(metric_id)
+        real_elements.find{|x| x.has_key?(metric_id)}.try(:coordinates_object)
       end
 
       def facts(cube_name = nil)

@@ -39,11 +39,11 @@ module Martyr
         @metrics_hash.values
       end
 
-      def coordinates
+      def coordinates(*)
         @coordinates.to_hash
       end
 
-      def coordinates_object
+      def coordinates_object(*)
         @coordinates
       end
 

@@ -30,6 +30,11 @@ module Martyr
         @standardizer ||= MetricIdStandardizer.new(@cube_name)
       end
 
+      def method_missing(method, *args, &block)
+        return fetch(method) if @element.has_key? standardizer.standardize(method)
+        super
+      end
+
     end
   end
 end

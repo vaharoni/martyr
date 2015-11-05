@@ -1,6 +1,9 @@
 
-Add ability to define default granulaity that is added automatically to all queries.
-This is useful for e.g. CandidateOffersCube
+Add ability to define default group by clause that is added to the query and facts without being considered as grain.
+
+Use case:
+  Admin::MartyrSchema::CandidateOffersCube.slice('session.id', with: 10)
+  -> Due to all the custom rollups that are dependent on job_offer.status
 
 ============================
 

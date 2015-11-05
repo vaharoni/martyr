@@ -46,11 +46,11 @@ module Martyr
             when 'count'
               value += 1
             when 'sum'
-              value += fact.fetch(id)
+              value += fact.fetch(id) || 0
             when 'min'
-              value = [value, fact.fetch(id)].min
+              value = [value, fact.fetch(id)].compact.min
             when 'max'
-              value = [value, fact.fetch(id)].max
+              value = [value, fact.fetch(id)].compact.max
           end
         end
         value

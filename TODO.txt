@@ -1,3 +1,9 @@
+
+Add ability to define default granulaity that is added automatically to all queries.
+This is useful for e.g. CandidateOffersCube
+
+============================
+
 - QueryContext currently only supports one #slice operation. It should really return a decorator of itself that allies
   the memory slice on it.
 

@@ -76,7 +76,7 @@ module Martyr
 
       # @return [ActiveRecord::Base]
       def fetch(primary_key_value)
-        self.load and return @cache[primary_key_value]
+        self.load and return @cache[primary_key_value.to_s]
       end
 
       # TODO: this is making the assumption that only degenerate levels can be above a query level
@@ -202,7 +202,7 @@ module Martyr
       end
 
       def record_primary_key(record)
-        record.send(primary_key)
+        record.send(primary_key).to_s
       end
 
       def record_parent_primary_key(record)

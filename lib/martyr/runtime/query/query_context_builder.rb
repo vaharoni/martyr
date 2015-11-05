@@ -75,18 +75,9 @@ module Martyr
       # = Building steps
 
       # Step 1
-      # Add all levels to the query grain. If the user provided the grain using #granulate, simply add it.
-      # If not - all levels will be added to the query, in a hierarchy-aware way. Namely, if a dimension has levels
-      # L1, L2, L3 and the cube has L2 in its grain, the higher level (less-detailed) L1 will also be added.
+      # Add all levels to the query grain
       def setup_context_grain(context)
-        if @granulate_args.present?
-          context.level_ids_in_grain = @granulate_args
-        else
-          all_level_ids_from_cubes = cube.contained_cube_classes.flat_map do |cube_class|
-            lowest_level_of(cube_class.level_associations).flat_map { |assoc| assoc.level_definition.level_and_above.map(&:id) }
-          end
-          context.level_ids_in_grain = all_level_ids_from_cubes.uniq
-        end
+        context.level_ids_in_grain = Array.wrap(@granulate_args)
       end
 
       # Step 2 (relies on Steps 1)

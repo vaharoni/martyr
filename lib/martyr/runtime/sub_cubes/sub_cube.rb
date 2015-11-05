@@ -126,10 +126,10 @@ module Martyr
       end
 
       # @option levels [Array<String, Martyr::Level>] array of level IDs or any type of level to group facts by.
-      #   There is no default to allow querying without granulating (fetching a top level element)
+      #   Default is all levels in grain
       # @return [Array<String, BaseLevelScope>]
       def sanitize_levels(levels: nil)
-        level_ids = Array.wrap(levels).map { |x| to_id(x) }
+        level_ids = levels.nil? ? query_context.level_ids_in_grain : Array.wrap(levels).map { |x| to_id(x) }
         level_ids = select_supported_level_ids(level_ids)
         query_context.levels_and_above_for(level_ids)
       end

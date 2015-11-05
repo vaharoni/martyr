@@ -129,7 +129,7 @@ module Martyr
       #   Default is all levels in the query context.
       # @return [Array<String, BaseLevelScope>]
       def sanitize_levels(levels: nil)
-        level_ids = Array.wrap(levels).map { |x| to_id(x) }.presence || query_context.level_ids_in_grain
+        level_ids = Array.wrap(levels).map { |x| to_id(x) } # .presence || query_context.level_ids_in_grain
         level_ids = select_supported_level_ids(level_ids)
         query_context.levels_and_above_for(level_ids)
       end

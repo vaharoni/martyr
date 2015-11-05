@@ -25,7 +25,7 @@ module Martyr
       end
 
       def extract(fact)
-        fact.raw.fetch(fact_alias.to_s)
+        fact.raw.fetch(fact_alias.to_s).try(:to_i)
       end
 
     end

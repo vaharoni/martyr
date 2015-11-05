@@ -81,6 +81,8 @@ module Martyr
         end
       end
 
+      private
+
       def method_missing(method, *args, &block)
         return fetch(method) if has_key? fully_qualify_id(method)
         super

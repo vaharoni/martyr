@@ -1,6 +1,7 @@
 module Martyr
   module Runtime
     class Element < HashWithIndifferentAccess
+      include Martyr::Translations
 
       # @attribute element_locator [ElementLocator] this is added to an element in the process of building it
       attr_accessor :element_locator
@@ -39,6 +40,10 @@ module Martyr
         @metrics_hash.values
       end
 
+      def metric_ids
+        @metrics_hash.keys
+      end
+
       def coordinates(*)
         @coordinates.to_hash
       end
@@ -49,6 +54,21 @@ module Martyr
 
       def locate(*args)
         element_locator.locate(grain_hash, *args)
+      end
+
+      private
+
+      def method_missing(method, *args, &block)
+        fully_qualified_metric_id = find_metric_id(method)
+        return fetch(fully_qualified_metric_id) if fully_qualified_metric_id
+        super
+      end
+
+      # @return [String] the fully qualified metric ID if only one exists
+      def find_metric_id(key)
+        candidates = metric_ids.select{|metric_id| second_element_from_id(metric_id) == key.to_s}
+        return candidates.first if candidates.length == 1
+        nil
       end
 
     end

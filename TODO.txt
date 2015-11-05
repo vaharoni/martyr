@@ -5,6 +5,10 @@ Use case:
   Admin::MartyrSchema::CandidateOffersCube.slice('session.id', with: 10)
   -> Due to all the custom rollups that are dependent on job_offer.status
 
+Add ability to add includes directive to an existing dimension scope.
+
+Add ability to sort results
+
 ============================
 
 - QueryContext currently only supports one #slice operation. It should really return a decorator of itself that allies

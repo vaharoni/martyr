@@ -17,7 +17,7 @@ module Martyr
       end
 
       def scope_sql
-        run_scope.try(:arel).try(:to_sql)
+        run_scope.try(:to_sql)
       end
 
       def null?

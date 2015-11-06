@@ -60,6 +60,14 @@ module Martyr
         end
       end
 
+      # @param level_id [String]
+      # @param *args [Array] will be sent to includes
+      def decorate(level_id, lambda = nil, &block)
+        @decorations ||= {}
+        @decorations[level_id] = lambda || block
+        self
+      end
+
       def build
         context = QueryContext.new
         setup_context_grain(context)
@@ -87,6 +95,10 @@ module Martyr
         default_grains = cube.contained_cube_classes.flat_map(&:default_grain)
         relevant_dimensions = (default_grains + context.level_ids_in_grain + @data_slice.keys).map { |x| first_element_from_id(x) }
         context.dimension_scopes = cube.build_dimension_scopes(relevant_dimensions.uniq)
+
+        @decorations.try(:each) do |level_id, proc|
+          context.dimension_scopes.find_level(level_id).decorate_scope(&proc)
+        end
       end
 
       # Step 3

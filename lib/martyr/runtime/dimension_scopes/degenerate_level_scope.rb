@@ -10,7 +10,7 @@ module Martyr
       end
 
       def slice_with(values)
-        query_level_below.send(:decorate_scope) do |scope|
+        query_level_below.decorate_scope do |scope|
           query_level_with_finder.call(scope, values)
         end
         query_level_below.set_bottom_sliced_level

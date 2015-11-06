@@ -4,7 +4,6 @@ module Martyr
       include Martyr::Registrable
       include Martyr::Translations
 
-      attr_accessor :sub_cube                         # must be initialized if dimension values are to get extracted from the fact
       attr_reader :dimension_definitions
       alias_method :find_dimension, :find_or_error
       alias_method :has_dimension?, :has_key?

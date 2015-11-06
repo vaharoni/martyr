@@ -82,7 +82,7 @@ module Martyr
         end
       end
 
-      def level_ids_in_grain
+      def lowest_level_ids_in_grain
         grain.level_ids
       end
 

@@ -93,9 +93,10 @@ module Martyr
       #   If the shared grain is missing a level in the grain - add all cubes that support that level.
       #   If the shared grain is missing a level in ths slice - add all cubes that support that level.
       def elements(**options)
+        load_bottom_level_primary_keys
         builder = VirtualElementsBuilder.new memory_slice, unsliced_level_ids_in_grain: unsliced_level_ids_in_grain
         sub_cubes.each do |sub_cube|
-          next unless sub_cube.metric_objects.present? or sub_cube.level_ids_in_grain.present?
+          next unless sub_cube.metric_objects.present? or sub_cube.lowest_level_ids_in_grain.present?
           memory_slice_for_cube = memory_slice.for_cube(sub_cube)
           builder.add sub_cube.elements(memory_slice_for_cube, **options), sliced: memory_slice_for_cube.to_hash.present?
         end
@@ -126,20 +127,18 @@ module Martyr
       # @param level_id [String] e.g. 'customers.last_name'
       # @param fact_record [Fact]
       def fetch_unsupported_level_value(level_id, fact_record)
-        sought_level_definition = fact_record.sub_cube.definition_from_id(level_id)
+        sought_level_definition = dimension_scopes.find_level(level_id).level_definition
         common_denominator_association = fact_record.sub_cube.common_denominator_level_association(level_id, prefer_query: true)
-        with_level_scope(common_denominator_association.id) do |common_denominator_level_scope|
-          common_denominator_level_scope.recursive_lookup_up fact_record.fact_key_for(common_denominator_association.id), level: sought_level_definition
-        end
+        common_denominator_level_scope = level_scope(common_denominator_association.id)
+        common_denominator_level_scope.recursive_lookup_up fact_record.fact_key_for(common_denominator_association.id), level: sought_level_definition
       end
 
       # @param level_id [String] e.g. 'customers.last_name'
       # @param fact_key_value [Integer] the primary key stored in the fact
       def fetch_supported_query_level_record(level_id, fact_key_value)
-        with_level_scope(level_id) do |level_scope|
-          raise Internal::Error.new('level must be query') unless level_scope.query?
-          level_scope.recursive_lookup_up fact_key_value, level: level_scope
-        end
+        level_scope = level_scope(level_id)
+        raise Internal::Error.new('level must be query') unless level_scope.query?
+        level_scope.recursive_lookup_up fact_key_value, level: level_scope
       end
 
       def standardizer
@@ -158,6 +157,21 @@ module Martyr
 
       def default_cube
         sub_cubes.first
+      end
+
+      def load_bottom_level_primary_keys
+        return if @bottom_level_primary_keys_loaded
+        sub_cubes.each do |sub_cube|
+          sub_cube.lowest_level_ids_in_grain.each do |level_id|
+            level = level_scope(level_id)
+            $level = level
+            next unless level.query?
+            level.primary_keys_for_load ||= []
+            level.primary_keys_for_load += sub_cube.facts.map{|x| x.raw[level.fact_alias]}
+            level.primary_keys_for_load = level.primary_keys_for_load.uniq
+          end
+        end
+        @bottom_level_primary_keys_loaded = true
       end
 
     end

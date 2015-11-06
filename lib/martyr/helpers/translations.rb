@@ -2,12 +2,9 @@ module Martyr
   module Translations
 
     def with_standard_id(id)
-      if id.to_s.include?('.')
-        x, y = id.to_s.split('.')
-        yield x, y
-      else
-        yield id.to_s
-      end
+      id_s = id.to_s
+      x, y = id_s.split('.')
+      y.nil? ? yield(id_s) : yield(x, y)
     end
 
     def first_element_from_id(id)

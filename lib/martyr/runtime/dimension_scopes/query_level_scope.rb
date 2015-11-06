@@ -2,6 +2,9 @@ module Martyr
   module Runtime
     class QueryLevelScope < BaseLevelScope
 
+      # @attribute primary_keys_for_load [Array<Integer>] primary keys to restrict when loading the level with full_load
+      attr_accessor :primary_keys_for_load
+
       delegate :record_value, :primary_key, :label_key, :label_expression, to: :level
 
       def initialize(*args)
@@ -46,11 +49,12 @@ module Martyr
 
       def load
         return true if loaded?
+
         if !collection.bottom_level_sliced_i
           set_bottom_sliced_level
-          set_cache @scope.call
+          full_load
         elsif to_i == collection.bottom_level_sliced_i
-          set_cache @scope.call
+          full_load
         elsif to_i > collection.bottom_level_sliced_i
           load_from_level_above
         elsif to_i < collection.bottom_level_sliced_i
@@ -58,6 +62,7 @@ module Martyr
         else
           raise Internal::Error.new("Inconsistency in `#{dimension_name}.#{name}` scope structure")
         end
+
         true
       end
 
@@ -67,7 +72,7 @@ module Martyr
       end
 
       def all_values
-        all.map{|x| x.send level.label_field}
+        all.map{|x| x[level.label_field]}
       end
 
       def keys
@@ -76,7 +81,7 @@ module Martyr
 
       # @return [ActiveRecord::Base]
       def fetch(primary_key_value)
-        self.load and return @cache[primary_key_value.to_s]
+        self.load and return @cache[primary_key_value.to_i]
       end
 
       # TODO: this is making the assumption that only degenerate levels can be above a query level
@@ -90,7 +95,7 @@ module Martyr
       def recursive_lookup_up(primary_key_value, level:)
         record = fetch(primary_key_value)
         return record if name == level.name
-        return record.send(level.query_level_key) if level_above.degenerate?
+        return record[level.query_level_key] if level_above.degenerate?
 
         level_above.recursive_lookup_up(record_parent_primary_key(record), level: level)
       end
@@ -106,9 +111,16 @@ module Martyr
         records = records.flat_map{|value| cached_records_by_value[value]} if records.first.is_a?(String)
 
         return records if name == level.name
-        return records.map{|r| r.send(level.query_level_key)}.uniq if level.degenerate?
+        return records.map{|r| r[level.query_level_key]}.uniq if level.degenerate?
         child_records = level_below.fetch_by_parent(records.map{|x| record_primary_key(x)})
         level_below.recursive_lookup_down(child_records, level: level)
+      end
+
+      def decorate_scope(&block)
+        original_scope = @scope
+        @scope = Proc.new do
+          block.call(original_scope.call)
+        end
       end
 
       protected
@@ -136,6 +148,14 @@ module Martyr
       #   load_from_level_below
       # end
 
+      def full_load
+        if primary_keys_for_load.present?
+          set_cache @scope.call.where(primary_key => primary_keys_for_load)
+        else
+          set_cache @scope.call
+        end
+      end
+
       def load_from_level_above
         raise Schema::Error.new("Cannot infer slice for dimension `#{dimension_name}` level `#{name}`: parent level is not query level") unless level_above.query?
         parent_ids = level_above.all.map { |x| level_above.record_primary_key(x) }
@@ -146,7 +166,7 @@ module Martyr
         level_below = query_level_below
         raise Schema::Error.new("Cannot infer slice for dimension `#{dimension_name}` level `#{name}`: child level cannot be found") unless level_below
 
-        ids_from_child = level_below.all.map { |x| level_below.record_parent_primary_key(x) }
+        ids_from_child = level_below.all.map { |x| level_below.record_parent_primary_key(x) }.uniq
         set_cache @scope.call.where(primary_key => ids_from_child)
       end
 
@@ -154,17 +174,11 @@ module Martyr
       # @return [ActiveRecord::Reflection::AssociationReflection]
       def parent_association
         return nil unless level_above.query?
+        return @parent_association if @parent_association
 
         relation = @scope.call.klass.reflections[parent_association_name]
         raise Schema::Error.new("Cannot find parent association `#{parent_association_name}` for dimension `#{dimension_name}` level `#{name}`") unless relation
-        relation
-      end
-
-      def decorate_scope(&block)
-        original_scope = @scope
-        @scope = Proc.new do
-          block.call(original_scope.call)
-        end
+        @parent_association = relation
       end
 
       def set_cache(scope)
@@ -198,15 +212,15 @@ module Martyr
         self.load
         @cached_records_by ||= {}
         return @cached_records_by[key] if @cached_records_by[key]
-        @cached_records_by[key] = cached_records.group_by{|x| x.send(key)}
+        @cached_records_by[key] = cached_records.group_by{|x| x[key]}
       end
 
       def record_primary_key(record)
-        record.send(primary_key).to_s
+        record[primary_key].to_i
       end
 
       def record_parent_primary_key(record)
-        record.send(parent_association.foreign_key)
+        record[parent_association.foreign_key]
       end
     end
   end

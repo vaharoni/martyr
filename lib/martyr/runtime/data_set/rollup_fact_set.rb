@@ -24,6 +24,12 @@ module Martyr
         self.class.new(cube_name, metric_id, new_element)
       end
 
+      def locate_or_nil(*args, **options)
+        catch(:empty_element) do
+          locate(*args, **options)
+        end
+      end
+
       private
 
       def standardizer

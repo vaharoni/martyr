@@ -56,6 +56,12 @@ module Martyr
         element_locator.locate(grain_hash, *args)
       end
 
+      # Loads all future values
+      def load
+        keys.each{|key| fetch(key)}
+        self
+      end
+
       private
 
       def method_missing(method, *args, &block)

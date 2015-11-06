@@ -33,8 +33,8 @@ module Martyr
         register CustomMetric.new cube_name: cube_name, name: name, block: block, rollup_function: rollup
       end
 
-      def has_custom_rollup(name, block)
-        register CustomRollup.new cube_name: cube_name, name: name, block: block
+      def has_custom_rollup(name, block, default: nil)
+        register CustomRollup.new cube_name: cube_name, name: name, block: block, default: default
       end
 
     end

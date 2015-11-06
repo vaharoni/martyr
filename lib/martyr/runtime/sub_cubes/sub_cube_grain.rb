@@ -4,10 +4,11 @@ module Martyr
       include Martyr::LevelComparator
 
       attr_reader :sub_cube, :grain
+      delegate :cube, to: :sub_cube
 
       def initialize(sub_cube)
         @sub_cube = sub_cube
-        @grain = {}
+        @grain = cube.default_grain_level_associations.index_by(&:id)
         @null = false
       end
 
@@ -106,6 +107,7 @@ module Martyr
       def has_association_with_level?(level_id)
         !!supported_level_associations_lookup[level_id]
       end
+
     end
   end
 end

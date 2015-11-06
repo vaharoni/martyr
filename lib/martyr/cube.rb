@@ -53,6 +53,22 @@ module Martyr
       @name || name.split('::').last.underscore
     end
 
+    def self.set_default_grain(*level_ids_arr)
+      @default_grain = level_ids_arr
+    end
+
+    def self.default_grain
+      @default_grain || []
+    end
+
+    # @return [Array<LevelAssociation>]
+    def self.default_grain_level_associations
+      level_association_lookup = level_associations.index_by(&:id)
+      default_grain.map do |x|
+        level_association_lookup[x] || raise(Schema::Error.new("`#{x}` is in the default grain but not connected to the fact query"))
+      end
+    end
+
     class << self
       delegate :define_dimension, to: :dimension_definitions
       delegate :main_fact, :build_fact_scopes, :sub_query, to: :fact_definitions

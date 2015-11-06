@@ -84,7 +84,8 @@ module Martyr
       # Build the dimension scope objects supported by the grain AND slices.
       #   DegeneratesAndBottomLevels.granulate('genres.name', 'media_types.name').slice('customers.country', with: 'USA')
       def setup_context_dimension_scopes(context)
-        relevant_dimensions = (context.level_ids_in_grain + @data_slice.keys).map { |x| first_element_from_id(x) }
+        default_grains = cube.contained_cube_classes.flat_map(&:default_grain)
+        relevant_dimensions = (default_grains + context.level_ids_in_grain + @data_slice.keys).map { |x| first_element_from_id(x) }
         context.dimension_scopes = cube.build_dimension_scopes(relevant_dimensions.uniq)
       end
 

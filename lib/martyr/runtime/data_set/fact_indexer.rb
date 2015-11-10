@@ -56,7 +56,7 @@ module Martyr
         return @indices[index_key] if @indices[index_key]
 
         arr = memory_slice.apply_on(facts).group_by do |fact|
-          sorted_level_ids.map{|id| fact.fetch(id)}
+          sorted_level_ids.map{|id| fact.fact_key_for(id)}
         end.map do |element_key, facts_arr|
           grain_arr = sorted_level_ids.each_with_index.map{|level_id, i| [level_id, element_key[i]]}
           coordinates = Coordinates.new(Hash[grain_arr], memory_slice.to_hash)

@@ -11,7 +11,7 @@ module Martyr
 
       attr_reader :grain_hash, :memory_slice_hash
 
-      # @param grain_hash [Hash] of the structure level_id => value.
+      # @param grain_hash [Hash] of the structure level_id => value. For query levels, value is the primary key.
       #   Note that it does not include metrics, and other background restrictions on the slice
       # @param memory_slice_hash [Hash]
       def initialize(grain_hash, memory_slice_hash)

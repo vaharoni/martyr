@@ -60,7 +60,10 @@ module Martyr
         end.map do |element_key, facts_arr|
           grain_arr = sorted_level_ids.each_with_index.map{|level_id, i| [level_id, element_key[i]]}
           coordinates = Coordinates.new(Hash[grain_arr], memory_slice.to_hash)
-          [element_key, Element.new(coordinates, facts_arr)]
+
+          representative = facts_arr.first
+          values_arr = sorted_level_ids.map{|id| [id, representative.fetch(id)]}
+          [element_key, Element.new(coordinates, Hash[values_arr], facts_arr)]
         end
         @indices[index_key] = Hash[arr]
       end

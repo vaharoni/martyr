@@ -40,6 +40,12 @@ module Martyr
       def value_loaded?
         !!@value_loaded
       end
+
+      protected
+
+      def ==(other)
+        value == other.value and fact_key_value == other.fact_key_value
+      end
     end
   end
 end

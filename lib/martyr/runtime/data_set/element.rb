@@ -11,13 +11,15 @@ module Martyr
       delegate :grain_level_ids, :grain_hash, to: :@coordinates
 
       # @param coordinates [Coordinates]
+      # @param values_hash [Hash] of the structure level_id => value. Unlike `coordinates.grain_hash`, for query levels the
+      #   value is the string value, not the primary key.
       # @param facts [Array<Fact>]
-      def initialize(coordinates, facts)
+      def initialize(coordinates, values_hash, facts)
         @coordinates = coordinates
         @facts = facts
         @metrics_hash = {}
 
-        merge! coordinates.grain_hash
+        merge! values_hash
       end
 
       # @param key [String] either metric id or level id

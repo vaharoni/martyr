@@ -3,44 +3,6 @@ require 'spec_helper'
 describe 'Runtime Queries' do
 
   describe 'main fact' do
-    it 'picks up all grains when no grain can be inferred' do
-      sub_cube = MartyrSpec::DegeneratesAndAllLevels.all.build.sub_cubes.first
-      sub_cube.test
-      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
-        SELECT genres.name AS genres_name,
-          media_types.name AS media_types_name,
-          customers.country AS customer_country,
-          customers.state AS customer_state,
-          customers.city AS customer_city,
-          customers.id AS customer_id,
-          invoices.billing_country AS invoice_country,
-          invoices.billing_state AS invoice_state,
-          invoices.billing_city AS invoice_city,
-          invoices.id AS invoice_id,
-          invoice_lines.id AS invoice_line_id,
-          tracks.id AS track_id,
-          SUM(invoice_lines.quantity) AS units_sold,
-          SUM(invoice_lines.unit_price * invoice_lines.quantity) AS amount
-        FROM "invoice_lines"
-          INNER JOIN "tracks" ON "tracks"."id" = "invoice_lines"."track_id"
-          INNER JOIN "genres" ON "genres"."id" = "tracks"."genre_id"
-          INNER JOIN "media_types" ON "media_types"."id" = "tracks"."media_type_id"
-          INNER JOIN "invoices" ON "invoices"."id" = "invoice_lines"."invoice_id"
-          INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id"
-        GROUP BY genres.name,
-          media_types.name,
-          customers.country,
-          customers.state,
-          customers.city,
-          customers.id,
-          invoices.billing_country,
-          invoices.billing_state,
-          invoices.billing_city,
-          invoices.id,
-          invoice_lines.id,
-          tracks.id
-      SQL
-    end
 
     it 'sets the level keys on SELECT and GROUP BY for single degenerate levels that are connected to the fact' do
       sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).granulate('media_types.name', 'genres.name').build.sub_cubes.first
@@ -147,10 +109,10 @@ describe 'Runtime Queries' do
     end
 
     it 'sets up WHERE on keys when slicing on query level that is connected to the fact' do
-      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('albums.track' => {with: 'Fast As a Shark'}).granulate('albums.track').build.sub_cubes.first
+      track = Track.find_by(name: 'Fast As a Shark')
+      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('albums.track' => {with: track.id}).granulate('albums.track').build.sub_cubes.first
       sub_cube.test
 
-      track = Track.find_by(name: 'Fast As a Shark')
       expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT tracks.id AS track_id,
           SUM(invoice_lines.quantity) AS units_sold
@@ -166,7 +128,7 @@ describe 'Runtime Queries' do
     end
 
     it 'sets up WHERE on keys when slicing on query level that is connected to the fact with custom label expression' do
-      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('invoices.invoice_line' => {with: 'invoice-line-5'}).granulate('invoices.invoice_line').build.sub_cubes.first
+      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('invoices.invoice_line' => {with: 5}).granulate('invoices.invoice_line').build.sub_cubes.first
       sub_cube.test
 
       expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
@@ -282,10 +244,11 @@ describe 'Runtime Queries' do
     end
 
     it 'propagates dimension slices to the sub fact when level is supported for both main query and sub query' do
-      sub_cube = MartyrSpec::DegeneratesAndCustomersAndSubFacts.select(:units_sold).slice('customers.last_name' => {with: 'Tremblay'}).granulate('customers.last_name').build.sub_cubes.first
+      customer_id = Customer.find_by(last_name: 'Tremblay').id
+
+      sub_cube = MartyrSpec::DegeneratesAndCustomersAndSubFacts.select(:units_sold).slice('customers.last_name' => {with: customer_id}).granulate('customers.last_name').build.sub_cubes.first
       sub_cube.test
 
-      customer_id = Customer.find_by(last_name: 'Tremblay').id
       expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
         SELECT customers.country AS customer_country,
           customers.state AS customer_state,

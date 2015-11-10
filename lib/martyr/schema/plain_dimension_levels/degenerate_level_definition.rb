@@ -2,16 +2,23 @@ module Martyr
   module Schema
     class DegenerateLevelDefinition < BaseLevelDefinition
 
+      # @attribute query_level_key [String] the field in the query level where the degenerate attribute resides. E.g.:
+      #   degenerate_level :country, query_level_key: 'billing_country'
+      #
+      # @attribute query_level_with_finder [Proc] the block to run on the query level's ActiveRecord scope. The block
+      #   receives two arguments - `scope` and `values`. E.g.:
+      #   ->(scope, values) { scope.where('billing_country' => values) }
+      #
+      # @attribute fact_key [String] the field in the fact where the degenerate attribute resides. E.g.:
+      #   degenerate_level :country, fact_key: 'invoices.country'
+      #
+      # @attribute fact_alias [String] the alias to give in the `AS` part of the SQL fact statement.
+      #
       attr_accessor :query_level_key, :query_level_with_finder, :fact_key, :fact_alias
       attr_reader :loaded
 
       # @param collection [DimensionDefinitionCollection]
       # @param name [String, Symbol]
-      # @option query_level_key [String]
-      # @option :query_level_with_finder [Proc]
-      # @option :query_level_without_finder [Proc]
-      # @option fact_key [String]
-      # @option fact_alias [String]
       def initialize(collection, name, **options)
         @collection = collection
         super name: name.to_s,

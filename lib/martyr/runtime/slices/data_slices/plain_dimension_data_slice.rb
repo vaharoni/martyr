@@ -85,7 +85,7 @@ module Martyr
           end
 
           common_denominator_level = operator.common_denominator_level(level_scope.level_definition)
-          if common_denominator_level.name == level_scope.name and level_scope.degenerate?
+          if common_denominator_level.name == level_scope.name
             add_to_where_using_fact_strategy(level_scope, slice_definition, operator)
           else
             add_to_where_using_join_strategy(operator, dimension_bus.level_scope(common_denominator_level.id))

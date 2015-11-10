@@ -1,6 +1,7 @@
 module Martyr
   module Runtime
     class FutureFactValue
+
       attr_reader :fact_record, :level, :fact_key_value, :active_record
       delegate :dimension_bus, to: :fact_record
 

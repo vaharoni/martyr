@@ -37,7 +37,7 @@ module Martyr
       def apply_on(facts)
         scoped_levels.keys.inject(facts) do |selected_facts, level_id|
           selected_facts.select do |fact|
-            get_slice(level_id).with.include? fact[level_id]
+            get_slice(level_id).with.include? fact.fact_key_for(level_id)
           end
         end
       end

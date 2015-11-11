@@ -4,7 +4,7 @@ module Martyr
 
       LABEL_EXPRESSION_ALIAS = 'martyr_label_expression'
 
-      attr_accessor :scope, :primary_key, :label_key, :label_expression, :fact_key, :fact_alias, :parent_association_name
+      attr_accessor :scope, :primary_key, :label_key, :parent_association_name
 
       # @param collection [DimensionDefinitionCollection]
       # @param name [String, Symbol]

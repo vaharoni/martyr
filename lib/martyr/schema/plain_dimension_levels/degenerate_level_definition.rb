@@ -9,22 +9,21 @@ module Martyr
       #   receives two arguments - `scope` and `values`. E.g.:
       #   ->(scope, values) { scope.where('billing_country' => values) }
       #
-      # @attribute fact_key [String] the field in the fact where the degenerate attribute resides. E.g.:
-      #   degenerate_level :country, fact_key: 'invoices.country'
-      #
-      # @attribute fact_alias [String] the alias to give in the `AS` part of the SQL fact statement.
-      #
-      attr_accessor :query_level_key, :query_level_with_finder, :fact_key, :fact_alias
+      attr_accessor :query_level_key, :query_level_with_finder
       attr_reader :loaded
 
       # @param collection [DimensionDefinitionCollection]
       # @param name [String, Symbol]
       def initialize(collection, name, **options)
         @collection = collection
-        super name: name.to_s,
-              query_level_key: options[:query_level_key] || name,
-              fact_key: options[:fact_key] || "#{dimension_name}_#{name}",
-              fact_alias: options[:fact_alias] || "#{dimension_name}_#{name}"
+        hash = {name: name.to_s,
+                query_level_key: options[:query_level_key] || name,
+                fact_key: options[:fact_key] || "#{dimension_name}_#{name}",
+                fact_alias: options[:fact_alias] || "#{dimension_name}_#{name}"}
+
+        hash.merge! label_expression: options[:label_expression] if options[:label_expression]
+
+        super hash
 
         @query_level_with_finder = options[:query_level_with_finder] || default_query_level_with_finder
         @loaded = false

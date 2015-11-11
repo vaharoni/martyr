@@ -28,11 +28,7 @@ module Martyr
 
       def slice_with(values)
         decorate_scope do |scope|
-          if label_expression
-            scope.where("#{label_expression} IN (?)", values)
-          else
-            scope.where label_key => values
-          end
+          scope.where label_key => values
         end
         set_bottom_sliced_level
       end

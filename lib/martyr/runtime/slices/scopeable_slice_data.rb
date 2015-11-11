@@ -37,6 +37,10 @@ module Martyr
         obj
       end
 
+      def data_dup
+        self.class.new(@data.dup)
+      end
+
       private
 
       def scoped_data
@@ -62,10 +66,6 @@ module Martyr
         end
 
         @scoped_data = metrics_hash.merge! Hash[dimensions_arr]
-      end
-
-      def data_dup
-        self.class.new(@data.dup)
       end
 
     end

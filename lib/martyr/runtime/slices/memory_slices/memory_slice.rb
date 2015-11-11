@@ -63,6 +63,13 @@ module Martyr
         self
       end
 
+      def dup_internals
+        dup.instance_eval do
+          @memory_slice_overrides = memory_slice_overrides.data_dup
+          self
+        end
+      end
+
     end
   end
 end

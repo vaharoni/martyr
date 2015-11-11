@@ -62,6 +62,11 @@ module Martyr
 
       # @return [QueryContext] for chaining
       def slice(*args)
+        dup_internals.slice!(*args)
+      end
+
+      # @return [QueryContext] for chaining
+      def slice!(*args)
         memory_slice.slice(*args)
         self
       end
@@ -143,6 +148,13 @@ module Martyr
 
       def standardizer
         @standardizer ||= Martyr::MetricIdStandardizer.new(default_cube.cube_name, raise_if_not_ok: virtual_cube?)
+      end
+
+      def dup_internals
+        dup.instance_eval do
+          @memory_slice = memory_slice.dup_internals
+          self
+        end
       end
 
       private

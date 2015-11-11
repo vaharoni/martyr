@@ -39,6 +39,7 @@ module Martyr
         self
       end
 
+      # @see ElementLocator#locate. Currently only used for metrics slices.
       def slice_hash(slice_hash)
         slice_hash.each do |slice_on, slice_definition|
           slice(slice_on, slice_definition)

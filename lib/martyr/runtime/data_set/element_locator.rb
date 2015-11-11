@@ -31,7 +31,8 @@ module Martyr
       # @param grain_hash [Hash] see Coordinates. We do not need Coordinates here so we prefer to allow sending in a
       #   Hash.
       # @param exclude_metric_id [nil, String, Array<String>] @see #finalize_elements
-      def get(grain_hash, exclude_metric_id: nil)
+      def get(grain_hash, exclude_metric_id: nil, memory_slice: nil)
+        memory_slice ||= self.memory_slice
         throw(:empty_element) if restrict_level_ids.present? and (grain_hash.keys - restrict_level_ids).present?
         elm = fact_indexer.get_element(memory_slice, grain_hash)
         throw(:empty_element) unless elm
@@ -55,16 +56,18 @@ module Martyr
       def locate(grain_hash, *several_variants)
         slice_hash, reset_arr, options = sanitize_args_for_locate(*several_variants)
         dimensions_slice_hash, metrics_slice_hash = separate_dimensions_and_metrics(slice_hash)
-        new_coords = coordinates_from_grain_hash(grain_hash, metrics_slice_hash).locate(dimensions_slice_hash, reset: reset_arr)
-        get(new_coords.grain_hash, **options)
+        new_memory_slice = metrics_slice_hash.present? ? memory_slice.dup_internals.slice_hash(metrics_slice_hash) : memory_slice
+        new_coords = coordinates_from_grain_hash(grain_hash, memory_slice: new_memory_slice).locate(dimensions_slice_hash, reset: reset_arr)
+        get(new_coords.grain_hash, memory_slice: new_memory_slice, **options)
       end
 
       private
 
       # @param grain_hash [Hash]
       # @return [Coordinates]
-      def coordinates_from_grain_hash(grain_hash, metrics_slice_hash={})
-        Coordinates.new(grain_hash, memory_slice.dup_internals.slice_hash(metrics_slice_hash).to_hash)
+      def coordinates_from_grain_hash(grain_hash, memory_slice: nil)
+        memory_slice ||= self.memory_slice
+        Coordinates.new(grain_hash, memory_slice.to_hash)
       end
 
       # @param element [Hash] element that does not have metrics rolled up and whose element_locator is missing

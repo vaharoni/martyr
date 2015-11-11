@@ -13,7 +13,7 @@ module Martyr
       def initialize(fact_record, level, key_supported:, fact_key_value: nil)
         @level = level
         @fact_record = fact_record
-        @fact_key_value = fact_key_value
+        @fact_key_value = fact_key_value.try(:to_i)
         @key_supported = key_supported
       end
 

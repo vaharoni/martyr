@@ -18,15 +18,18 @@ module Martyr
       end
 
       def has_sum_metric(name, statement, fact_alias: name)
-        register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias, rollup_function: :sum
+        register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias,
+            rollup_function: :sum
       end
 
-      def has_min_metric(name, statement, fact_alias: name)
-        register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias, rollup_function: :min
+      def has_min_metric(name, statement, fact_alias: name, typecast: :to_i)
+        register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias,
+            rollup_function: :min, typecast: typecast
       end
 
-      def has_max_metric(name, statement, fact_alias: name)
-        register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias, rollup_function: :max
+      def has_max_metric(name, statement, fact_alias: name, typecast: :to_i)
+        register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias,
+            rollup_function: :max, typecast: typecast
       end
 
       def has_custom_metric(name, block, rollup: :sum)

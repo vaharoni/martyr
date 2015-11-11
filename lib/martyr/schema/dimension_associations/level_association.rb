@@ -6,21 +6,16 @@ module Martyr
       attr_accessor :level, :fact_key, :fact_alias, :label_expression
       alias_method :level_definition, :level
 
-      delegate :to_i, to: :level    # Important so that the to_i will take into account all levels defined for the
-                                    # dimension, not just the supported one
+      delegate :to_i, :label_key, :label_expression, to: :level    # Important so that the to_i will take into account all levels defined for the
+                                                                   # dimension, not just the supported one
 
       # @param collection [LevelAssociationCollection]
       # @param level [BaseLevelDefinition]
-      def initialize(collection, level, fact_key: nil, fact_alias: nil, label_key: nil, label_expression: nil)
+      def initialize(collection, level, fact_key: nil, fact_alias: nil)
         @collection = collection
         @level = level
         @fact_key = fact_key || level.fact_key
         @fact_alias = fact_alias || level.fact_alias
-
-        if level.query?
-          @label_key = label_key || level.label_key
-          @label_expression = label_expression || level.label_expression
-        end
       end
 
       def supported?

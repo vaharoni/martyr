@@ -37,7 +37,7 @@ module Martyr
         scope_operator = FactScopeOperatorForMetric.new(metric_id) do |operator|
           operator.decorate_scope do |scope|
             slice_definition.combined_statements.inject(scope) do |scope, or_statements|
-              scope.having(compile_or_statement_group(or_statements))
+              scope.having(compile_or_statement_group(or_statements), *or_statements.map{|slice_statement| slice_statement[:value]})
             end
           end
         end
@@ -48,7 +48,7 @@ module Martyr
 
       def compile_or_statement_group(or_statement_group)
         or_statement_group.map do |slice_statement|
-          "#{metric.statement} #{slice_statement[:data_operator]} #{slice_statement[:value]}"
+          "#{metric.statement} #{slice_statement[:data_operator]} ?"
         end.join(' OR ')
       end
     end

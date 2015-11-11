@@ -29,6 +29,14 @@ module Martyr
         @loaded = false
       end
 
+      def label_key
+        nil
+      end
+
+      def label_expression
+        nil
+      end
+
       def query?
         false
       end

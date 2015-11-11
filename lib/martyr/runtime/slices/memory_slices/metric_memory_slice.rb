@@ -21,7 +21,11 @@ module Martyr
         raise Martyr::Error.new('Internal error. Inconsistent metric received') unless _metric_definition.id == metric_id
         new_slice_definition = MetricSliceDefinition.new(metric: metric, **options)
         if @data_slice.blank?
-          @slice_definition = new_slice_definition
+          if @slice_definition.blank?
+            @slice_definition = new_slice_definition
+          else
+            @slice_definition = new_slice_definition.merge(@slice_definition)
+          end
         else
           @slice_definition = new_slice_definition.merge(data_slice)
         end

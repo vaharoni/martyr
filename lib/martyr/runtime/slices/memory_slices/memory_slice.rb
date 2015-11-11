@@ -36,6 +36,14 @@ module Martyr
         slice_id = slice_on_object.slice_id
         memory_slice_overrides[slice_id] ||= slice_on_object.build_memory_slice(data_slice.slices[slice_id])
         memory_slice_overrides[slice_id].set_slice(slice_on_object, **slice_definition.symbolize_keys)
+        self
+      end
+
+      def slice_hash(slice_hash)
+        slice_hash.each do |slice_on, slice_definition|
+          slice(slice_on, slice_definition)
+        end
+        self
       end
 
       # = Applying slices

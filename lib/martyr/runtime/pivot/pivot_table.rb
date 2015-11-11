@@ -65,12 +65,12 @@ module Martyr
         reload
       end
 
-      def to_chart
+      def to_chart(name: nil)
         cells.group_by do |cell|
           cell.to_axis_values(row_axis)
         end.map do |row_grain_values, cells|
           data = cells.inject(column_axis.flat_values_nil_hash) { |h, cell| h.merge! cell.to_axis_values(column_axis) => cell.value }
-          {name: row_grain_values, data: data}
+          {name: name || row_grain_values, data: data}
         end
       end
 

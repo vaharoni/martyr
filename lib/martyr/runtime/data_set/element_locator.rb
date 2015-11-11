@@ -54,7 +54,8 @@ module Martyr
       #   locate(coords, 'customers.country', with: 'USA', reset: '')
       def locate(grain_hash, *several_variants)
         slice_hash, reset_arr, options = sanitize_args_for_locate(*several_variants)
-        new_coords = coordinates_from_grain_hash(grain_hash).locate(slice_hash, reset: reset_arr)
+        dimensions_slice_hash, metrics_slice_hash = separate_dimensions_and_metrics(slice_hash)
+        new_coords = coordinates_from_grain_hash(grain_hash, metrics_slice_hash).locate(dimensions_slice_hash, reset: reset_arr)
         get(new_coords.grain_hash, **options)
       end
 
@@ -62,8 +63,8 @@ module Martyr
 
       # @param grain_hash [Hash]
       # @return [Coordinates]
-      def coordinates_from_grain_hash(grain_hash)
-        Coordinates.new(grain_hash, memory_slice.to_hash)
+      def coordinates_from_grain_hash(grain_hash, metrics_slice_hash={})
+        Coordinates.new(grain_hash, memory_slice.dup_internals.slice_hash(metrics_slice_hash).to_hash)
       end
 
       # @param element [Hash] element that does not have metrics rolled up and whose element_locator is missing
@@ -86,8 +87,9 @@ module Martyr
         end
         standardizer = options.delete(:standardizer) || MetricIdStandardizer.new
 
-        [validate_ids(standardizer.standardize(slice_hash), :keys),
-          validate_ids(standardizer.standardize(reset_arr), :to_a), options]
+        validate_no_metrics standardizer.standardize(reset_arr)
+
+        [standardizer.standardize(slice_hash), standardizer.standardize(reset_arr), options]
       end
 
       def extract_options_for_locate(hash)
@@ -100,13 +102,19 @@ module Martyr
         [slice, Array.wrap(reset), options]
       end
 
-      # @return [Object] object if all went well
-      def validate_ids(object, iterator_method)
-        object.send(iterator_method).each do |id|
-          raise Query::Error.new('Can only call locate on dimensions') unless
+      # @param hash [Hash] of keys and set instructions
+      # @return [Hash, Hash] first hash is dimensions, second is metrics
+      def separate_dimensions_and_metrics(hash)
+        dimension_keys = hash.keys.select{|id| definition_from_id(first_element_from_id(id)).respond_to?(:dimension)}
+        [hash.slice(*dimension_keys), hash.except(*dimension_keys)]
+      end
+
+      # @param ids_array [Array] array of fully qualified IDs that contain either metrics or dimensions
+      def validate_no_metrics(ids_array)
+        ids_array.each do |id|
+          raise Query::Error.new('Can only reset on dimensions') unless
             definition_from_id(first_element_from_id(id)).respond_to?(:dimension?)
         end
-        object
       end
 
     end

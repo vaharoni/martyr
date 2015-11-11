@@ -27,8 +27,8 @@ module Martyr
         end
       end
 
-      def get_slice(_metric_id)
-        validate_consistency!(_metric_id) and @slice_definition
+      def get_slice(_metric_id = nil)
+        validate_consistency!(_metric_id || self.metric_id) and @slice_definition
       end
 
       # = Applying
@@ -46,7 +46,7 @@ module Martyr
       private
 
       def validate_consistency!(metric_id)
-        raise Martyr::Error.new('Internal error. Inconsistent metric received') unless metric_id == metric_id
+        raise Martyr::Error.new('Internal error. Inconsistent metric received') unless metric_id == self.metric_id
         true
       end
 

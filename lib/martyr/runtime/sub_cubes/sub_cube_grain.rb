@@ -54,11 +54,7 @@ module Martyr
       def add_to_select(fact_scopes)
         supported_level_associations.each do |level_object|
           fact_scopes.main_fact.decorate_scope do |scope|
-            if level_object.label_expression
-              scope.select("#{level_object.label_expression} AS #{level_object.fact_alias}")
-            else
-              scope.select("#{level_object.fact_key} AS #{level_object.fact_alias}")
-            end
+            scope.select("#{level_object.fact_key} AS #{level_object.fact_alias}")
           end
         end
       end

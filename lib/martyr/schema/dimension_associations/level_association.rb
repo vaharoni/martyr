@@ -11,12 +11,16 @@ module Martyr
 
       # @param collection [LevelAssociationCollection]
       # @param level [BaseLevelDefinition]
-      def initialize(collection, level, fact_key: nil, fact_alias: nil, label_expression: nil)
+      def initialize(collection, level, fact_key: nil, fact_alias: nil, label_key: nil, label_expression: nil)
         @collection = collection
         @level = level
         @fact_key = fact_key || level.fact_key
         @fact_alias = fact_alias || level.fact_alias
-        @label_expression = label_expression || level.label_expression
+
+        if level.query?
+          @label_key = label_key || level.label_key
+          @label_expression = label_expression || level.label_expression
+        end
       end
 
       def supported?

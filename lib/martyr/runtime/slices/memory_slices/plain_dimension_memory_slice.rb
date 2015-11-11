@@ -36,8 +36,9 @@ module Martyr
 
       def apply_on(facts)
         scoped_levels.keys.inject(facts) do |selected_facts, level_id|
+          whitelist_arr = get_slice(level_id).with.map(&:to_s)
           selected_facts.select do |fact|
-            get_slice(level_id).with.include? fact.fact_key_for(level_id)
+            whitelist_arr.include? fact.fact_key_for(level_id).to_s
           end
         end
       end

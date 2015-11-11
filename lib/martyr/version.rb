@@ -1,3 +1,3 @@
 module Martyr
-  VERSION = "0.1.29.pre"
+  VERSION = "0.1.30.pre"
 end

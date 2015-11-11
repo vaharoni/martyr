@@ -47,12 +47,12 @@ module Martyr
               value = fact_key_value
             else
               # The primary key is stored in the fact and we need to retrieve the string value from the dimension.
-              value = FutureFactValue.new(self, level_definition, fact_key_value)
+              value = FutureFactValue.new(self, level_definition, key_supported: true, fact_key_value: fact_key_value)
             end
           else
             # We don't have a direct connection to the level - we can access it through traversing the dimension
             # hierarchy starting at a lower level.
-            value = FutureFactValue.new(self, level_definition)
+            value = FutureFactValue.new(self, level_definition, key_supported: false)
           end
           hash[level_definition.id] = value
         end

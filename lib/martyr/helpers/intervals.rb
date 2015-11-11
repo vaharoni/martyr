@@ -40,7 +40,7 @@ module Martyr
     end
 
     def set_interval_set(set)
-      @set = set.sort_by{|interval| interval.from.x}
+      @set = set.sort_by{|interval| interval.from.x.to_f}
       self
     end
 
@@ -191,13 +191,13 @@ module Martyr
     def outside?(other)
       raise 'other is pointing to the same direction' if direction == other.direction
       if other.right? and other.closed?
-        x < other.x
+        x.to_f < other.x.to_f
       elsif other.right? and other.open?
-        x <= other.x
+        x.to_f <= other.x.to_f
       elsif other.left? and other.closed?
-        x > other.x
+        x.to_f > other.x.to_f
       elsif other.left? and other.open?
-        x >= other.x
+        x.to_f >= other.x.to_f
       end
     end
 
@@ -207,7 +207,7 @@ module Martyr
         return [self, other].select(&:closed?).first || self if left?
         return [self, other].select(&:open?).first || self if right?
       end
-      [self, other].sort_by(&:x).last
+      [self, other].sort_by{|p| p.x.to_f}.last
     end
 
     def min_with(other)
@@ -216,7 +216,7 @@ module Martyr
         return [self, other].select(&:open?).first || self if left?
         return [self, other].select(&:closed?).first || self if right?
       end
-      [self, other].sort_by(&:x).first
+      [self, other].sort_by{|p| p.x.to_f}.first
     end
   end
 end

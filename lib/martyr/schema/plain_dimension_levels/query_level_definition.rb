@@ -49,7 +49,7 @@ module Martyr
 
       # @param record [ActiveRecord::Base]
       def record_value(record)
-        record.send(label_field)
+        record.try(label_field)
       end
 
       private

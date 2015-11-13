@@ -10,7 +10,8 @@ module Martyr
       def initialize(sub_cube, query_result_hash)
         @sub_cube = sub_cube
         @raw = query_result_hash
-        merge!(value_by_levels_hash).merge!(built_in_metrics_hash).merge!(custom_metrics_hash)
+        merge!(value_by_levels_hash).merge!(built_in_metrics_hash)
+        merge_custom_metrics_hash
       end
 
       alias_method :hash_fetch, :fetch
@@ -67,12 +68,11 @@ module Martyr
       end
 
       # This has to occur after merging the built_in_metrics_hash so that the user custom code can fetch
-      # existing metrics
-      def custom_metrics_hash
-        arr = sub_cube.custom_metrics.map do |metric|
-          [metric.id, metric.extract(self)]
+      # existing metrics. We merge them one after the other so custom metrics can depend on one another.
+      def merge_custom_metrics_hash
+        sub_cube.custom_metrics.each do |metric|
+          merge! metric.id => metric.extract(self)
         end
-        Hash[arr]
       end
 
       def fully_qualify_id(id)

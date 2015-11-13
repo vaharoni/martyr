@@ -51,6 +51,8 @@ module Martyr
               value = [value, fact.fetch(id)].compact.min
             when 'max'
               value = [value, fact.fetch(id)].compact.max
+            when 'none'
+              # no-op
           end
         end
         value

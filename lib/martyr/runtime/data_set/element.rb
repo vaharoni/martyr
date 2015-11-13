@@ -31,7 +31,7 @@ module Martyr
 
       # @param metrics [Array<BaseMetric>]
       def rollup(*metrics)
-        metrics.each do |metric|
+        metrics.reject{|x| x.rollup_function.to_s == 'none'}.each do |metric|
           next if @metrics_hash[metric.id]
           store metric.id, FutureElementMetric.wrap(self, metric)
           @metrics_hash[metric.id] = metric

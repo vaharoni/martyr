@@ -40,22 +40,19 @@ module Martyr
 
       # @param element [Runtime::Element]
       def rollup(element)
-        value = 0
-        element.facts.each do |fact|
-          case rollup_function.to_s
-            when 'count'
-              value += 1
-            when 'sum'
-              value += fact.fetch(id) || 0
-            when 'min'
-              value = [value, fact.fetch(id)].compact.min
-            when 'max'
-              value = [value, fact.fetch(id)].compact.max
-            when 'none'
-              # no-op
-          end
+        case rollup_function.to_s
+          when 'count'
+            element.facts.length
+          when 'sum'
+            element.facts.map{|x| x.fetch(id) || 0}.reduce(:+)
+          when 'min'
+            element.facts.map{|x| x.fetch(id)}.compact.min
+          when 'max'
+            element.facts.map{|x| x.fetch(id)}.compact.max
+          when 'none'
+            values = element.facts.map{|x| x.fetch(id)}
+            return values.first if values.uniq.length == 1
         end
-        value
       end
     end
   end

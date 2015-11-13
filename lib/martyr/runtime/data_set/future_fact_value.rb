@@ -2,7 +2,7 @@ module Martyr
   module Runtime
     class FutureFactValue
 
-      attr_reader :fact_record, :level, :fact_key_value, :active_record, :key_supported
+      attr_reader :fact_record, :level, :fact_key_value, :key_supported
       delegate :dimension_bus, to: :fact_record
 
       # @param fact_record [Fact]
@@ -37,6 +37,11 @@ module Martyr
         end
         @value_loaded = true
         @value
+      end
+
+      def active_record
+        value unless value_loaded?
+        @active_record
       end
 
       def value_loaded?

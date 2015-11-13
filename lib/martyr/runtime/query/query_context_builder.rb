@@ -69,13 +69,14 @@ module Martyr
       end
 
       def build
+        return @context if @context
         context = QueryContext.new
         setup_context_grain(context)
         setup_context_dimension_scopes(context)
         setup_context_sub_cubes_metrics_and_grain(context)
         setup_context_data_slice(context)
         decorate_all_scopes(context)
-        context
+        @context = context
       end
 
       private

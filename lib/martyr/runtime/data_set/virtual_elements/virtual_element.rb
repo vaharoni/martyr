@@ -82,6 +82,11 @@ module Martyr
         "Metric `#{metric_id}` does not support slice on: `#{unsupported_keys_in_memory_slice.join('`, `')}`"
       end
 
+      def load
+        real_elements.try(:each, &:load)
+        self
+      end
+
       private
 
       # @param method_name [:get, :locate]

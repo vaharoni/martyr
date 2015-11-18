@@ -6,7 +6,7 @@ module Martyr
     end
 
     def self.metric_definitions
-      @metric_definitions ||= Schema::MetricDefinitionCollection.new(cube.cube_name)
+      @metric_definitions ||= Schema::MetricDefinitionCollection.new(cube_name)
     end
 
     # = DSL

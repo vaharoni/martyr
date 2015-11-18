@@ -45,14 +45,6 @@ module Martyr
       @dimension_definitions
     end
 
-    def self.set_cube_name(value)
-      @name = value.to_s
-    end
-
-    def self.cube_name
-      @name || name.split('::').last.underscore
-    end
-
     def self.set_default_grain(*level_ids_arr)
       @default_grain = level_ids_arr
     end

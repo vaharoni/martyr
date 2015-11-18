@@ -1,6 +1,14 @@
 module Martyr
   class BaseCube
 
+    def self.set_cube_name(value)
+      @name = value.to_s
+    end
+
+    def self.cube_name
+      @name || name.split('::').last.underscore
+    end
+
     def self.contained_cube_classes
       raise NotImplementedError
     end

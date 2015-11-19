@@ -4,7 +4,13 @@ module Martyr
       include Martyr::LevelComparator
       include Martyr::Translations
 
-      attr_accessor :sub_cubes_hash, :dimension_scopes, :level_ids_in_grain
+      # @attribute sub_cubes_hash [Hash] of the format { cube_name => Runtime::SubCube }
+      # @attribute dimension_scopes [Runtime::DimensionScopeCollection] see BaseCube::build_dimension_scopes
+      # @attribute level_ids_in_grain [Array<String>] array of level IDs
+      # @attribute virtual_cube [VirtualCube]
+      # @attribute virtual_cube_metric_ids [Array<String>]
+
+      attr_accessor :sub_cubes_hash, :dimension_scopes, :level_ids_in_grain, :virtual_cube, :virtual_cube_metric_ids
       attr_reader :data_slice
       delegate :level_scope, :level_scopes, :with_level_scope, :lowest_level_of, :lowest_level_ids_of,
         :levels_and_above_for, :level_ids_and_above_for, :level_loaded?, to: :dimension_scopes
@@ -13,6 +19,7 @@ module Martyr
       def initialize
         @data_slice = DataSlice.new(self)
         @sub_cubes_hash = {}
+        @virtual_cube_metric_ids = []
       end
 
       def inspect
@@ -23,8 +30,18 @@ module Martyr
         sub_cubes_hash.values
       end
 
+      # @return [Array<BaseMetric>] if the current cube is virtual, returns array of metrics of the virtual cube
+      def virtual_metrics
+        return [] unless self.virtual_cube
+        virtual_cube_metric_ids.map do |unique_metric_id|
+          metric_id = second_element_from_id(unique_metric_id)
+          virtual_cube.metric_definitions.find_or_error(metric_id)
+        end
+      end
+
+      # @return [Array<BaseMetric>] all metrics, including virtuals
       def metrics
-        sub_cubes.flat_map { |sub_cube| sub_cube.metric_objects }
+        sub_cubes.flat_map { |sub_cube| sub_cube.metric_objects } + virtual_metrics
       end
 
       def metric_ids
@@ -99,7 +116,9 @@ module Martyr
       #   If the shared grain is missing a level in ths slice - add all cubes that support that level.
       def elements(**options)
         load_bottom_level_primary_keys
-        builder = VirtualElementsBuilder.new memory_slice, unsliced_level_ids_in_grain: unsliced_level_ids_in_grain
+        builder = VirtualElementsBuilder.new(memory_slice, unsliced_level_ids_in_grain: unsliced_level_ids_in_grain,
+          virtual_metrics: virtual_metrics)
+
         sub_cubes.each do |sub_cube|
           next unless sub_cube.metric_objects.present? or sub_cube.lowest_level_ids_in_grain.present?
           memory_slice_for_cube = memory_slice.for_cube(sub_cube)

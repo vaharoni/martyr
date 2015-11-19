@@ -76,6 +76,10 @@ module Martyr
       true
     end
 
+    def self.virtual?
+      false
+    end
+
     # @return [nil, Base]
     def self.parent_schema_class
       ancestors[1..-1].find { |x| x != self and x.respond_to?(:martyr_schema_class?) }

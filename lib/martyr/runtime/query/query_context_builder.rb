@@ -75,6 +75,7 @@ module Martyr
         setup_context_dimension_scopes(context)
         setup_context_sub_cubes_metrics_and_grain(context)
         setup_context_data_slice(context)
+        setup_virtual_cube(context)
         decorate_all_scopes(context)
         @context = context
       end
@@ -129,7 +130,19 @@ module Martyr
         end
       end
 
-      # Step 5 (depends on steps 3 and 4)
+      # Step 5
+      # Sets the virtual cube
+      def setup_virtual_cube(context)
+        return unless cube.virtual?
+        context.virtual_cube = cube
+        if @select_args_by_cube.present?
+          context.virtual_cube_metric_ids = @select_args_by_cube[cube.cube_name]
+        else
+          context.virtual_cube_metric_ids = cube.metric_definitions.values.map(&:id)
+        end
+      end
+
+      # Step 6 (depends on steps 3 and 4)
       # All scopes are altered to represent the necessary queries - fact scopes (select, where, and group by) and
       # dimension scopes (where)
       def decorate_all_scopes(context)

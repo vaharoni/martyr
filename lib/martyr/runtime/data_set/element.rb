@@ -2,6 +2,7 @@ module Martyr
   module Runtime
     class Element < HashWithIndifferentAccess
       include Martyr::Translations
+      include Martyr::Runtime::ElementCommon
 
       # @attribute element_locator [ElementLocator] this is added to an element in the process of building it
       attr_accessor :element_locator
@@ -17,7 +18,6 @@ module Martyr
       def initialize(coordinates, values_hash, facts)
         @coordinates = coordinates
         @facts = facts
-        @metrics_hash = {}
 
         merge! values_hash
       end
@@ -28,23 +28,6 @@ module Martyr
         value.is_a?(FutureElementMetric) ? value.value : value
       end
       alias_method :[], :fetch
-
-      # @param metrics [Array<BaseMetric>]
-      def rollup(*metrics)
-        metrics.each do |metric|
-          next if @metrics_hash[metric.id]
-          store metric.id, FutureElementMetric.wrap(self, metric)
-          @metrics_hash[metric.id] = metric
-        end
-      end
-
-      def metrics
-        @metrics_hash.values
-      end
-
-      def metric_ids
-        @metrics_hash.keys
-      end
 
       def coordinates(*)
         @coordinates.to_hash

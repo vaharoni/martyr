@@ -22,12 +22,15 @@ module Martyr
     #
 
     class VirtualElement
+      include Martyr::Runtime::ElementCommon
 
-      attr_reader :grain_hash, :locators, :real_elements, :memory_slice
+      attr_reader :grain_hash, :locators, :real_elements, :memory_slice, :future_virtual_metrics_hash
       delegate :inspect, to: :to_hash
+      delegate :store, to: :future_virtual_metrics_hash
 
       def to_hash
-        real_elements.inject(grain_hash) {|h, element| h.merge element.to_hash}
+        grains_and_virtual_metrics = grain_hash.merge(future_virtual_metrics_hash)
+        real_elements.inject(grains_and_virtual_metrics) {|h, element| h.merge element.to_hash}
       end
 
       # @param memory_slice [MemorySlice] cross cubes memory slice
@@ -36,6 +39,7 @@ module Martyr
         @memory_slice = memory_slice
         @locators = locators
         @real_elements = real_elements || find_real_elements(:get)
+        @future_virtual_metrics_hash = {}
       end
 
       def null?
@@ -60,7 +64,7 @@ module Martyr
       end
 
       def [](key)
-        grain_hash[key] || real_elements.find{|elm| elm.has_key?(key)}.try(:[], key)
+        grain_hash[key] || future_virtual_metrics_hash[key].try(:value) || real_elements.find{|elm| elm.has_key?(key)}.try(:[], key)
       end
 
       def locate(*args)
@@ -84,6 +88,7 @@ module Martyr
 
       def load
         real_elements.try(:each, &:load)
+        future_virtual_metrics_hash.values.each(&:value)
         self
       end
 

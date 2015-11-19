@@ -3,11 +3,12 @@ module Martyr
     class VirtualElementsBuilder
       include Martyr::Translations
 
-      def initialize(memory_slice, unsliced_level_ids_in_grain:)
+      def initialize(memory_slice, unsliced_level_ids_in_grain:, virtual_metrics:)
         @entries = []
         @unsliced_level_ids_in_grain = unsliced_level_ids_in_grain
         @memory_slice = memory_slice
         @lookups_by_level_id = {}
+        @virtual_metrics = virtual_metrics
       end
 
       # @param elements [Array<Element>]
@@ -125,7 +126,8 @@ module Martyr
             next if (level_ids_in_grain - element.grain_level_ids).present?
 
             # TODO: remove grain_hash_with_nils.merge! since now we don't return null virtual elements
-            VirtualElement.new grain_hash_with_nils.merge!(element.grain_hash), @memory_slice, @entries.map(&:element_locator)
+            elm = VirtualElement.new grain_hash_with_nils.merge!(element.grain_hash), @memory_slice, @entries.map(&:element_locator)
+            elm.rollup(*@virtual_metrics)
           end.compact
         end
       end

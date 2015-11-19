@@ -36,5 +36,9 @@ module Martyr
       end
     end
 
+    def self.virtual?
+      true
+    end
+
   end
 end

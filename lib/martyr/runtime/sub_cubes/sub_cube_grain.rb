@@ -8,7 +8,7 @@ module Martyr
 
       def initialize(sub_cube)
         @sub_cube = sub_cube
-        @grain = cube.default_grain_level_associations.index_by(&:id)
+        @grain = cube.default_grain_level_associations.index_by{|x| x.dimension_name}
         @null = false
       end
 

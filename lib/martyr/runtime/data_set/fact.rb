@@ -35,6 +35,11 @@ module Martyr
         value.is_a?(FutureFactValue) ? (value.active_record || value.value) : value
       end
 
+      def load
+        keys.each{|key| fetch(key)}
+        self
+      end
+
       private
 
       def value_by_levels_hash

@@ -28,10 +28,11 @@ module Martyr
       end
 
       def inspect
-        @value.try(:inspect) || '?'
+        @value_retrieved ? @value.inspect : '?'
       end
 
       def value
+        @value_retrieved = true
         @value ||= @proc.call
       end
     end

@@ -195,7 +195,6 @@ module Martyr
         sub_cubes.each do |sub_cube|
           sub_cube.lowest_level_ids_in_grain.each do |level_id|
             level = level_scope(level_id)
-            $level = level
             next unless level.query?
             level.primary_keys_for_load ||= []
             level.primary_keys_for_load += sub_cube.facts.map{|x| x.raw[level.fact_alias]}

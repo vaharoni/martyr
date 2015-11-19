@@ -2,6 +2,9 @@ module Martyr
   module Runtime
     module FactFillerStrategies
 
+      # Instead of every fact object figuring out itself how to extract fact values from the raw data,
+      # we calculate a memoized set of strategies in advance.
+
       def fact_levels_filler_hash
         return @fact_levels_filler_hash if @fact_levels_filler_hash
         hash = {}

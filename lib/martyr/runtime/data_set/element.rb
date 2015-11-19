@@ -47,6 +47,11 @@ module Martyr
         self
       end
 
+      def key_for(level_id)
+        raise Query::Error.new("Error: `#{level_id}` must be included in the element grain") unless grain_hash.keys.include?(level_id)
+        facts.first.fact_key_for(level_id)
+      end
+
       def record_for(level_id)
         raise Query::Error.new("Error: `#{level_id}` must be included in the element grain") unless grain_hash.keys.include?(level_id)
         facts.first.record_for(level_id)

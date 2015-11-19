@@ -73,6 +73,10 @@ module Martyr
         VirtualElement.new(new_real_elements.first.grain_hash, memory_slice, locators, new_real_elements)
       end
 
+      def key_for(level_id)
+        real_elements.first.key_for(level_id)
+      end
+
       def record_for(level_id)
         real_elements.first.record_for(level_id)
       end

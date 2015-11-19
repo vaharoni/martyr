@@ -4,7 +4,7 @@ module Martyr
       include Martyr::Translations
 
       attr_reader :cube_name, :metric_id
-      delegate :facts, :coordinates, to: :@element
+      delegate :facts, :coordinates, :key_for, :record_for, to: :@element
 
       def initialize(cube_name, metric_id, element)
         @cube_name = cube_name

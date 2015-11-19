@@ -1,6 +1,6 @@
 module Martyr
   module Runtime
-    class Fact < HashWithIndifferentAccess
+    class Fact < Hash
       include Martyr::LevelComparator
       include Martyr::Translations
 
@@ -10,7 +10,8 @@ module Martyr
       def initialize(sub_cube, query_result_hash)
         @sub_cube = sub_cube
         @raw = query_result_hash
-        merge!(value_by_levels_hash).merge!(built_in_metrics_hash)
+        merge_value_by_levels_hash
+        merge_built_in_metrics_hash
         merge_custom_metrics_hash
       end
 
@@ -42,41 +43,23 @@ module Martyr
 
       private
 
-      def value_by_levels_hash
-        hash = {}
-        sub_cube.supported_level_definitions.each do |level_definition|
-          if sub_cube.has_association_with_level?(level_definition.id)
-            level_association = sub_cube.association_from_id(level_definition.id)
-            fact_key_value = raw.fetch(level_association.fact_alias)
-            if level_association.degenerate?
-              # The value is stored in the fact. No query needed.
-              value = fact_key_value
-            else
-              # The primary key is stored in the fact and we need to retrieve the string value from the dimension.
-              value = FutureFactValue.new(self, level_definition, key_supported: true, fact_key_value: fact_key_value)
-            end
-          else
-            # We don't have a direct connection to the level - we can access it through traversing the dimension
-            # hierarchy starting at a lower level.
-            value = FutureFactValue.new(self, level_definition, key_supported: false)
-          end
-          hash[level_definition.id] = value
+      def merge_value_by_levels_hash
+        sub_cube.fact_levels_filler_hash.each do |level_id, filler|
+          store level_id, filler.value(self)
         end
-        hash
       end
 
-      def built_in_metrics_hash
-        arr = sub_cube.built_in_metrics.map do |metric|
-          [metric.id, metric.extract(self)]
+      def merge_built_in_metrics_hash
+        sub_cube.built_in_metrics.each do |metric|
+          store metric.id, metric.extract(self)
         end
-        Hash[arr]
       end
 
       # This has to occur after merging the built_in_metrics_hash so that the user custom code can fetch
       # existing metrics. We merge them one after the other so custom metrics can depend on one another.
       def merge_custom_metrics_hash
         sub_cube.custom_metrics.each do |metric|
-          merge! metric.id => FutureMetric.wrap(self, metric, :extract)
+          store metric.id, FutureMetric.wrap(self, metric, :extract)
         end
       end
 

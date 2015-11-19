@@ -19,8 +19,10 @@ module Martyr
 
 
       # @return [FactSet]
-      def locate(*args, **options)
-        new_element = @element.locate(*args, standardizer: standardizer, exclude_metric_id: metric_id, **options)
+      def locate(*args)
+        options = args.last.merge(standardizer: standardizer, exclude_metric_id: metric_id)
+        new_args = args.length == 1 ? [options] : [args.first, options]
+        new_element = @element.locate(*new_args)
         self.class.new(cube_name, metric_id, new_element)
       end
 

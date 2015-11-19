@@ -19,7 +19,7 @@ module Martyr
       # @param id [String] either metric id or level id
       def fetch(id)
         value = hash_fetch(fully_qualify_id(id))
-        value.is_a?(FutureFactValue) ? value.value : value
+        value.is_a?(FutureFactValue) || value.is_a?(FutureMetric) ? value.value : value
       end
       alias_method :[], :fetch
 

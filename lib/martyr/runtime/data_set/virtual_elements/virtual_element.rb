@@ -64,7 +64,8 @@ module Martyr
       end
 
       def [](key)
-        to_hash[key]
+        value = to_hash[key]
+        value.is_a?(FutureElementMetric) ? value.value : value
       end
 
       def locate(*args)

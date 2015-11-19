@@ -108,7 +108,7 @@ module Martyr
       # @param hash [Hash] of keys and set instructions
       # @return [Hash, Hash] first hash is dimensions, second is metrics
       def separate_dimensions_and_metrics(hash)
-        dimension_keys = hash.keys.select{|id| definition_from_id(first_element_from_id(id)).respond_to?(:dimension)}
+        dimension_keys = hash.keys.select{|id| definition_from_id(first_element_from_id(id)).respond_to?(:dimension?)}
         [hash.slice(*dimension_keys), hash.except(*dimension_keys)]
       end
 

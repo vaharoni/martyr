@@ -25,7 +25,7 @@ module Martyr
       include Martyr::Runtime::ElementCommon
 
       attr_reader :grain_hash, :locators, :real_elements, :memory_slice, :future_virtual_metrics_hash
-      delegate :inspect, to: :to_hash
+      delegate :inspect, :has_key?, to: :to_hash
       delegate :store, to: :future_virtual_metrics_hash
 
       def to_hash
@@ -46,12 +46,12 @@ module Martyr
         real_elements.empty?
       end
 
-      def coordinates(metric_id)
-        coordinates_object(metric_id).to_hash
+      def coordinates
+        coordinates_object.to_hash
       end
 
-      def coordinates_object(metric_id)
-        real_elements.find{|x| x.has_key?(metric_id)}.try(:coordinates_object)
+      def coordinates_object
+        real_elements.first.coordinates_object
       end
 
       def facts(cube_name = nil)

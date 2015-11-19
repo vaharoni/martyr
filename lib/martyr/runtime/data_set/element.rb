@@ -25,7 +25,7 @@ module Martyr
       # @param key [String] either metric id or level id
       def fetch(key)
         value = super(key)
-        value.is_a?(FutureElementMetric) ? value.value : value
+        value.is_a?(FutureMetric) ? value.value : value
       end
       alias_method :[], :fetch
 

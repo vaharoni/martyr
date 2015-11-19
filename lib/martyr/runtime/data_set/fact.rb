@@ -76,7 +76,7 @@ module Martyr
       # existing metrics. We merge them one after the other so custom metrics can depend on one another.
       def merge_custom_metrics_hash
         sub_cube.custom_metrics.each do |metric|
-          merge! metric.id => metric.extract(self)
+          merge! metric.id => FutureMetric.wrap(self, metric, :extract)
         end
       end
 

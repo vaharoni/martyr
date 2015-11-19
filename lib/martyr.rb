@@ -7,6 +7,7 @@ require 'active_model'
 
 require 'martyr/helpers/translations'
 require 'martyr/runtime/slices/has_scoped_levels'
+require 'martyr/runtime/data_set/element_common'
 
 Dir.glob(File.expand_path '../martyr/helpers/*.rb', __FILE__).each{|x| require File.expand_path(x).split('.rb').first}
 Dir.glob(File.expand_path '../martyr/level_concern/*.rb', __FILE__).each{|x| require File.expand_path(x).split('.rb').first}

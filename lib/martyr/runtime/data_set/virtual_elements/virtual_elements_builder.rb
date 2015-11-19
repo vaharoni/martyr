@@ -121,14 +121,15 @@ module Martyr
       def build
         return @entries.first.elements if @entries.length == 1
         @entries.each(&:restrict)
+
         @entries.flat_map do |entry|
           entry.restricted_elements.map do |element|
             next if (level_ids_in_grain - element.grain_level_ids).present?
-
-            # TODO: remove grain_hash_with_nils.merge! since now we don't return null virtual elements
-            elm = VirtualElement.new grain_hash_with_nils.merge!(element.grain_hash), @memory_slice, @entries.map(&:element_locator)
-            elm.rollup(*@virtual_metrics)
+            element.grain_hash
           end.compact
+        end.uniq.map do |grain_hash|
+          elm = VirtualElement.new grain_hash, @memory_slice, @entries.map(&:element_locator)
+          elm.rollup(*@virtual_metrics)
         end
       end
 

@@ -64,13 +64,17 @@ module Martyr
       end
 
       def [](key)
-        grain_hash[key] || future_virtual_metrics_hash[key].try(:value) || real_elements.find{|elm| elm.has_key?(key)}.try(:[], key)
+        to_hash[key]
       end
 
       def locate(*args)
         new_real_elements = find_real_elements(:locate, *args)
         throw(:empty_element) unless new_real_elements.present?
         VirtualElement.new(new_real_elements.first.grain_hash, memory_slice, locators, new_real_elements)
+      end
+
+      def record_for(level_id)
+        real_elements.first.record_for(level_id)
       end
 
       def warnings

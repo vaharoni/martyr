@@ -94,9 +94,13 @@ module Martyr
 
       private
 
+      def metrics_sort_order
+        @_metrics_sort_order ||= Hash[metrics.each_with_index.map{|m, i| [m.id, i]}]
+      end
+
       def sort_cells(cells_arr)
         cells_arr.sort_by do |cell|
-          pivot_grain.map{|level_id| cell[level_id] || '' }
+          pivot_grain.map{|level_id| cell[level_id] || '' } + [metrics_sort_order[cell.metric_id]]
         end
       end
 

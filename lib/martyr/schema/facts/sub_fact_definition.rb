@@ -15,6 +15,10 @@ module Martyr
         @scope = -> { scope }
       end
 
+      def supports_metric?(*)
+        false
+      end
+
       def has_dimension_level(dimension_name, level_name, **args)
         raise Schema::Error.new("Dimension level `#{dimension_name}.#{level_name}` does not exist in main query") unless
             main_fact.has_dimension_level?(dimension_name, level_name)

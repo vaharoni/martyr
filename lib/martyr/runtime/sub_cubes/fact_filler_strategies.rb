@@ -52,7 +52,7 @@ module Martyr
         end
 
         def value(fact)
-          FutureFactValue.new(fact, level_definition, key_supported: false)
+          FutureFactValue.new(fact, @level_definition, key_supported: false)
         end
       end
 

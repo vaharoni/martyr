@@ -68,7 +68,7 @@ module Martyr
                :has_sum_metric, :has_custom_metric, :has_custom_rollup, :main_query, # DSL
                :metrics, :find_metric, :dimension_associations, to: :main_fact # Runtime
 
-      delegate :select, :slice, :granulate, :pivot, to: :new_query_context_builder
+      delegate :select, :slice, :granulate, :pivot, :build, to: :new_query_context_builder
       alias_method :all, :new_query_context_builder
     end
 

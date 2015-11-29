@@ -1,0 +1,868 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+language	/Users/amitaharoni/workspace/martyr/.travis.yml	/^language: ruby$/;"	function	line:1
+rvm	/Users/amitaharoni/workspace/martyr/.travis.yml	/^rvm:$/;"	function	line:2
+Martyr	/Users/amitaharoni/workspace/martyr/bin/console	/^module Martyr$/;"	module	line:11
+reload	/Users/amitaharoni/workspace/martyr/bin/console	/^  def self.reload!$/;"	singleton method	line:12	class:Martyr
+Reloader	/Users/amitaharoni/workspace/martyr/bin/console	/^  class Reloader$/;"	class	line:16	class:Martyr
+initialize	/Users/amitaharoni/workspace/martyr/bin/console	/^    def initialize(top)$/;"	method	line:17	class:Martyr.Reloader
+reload	/Users/amitaharoni/workspace/martyr/bin/console	/^    def reload$/;"	method	line:21	class:Martyr.Reloader
+all_project_objects_lookup	/Users/amitaharoni/workspace/martyr/bin/console	/^    def all_project_objects_lookup$/;"	method	line:28	class:Martyr.Reloader
+all_project_objects	/Users/amitaharoni/workspace/martyr/bin/console	/^    def all_project_objects(current = @top)$/;"	method	line:32	class:Martyr.Reloader
+cleanup	/Users/amitaharoni/workspace/martyr/bin/console	/^    def cleanup(parent = Object, current = @top)$/;"	method	line:37	class:Martyr.Reloader
+loaded_files	/Users/amitaharoni/workspace/martyr/bin/console	/^    def loaded_files$/;"	method	line:43	class:Martyr.Reloader
+load_all	/Users/amitaharoni/workspace/martyr/bin/console	/^    def load_all$/;"	method	line:47	class:Martyr.Reloader
+reload!	/Users/amitaharoni/workspace/martyr/bin/console	/^def reload!$/;"	method	line:54
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/base_cube.rb	/^module Martyr$/;"	module	line:1
+BaseCube	/Users/amitaharoni/workspace/martyr/lib/martyr/base_cube.rb	/^  class BaseCube$/;"	class	line:2	class:Martyr
+set_cube_name	/Users/amitaharoni/workspace/martyr/lib/martyr/base_cube.rb	/^    def self.set_cube_name(value)$/;"	singleton method	line:4	class:Martyr.BaseCube
+cube_name	/Users/amitaharoni/workspace/martyr/lib/martyr/base_cube.rb	/^    def self.cube_name$/;"	singleton method	line:8	class:Martyr.BaseCube
+contained_cube_classes	/Users/amitaharoni/workspace/martyr/lib/martyr/base_cube.rb	/^    def self.contained_cube_classes$/;"	singleton method	line:12	class:Martyr.BaseCube
+new_query_context_builder	/Users/amitaharoni/workspace/martyr/lib/martyr/base_cube.rb	/^    def self.new_query_context_builder$/;"	singleton method	line:16	class:Martyr.BaseCube
+dimension_definitions	/Users/amitaharoni/workspace/martyr/lib/martyr/base_cube.rb	/^    def self.dimension_definitions$/;"	singleton method	line:20	class:Martyr.BaseCube
+supported_dimension_definitions	/Users/amitaharoni/workspace/martyr/lib/martyr/base_cube.rb	/^    def self.supported_dimension_definitions$/;"	singleton method	line:24	class:Martyr.BaseCube
+build_dimension_scopes	/Users/amitaharoni/workspace/martyr/lib/martyr/base_cube.rb	/^    def self.build_dimension_scopes(dimension_names)$/;"	singleton method	line:31	class:Martyr.BaseCube
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/cube.rb	/^module Martyr$/;"	module	line:1
+Cube	/Users/amitaharoni/workspace/martyr/lib/martyr/cube.rb	/^  class Cube < BaseCube$/;"	class	line:2	class:Martyr
+contained_cube_classes	/Users/amitaharoni/workspace/martyr/lib/martyr/cube.rb	/^    def self.contained_cube_classes$/;"	singleton method	line:6	class:Martyr.Cube
+fact_definitions	/Users/amitaharoni/workspace/martyr/lib/martyr/cube.rb	/^    def self.fact_definitions$/;"	singleton method	line:10	class:Martyr.Cube
+dimension_definitions	/Users/amitaharoni/workspace/martyr/lib/martyr/cube.rb	/^    def self.dimension_definitions$/;"	singleton method	line:41	class:Martyr.Cube
+set_default_grain	/Users/amitaharoni/workspace/martyr/lib/martyr/cube.rb	/^    def self.set_default_grain(*level_ids_arr)$/;"	singleton method	line:48	class:Martyr.Cube
+default_grain	/Users/amitaharoni/workspace/martyr/lib/martyr/cube.rb	/^    def self.default_grain$/;"	singleton method	line:52	class:Martyr.Cube
+default_grain_level_associations	/Users/amitaharoni/workspace/martyr/lib/martyr/cube.rb	/^    def self.default_grain_level_associations$/;"	singleton method	line:57	class:Martyr.Cube
+martyr_schema_class	/Users/amitaharoni/workspace/martyr/lib/martyr/cube.rb	/^    def self.martyr_schema_class?$/;"	singleton method	line:75	class:Martyr
+virtual	/Users/amitaharoni/workspace/martyr/lib/martyr/cube.rb	/^    def self.virtual?$/;"	singleton method	line:79	class:Martyr
+parent_schema_class	/Users/amitaharoni/workspace/martyr/lib/martyr/cube.rb	/^    def self.parent_schema_class$/;"	singleton method	line:84	class:Martyr
+supported_dimension_definitions	/Users/amitaharoni/workspace/martyr/lib/martyr/cube.rb	/^    def self.supported_dimension_definitions$/;"	singleton method	line:92	class:Martyr
+level_associations	/Users/amitaharoni/workspace/martyr/lib/martyr/cube.rb	/^    def self.level_associations$/;"	singleton method	line:99	class:Martyr
+supported_level_definitions	/Users/amitaharoni/workspace/martyr/lib/martyr/cube.rb	/^    def self.supported_level_definitions$/;"	singleton method	line:104	class:Martyr
+supported_level_ids	/Users/amitaharoni/workspace/martyr/lib/martyr/cube.rb	/^    def self.supported_level_ids$/;"	singleton method	line:110	class:Martyr
+select_supported_level_ids	/Users/amitaharoni/workspace/martyr/lib/martyr/cube.rb	/^    def self.select_supported_level_ids(level_ids)$/;"	singleton method	line:118	class:Martyr
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/dimension_reference.rb	/^module Martyr$/;"	module	line:1
+DimensionReference	/Users/amitaharoni/workspace/martyr/lib/martyr/dimension_reference.rb	/^  class DimensionReference$/;"	class	line:2	class:Martyr
+dimension?	/Users/amitaharoni/workspace/martyr/lib/martyr/dimension_reference.rb	/^    def dimension?$/;"	method	line:12	class:Martyr.DimensionReference
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/dimension_reference.rb	/^    def initialize(dimension_definition, levels_collection_class, &block)$/;"	method	line:16	class:Martyr.DimensionReference
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/errors.rb	/^module Martyr$/;"	module	line:1
+Error	/Users/amitaharoni/workspace/martyr/lib/martyr/errors.rb	/^  class Error < StandardError$/;"	class	line:2	class:Martyr
+Internal	/Users/amitaharoni/workspace/martyr/lib/martyr/errors.rb	/^  module Internal$/;"	module	line:5	class:Martyr
+Error	/Users/amitaharoni/workspace/martyr/lib/martyr/errors.rb	/^    class Error < ::Martyr::Error$/;"	class	line:6	class:Martyr.Internal
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/errors.rb	/^  module Schema$/;"	module	line:10	class:Martyr
+Error	/Users/amitaharoni/workspace/martyr/lib/martyr/errors.rb	/^    class Error < ::Martyr::Error$/;"	class	line:11	class:Martyr.Schema
+Query	/Users/amitaharoni/workspace/martyr/lib/martyr/errors.rb	/^  module Query$/;"	module	line:15	class:Martyr
+Error	/Users/amitaharoni/workspace/martyr/lib/martyr/errors.rb	/^    class Error < ::Martyr::Error$/;"	class	line:16	class:Martyr.Query
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/delegators.rb	/^module Martyr$/;"	module	line:1
+Delegators	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/delegators.rb	/^  module Delegators$/;"	module	line:2	class:Martyr
+ClassMethods	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/delegators.rb	/^    module ClassMethods$/;"	module	line:5	class:Martyr.Delegators
+each_child_delegator	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/delegators.rb	/^      def each_child_delegator(*method_names, to:)$/;"	method	line:6	class:Martyr.Delegators.ClassMethods
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^module Martyr$/;"	module	line:3
+IntervalSet	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^  class IntervalSet$/;"	class	line:4	class:Martyr
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def initialize(**options)$/;"	method	line:7	class:Martyr.IntervalSet
+null?	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def null?$/;"	method	line:12	class:Martyr.IntervalSet
+continuous?	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def continuous?$/;"	method	line:16	class:Martyr.IntervalSet
+add	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def add(from: -Float::INFINITY, to: Float::INFINITY)$/;"	method	line:20	class:Martyr.IntervalSet
+intersect	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def intersect(other)$/;"	method	line:34	class:Martyr.IntervalSet
+set_interval_set	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def set_interval_set(set)$/;"	method	line:42	class:Martyr.IntervalSet
+extract_and_fill_holes	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def extract_and_fill_holes$/;"	method	line:49	class:Martyr.IntervalSet
+extract_and_remove_points	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def extract_and_remove_points$/;"	method	line:66	class:Martyr.IntervalSet
+upper_bound	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def upper_bound$/;"	method	line:73	class:Martyr.IntervalSet
+lower_bound	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def lower_bound$/;"	method	line:80	class:Martyr.IntervalSet
+Interval	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^  class Interval$/;"	class	line:95	class:Martyr
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def initialize(from, to)$/;"	method	line:98	class:Martyr.Interval
+point?	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def point?$/;"	method	line:104	class:Martyr.Interval
+overlap?	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def overlap?(other)$/;"	method	line:108	class:Martyr.Interval
+touch?	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def touch?(other)$/;"	method	line:113	class:Martyr.Interval
+intersect	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def intersect(other)$/;"	method	line:119	class:Martyr.Interval
+union	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def union(other)$/;"	method	line:124	class:Martyr.Interval
+PointInterval	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^  class PointInterval$/;"	class	line:132	class:Martyr
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def initialize(x, closed, direction)$/;"	method	line:135	class:Martyr.PointInterval
+to_param	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def to_param$/;"	method	line:142	class:Martyr.PointInterval
+infinity?	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def infinity?$/;"	method	line:146	class:Martyr.PointInterval
+open?	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def open?$/;"	method	line:150	class:Martyr.PointInterval
+closed?	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def closed?$/;"	method	line:154	class:Martyr.PointInterval
+right?	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def right?$/;"	method	line:158	class:Martyr.PointInterval
+left?	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def left?$/;"	method	line:162	class:Martyr.PointInterval
+equal_and_mergeable?	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def equal_and_mergeable?(other)$/;"	method	line:166	class:Martyr.PointInterval
+equal_but_empty?	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def equal_but_empty?(other)$/;"	method	line:172	class:Martyr.PointInterval
+inside?	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def inside?(other)$/;"	method	line:178	class:Martyr.PointInterval
+outside?	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def outside?(other)$/;"	method	line:191	class:Martyr.PointInterval
+max_with	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def max_with(other)$/;"	method	line:204	class:Martyr.PointInterval
+min_with	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/intervals.rb	/^    def min_with(other)$/;"	method	line:213	class:Martyr.PointInterval
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/metric_id_standardizer.rb	/^module Martyr$/;"	module	line:1
+MetricIdStandardizer	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/metric_id_standardizer.rb	/^  class MetricIdStandardizer$/;"	class	line:2	class:Martyr
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/metric_id_standardizer.rb	/^    def initialize(cube_name = nil, raise_if_not_ok: false)$/;"	method	line:5	class:Martyr.MetricIdStandardizer
+standardize	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/metric_id_standardizer.rb	/^    def standardize(object)$/;"	method	line:10	class:Martyr.MetricIdStandardizer
+standardize_id	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/metric_id_standardizer.rb	/^    def standardize_id(id)$/;"	method	line:22	class:Martyr.MetricIdStandardizer
+standardize_arr	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/metric_id_standardizer.rb	/^    def standardize_arr(arr)$/;"	method	line:28	class:Martyr.MetricIdStandardizer
+standardize_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/metric_id_standardizer.rb	/^    def standardize_hash(hash)$/;"	method	line:32	class:Martyr.MetricIdStandardizer
+add_cube_name_to	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/metric_id_standardizer.rb	/^    def add_cube_name_to(id)$/;"	method	line:41	class:Martyr.MetricIdStandardizer
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/registrable.rb	/^module Martyr$/;"	module	line:1
+Registrable	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/registrable.rb	/^  module Registrable$/;"	module	line:2	class:Martyr
+register	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/registrable.rb	/^    def register(object)$/;"	method	line:3	class:Martyr.Registrable
+find_or_nil	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/registrable.rb	/^    def find_or_nil(name)$/;"	method	line:7	class:Martyr.Registrable
+find_or_error	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/registrable.rb	/^    def find_or_error(name)$/;"	method	line:11	class:Martyr.Registrable
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/translations.rb	/^module Martyr$/;"	module	line:1
+Translations	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/translations.rb	/^  module Translations$/;"	module	line:2	class:Martyr
+with_standard_id	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/translations.rb	/^    def with_standard_id(id)$/;"	method	line:4	class:Martyr.Translations
+first_element_from_id	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/translations.rb	/^    def first_element_from_id(id)$/;"	method	line:10	class:Martyr.Translations
+second_element_from_id	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/translations.rb	/^    def second_element_from_id(id, fallback: false)$/;"	method	line:16	class:Martyr.Translations
+to_id	/Users/amitaharoni/workspace/martyr/lib/martyr/helpers/translations.rb	/^    def to_id(object)$/;"	method	line:24	class:Martyr.Translations
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/has_level_collection.rb	/^module Martyr$/;"	module	line:1
+HasLevelCollection	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/has_level_collection.rb	/^  module HasLevelCollection$/;"	module	line:2	class:Martyr
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level.rb	/^module Martyr$/;"	module	line:1
+Level	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level.rb	/^  module Level$/;"	module	line:2	class:Martyr
+id	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level.rb	/^    def id$/;"	method	line:9	class:Martyr.Level
+level_object?	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level.rb	/^    def level_object?$/;"	method	line:14	class:Martyr.Level
+level_above	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level.rb	/^    def level_above$/;"	method	line:18	class:Martyr.Level
+level_below	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level.rb	/^    def level_below$/;"	method	line:22	class:Martyr.Level
+level_index	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level.rb	/^    def level_index$/;"	method	line:26	class:Martyr.Level
+query_level_below	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level.rb	/^    def query_level_below$/;"	method	line:31	class:Martyr.Level
+level_and_above	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level.rb	/^    def level_and_above$/;"	method	line:35	class:Martyr.Level
+level_and_below	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level.rb	/^    def level_and_below$/;"	method	line:39	class:Martyr.Level
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_collection.rb	/^module Martyr$/;"	module	line:1
+LevelCollection	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_collection.rb	/^  module LevelCollection$/;"	module	line:2	class:Martyr
+level_index	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_collection.rb	/^    def level_index(level_name)$/;"	method	line:21	class:Martyr.LevelCollection
+level_above	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_collection.rb	/^    def level_above(level_name)$/;"	method	line:26	class:Martyr.LevelCollection
+level_below	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_collection.rb	/^    def level_below(level_name)$/;"	method	line:32	class:Martyr.LevelCollection
+query_level_below	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_collection.rb	/^    def query_level_below(level_name)$/;"	method	line:39	class:Martyr.LevelCollection
+level_and_above	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_collection.rb	/^    def level_and_above(level_name)$/;"	method	line:45	class:Martyr.LevelCollection
+level_and_below	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_collection.rb	/^    def level_and_below(level_name)$/;"	method	line:51	class:Martyr.LevelCollection
+lowest_level	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_collection.rb	/^    def lowest_level$/;"	method	line:55	class:Martyr.LevelCollection
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_comparator.rb	/^module Martyr$/;"	module	line:1
+LevelComparator	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_comparator.rb	/^  module LevelComparator$/;"	module	line:2	class:Martyr
+more_detailed_level	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_comparator.rb	/^    def more_detailed_level(level1, level2)$/;"	method	line:10	class:Martyr.LevelComparator
+find_common_denominator_level	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_comparator.rb	/^    def find_common_denominator_level(level_definition, level_associations_arr, prefer_query: false)$/;"	method	line:28	class:Martyr.LevelComparator
+lowest_level_of	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_comparator.rb	/^    def lowest_level_of(levels)$/;"	method	line:40	class:Martyr.LevelComparator
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_definitions_by_dimension.rb	/^module Martyr$/;"	module	line:1
+LevelDefinitionsByDimension	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_definitions_by_dimension.rb	/^  class LevelDefinitionsByDimension$/;"	class	line:2	class:Martyr
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_definitions_by_dimension.rb	/^    def initialize(levels = nil)$/;"	method	line:7	class:Martyr.LevelDefinitionsByDimension
+add_level	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_definitions_by_dimension.rb	/^    def add_level(level)$/;"	method	line:13	class:Martyr.LevelDefinitionsByDimension
+lowest_levels	/Users/amitaharoni/workspace/martyr/lib/martyr/level_concern/level_definitions_by_dimension.rb	/^    def lowest_levels$/;"	method	line:18	class:Martyr.LevelDefinitionsByDimension
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/coordinates.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/coordinates.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+Coordinates	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/coordinates.rb	/^    class Coordinates$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/coordinates.rb	/^      def initialize(grain_hash, memory_slice_hash)$/;"	method	line:17	class:Martyr.Runtime.Coordinates
+to_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/coordinates.rb	/^      def to_hash$/;"	method	line:23	class:Martyr.Runtime.Coordinates
+grain_level_ids	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/coordinates.rb	/^      def grain_level_ids$/;"	method	line:28	class:Martyr.Runtime.Coordinates
+grain_coordinates	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/coordinates.rb	/^      def grain_coordinates$/;"	method	line:33	class:Martyr.Runtime.Coordinates
+dup	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/coordinates.rb	/^      def dup$/;"	method	line:37	class:Martyr.Runtime.Coordinates
+reset	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/coordinates.rb	/^      def reset(*args)$/;"	method	line:41	class:Martyr.Runtime.Coordinates
+set	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/coordinates.rb	/^      def set(*args)$/;"	method	line:45	class:Martyr.Runtime.Coordinates
+locate	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/coordinates.rb	/^      def locate(*args)$/;"	method	line:49	class:Martyr.Runtime.Coordinates
+locate!	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/coordinates.rb	/^      def locate!(slice_hash={}, reset: [])$/;"	method	line:53	class:Martyr.Runtime.Coordinates
+reset!	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/coordinates.rb	/^      def reset!(reset_on)$/;"	method	line:67	class:Martyr.Runtime.Coordinates
+set!	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/coordinates.rb	/^      def set!(slice_hash)$/;"	method	line:82	class:Martyr.Runtime.Coordinates
+dup_internals	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/coordinates.rb	/^      def dup_internals$/;"	method	line:95	class:Martyr.Runtime.Coordinates
+reset_dimension	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/coordinates.rb	/^      def reset_dimension(dimension_name)$/;"	method	line:102	class:Martyr.Runtime.Coordinates
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+Element	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element.rb	/^    class Element < HashWithIndifferentAccess$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element.rb	/^      def initialize(coordinates, values_hash, facts)$/;"	method	line:18	class:Martyr.Runtime.Element
+fetch	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element.rb	/^      def fetch(key)$/;"	method	line:26	class:Martyr.Runtime.Element
+coordinates	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element.rb	/^      def coordinates(*)$/;"	method	line:32	class:Martyr.Runtime.Element
+coordinates_object	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element.rb	/^      def coordinates_object(*)$/;"	method	line:36	class:Martyr.Runtime.Element
+locate	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element.rb	/^      def locate(*args)$/;"	method	line:40	class:Martyr.Runtime.Element
+load	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element.rb	/^      def load$/;"	method	line:45	class:Martyr.Runtime.Element
+key_for	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element.rb	/^      def key_for(level_id)$/;"	method	line:50	class:Martyr.Runtime.Element
+record_for	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element.rb	/^      def record_for(level_id)$/;"	method	line:55	class:Martyr.Runtime.Element
+method_missing	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element.rb	/^      def method_missing(method, *args, &block)$/;"	method	line:62	class:Martyr.Runtime.Element
+find_metric_id	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element.rb	/^      def find_metric_id(key)$/;"	method	line:69	class:Martyr.Runtime.Element
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_common.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_common.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+ElementCommon	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_common.rb	/^    module ElementCommon$/;"	module	line:7	class:Martyr.Runtime
+metrics	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_common.rb	/^      def metrics$/;"	method	line:14	class:Martyr.Runtime.ElementCommon
+metric_ids	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_common.rb	/^      def metric_ids$/;"	method	line:18	class:Martyr.Runtime.ElementCommon
+rollup	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_common.rb	/^      def rollup(*metrics)$/;"	method	line:24	class:Martyr.Runtime.ElementCommon
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_locator.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_locator.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+ElementLocator	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_locator.rb	/^    class ElementLocator$/;"	class	line:9	class:Martyr.Runtime
+all	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_locator.rb	/^      def all(level_ids)$/;"	method	line:25	class:Martyr.Runtime.ElementLocator
+get	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_locator.rb	/^      def get(grain_hash, exclude_metric_id: nil, memory_slice: nil)$/;"	method	line:34	class:Martyr.Runtime.ElementLocator
+locate	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_locator.rb	/^      def locate(grain_hash, *several_variants)$/;"	method	line:56	class:Martyr.Runtime.ElementLocator
+coordinates_from_grain_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_locator.rb	/^      def coordinates_from_grain_hash(grain_hash, memory_slice: nil)$/;"	method	line:68	class:Martyr.Runtime.ElementLocator
+finalize_element	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_locator.rb	/^      def finalize_element(element, exclude_metric_id: nil)$/;"	method	line:75	class:Martyr.Runtime.ElementLocator
+sanitize_args_for_locate	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_locator.rb	/^      def sanitize_args_for_locate(*several_variants)$/;"	method	line:82	class:Martyr.Runtime.ElementLocator
+extract_options_for_locate	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_locator.rb	/^      def extract_options_for_locate(hash)$/;"	method	line:98	class:Martyr.Runtime.ElementLocator
+separate_dimensions_and_metrics	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_locator.rb	/^      def separate_dimensions_and_metrics(hash)$/;"	method	line:110	class:Martyr.Runtime.ElementLocator
+validate_no_metrics	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/element_locator.rb	/^      def validate_no_metrics(ids_array)$/;"	method	line:116	class:Martyr.Runtime.ElementLocator
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+Fact	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact.rb	/^    class Fact < Hash$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact.rb	/^      def initialize(sub_cube, query_result_hash)$/;"	method	line:10	class:Martyr.Runtime.Fact
+fetch	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact.rb	/^      def fetch(id)$/;"	method	line:21	class:Martyr.Runtime.Fact
+fact_key_for	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact.rb	/^      def fact_key_for(level_id)$/;"	method	line:28	class:Martyr.Runtime.Fact
+record_for	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact.rb	/^      def record_for(level_id)$/;"	method	line:34	class:Martyr.Runtime.Fact
+load	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact.rb	/^      def load$/;"	method	line:39	class:Martyr.Runtime.Fact
+merge_value_by_levels_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact.rb	/^      def merge_value_by_levels_hash$/;"	method	line:46	class:Martyr.Runtime.Fact
+merge_built_in_metrics_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact.rb	/^      def merge_built_in_metrics_hash$/;"	method	line:52	class:Martyr.Runtime.Fact
+merge_custom_metrics_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact.rb	/^      def merge_custom_metrics_hash$/;"	method	line:60	class:Martyr.Runtime.Fact
+fully_qualify_id	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact.rb	/^      def fully_qualify_id(id)$/;"	method	line:66	class:Martyr.Runtime.Fact
+method_missing	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact.rb	/^      def method_missing(method, *args, &block)$/;"	method	line:74	class:Martyr.Runtime.Fact
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact_indexer.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact_indexer.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+FactIndexer	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact_indexer.rb	/^    class FactIndexer$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact_indexer.rb	/^      def initialize(sub_cube, facts)$/;"	method	line:8	class:Martyr.Runtime.FactIndexer
+elements_by	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact_indexer.rb	/^      def elements_by(memory_slice, level_ids)$/;"	method	line:37	class:Martyr.Runtime.FactIndexer
+get_element	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact_indexer.rb	/^      def get_element(memory_slice, grain_hash)$/;"	method	line:44	class:Martyr.Runtime.FactIndexer
+elements_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/fact_indexer.rb	/^      def elements_hash(memory_slice, level_ids)$/;"	method	line:53	class:Martyr.Runtime.FactIndexer
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/future_fact_value.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/future_fact_value.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+FutureFactValue	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/future_fact_value.rb	/^    class FutureFactValue$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/future_fact_value.rb	/^      def initialize(fact_record, level, key_supported:, fact_key_value: nil)$/;"	method	line:13	class:Martyr.Runtime.FutureFactValue
+inspect	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/future_fact_value.rb	/^      def inspect$/;"	method	line:20	class:Martyr.Runtime.FutureFactValue
+value	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/future_fact_value.rb	/^      def value$/;"	method	line:24	class:Martyr.Runtime.FutureFactValue
+active_record	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/future_fact_value.rb	/^      def active_record$/;"	method	line:42	class:Martyr.Runtime.FutureFactValue
+value_loaded?	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/future_fact_value.rb	/^      def value_loaded?$/;"	method	line:47	class:Martyr.Runtime.FutureFactValue
+==	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/future_fact_value.rb	/^      def ==(other)$/;"	method	line:53	class:Martyr.Runtime.FutureFactValue
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/future_metric.rb	/^module Martyr$/;"	module	line:10
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/future_metric.rb	/^  module Runtime$/;"	module	line:11	class:Martyr
+FutureMetric	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/future_metric.rb	/^    class FutureMetric$/;"	class	line:12	class:Martyr.Runtime
+wrap	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/future_metric.rb	/^      def self.wrap(element_or_fact, metric, method)$/;"	singleton method	line:17	class:Martyr.Runtime.FutureMetric
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/future_metric.rb	/^      def initialize(proc)$/;"	method	line:26	class:Martyr.Runtime.FutureMetric
+inspect	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/future_metric.rb	/^      def inspect$/;"	method	line:30	class:Martyr.Runtime.FutureMetric
+value	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/future_metric.rb	/^      def value$/;"	method	line:34	class:Martyr.Runtime.FutureMetric
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/rollup_fact_set.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/rollup_fact_set.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+RollupFactSet	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/rollup_fact_set.rb	/^    class RollupFactSet$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/rollup_fact_set.rb	/^      def initialize(cube_name, metric_id, element)$/;"	method	line:9	class:Martyr.Runtime.RollupFactSet
+fetch	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/rollup_fact_set.rb	/^      def fetch(id)$/;"	method	line:15	class:Martyr.Runtime.RollupFactSet
+locate	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/rollup_fact_set.rb	/^      def locate(*args)$/;"	method	line:22	class:Martyr.Runtime.RollupFactSet
+standardizer	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/rollup_fact_set.rb	/^      def standardizer$/;"	method	line:31	class:Martyr.Runtime.RollupFactSet
+method_missing	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/rollup_fact_set.rb	/^      def method_missing(method, *args, &block)$/;"	method	line:35	class:Martyr.Runtime.RollupFactSet
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+VirtualElement	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^    class VirtualElement$/;"	class	line:24	class:Martyr.Runtime
+to_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^      def to_hash$/;"	method	line:31	class:Martyr.Runtime.VirtualElement
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^      def initialize(grain_hash, memory_slice, locators, real_elements = nil)$/;"	method	line:37	class:Martyr.Runtime.VirtualElement
+null?	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^      def null?$/;"	method	line:45	class:Martyr.Runtime.VirtualElement
+coordinates	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^      def coordinates$/;"	method	line:49	class:Martyr.Runtime.VirtualElement
+coordinates_object	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^      def coordinates_object$/;"	method	line:53	class:Martyr.Runtime.VirtualElement
+facts	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^      def facts(cube_name = nil)$/;"	method	line:57	class:Martyr.Runtime.VirtualElement
+fetch	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^      def fetch(key)$/;"	method	line:62	class:Martyr.Runtime.VirtualElement
+[]	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^      def [](key)$/;"	method	line:66	class:Martyr.Runtime.VirtualElement
+locate	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^      def locate(*args)$/;"	method	line:71	class:Martyr.Runtime.VirtualElement
+key_for	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^      def key_for(level_id)$/;"	method	line:77	class:Martyr.Runtime.VirtualElement
+record_for	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^      def record_for(level_id)$/;"	method	line:81	class:Martyr.Runtime.VirtualElement
+warnings	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^      def warnings$/;"	method	line:85	class:Martyr.Runtime.VirtualElement
+warning	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^      def warning(metric_id)$/;"	method	line:92	class:Martyr.Runtime.VirtualElement
+load	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^      def load$/;"	method	line:98	class:Martyr.Runtime.VirtualElement
+find_real_elements	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_element.rb	/^      def find_real_elements(method_name, *args)$/;"	method	line:108	class:Martyr.Runtime.VirtualElement
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_elements_builder.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_elements_builder.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+VirtualElementsBuilder	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_elements_builder.rb	/^    class VirtualElementsBuilder$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_elements_builder.rb	/^      def initialize(memory_slice, unsliced_level_ids_in_grain:, virtual_metrics:)$/;"	method	line:6	class:Martyr.Runtime.VirtualElementsBuilder
+add	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_elements_builder.rb	/^      def add(elements, sliced:)$/;"	method	line:16	class:Martyr.Runtime.VirtualElementsBuilder
+build	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_elements_builder.rb	/^      def build$/;"	method	line:121	class:Martyr.Runtime.VirtualElementsBuilder
+level_ids_in_grain	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_elements_builder.rb	/^      def level_ids_in_grain$/;"	method	line:136	class:Martyr.Runtime.VirtualElementsBuilder.build
+grain_hash_with_nils	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_elements_builder.rb	/^      def grain_hash_with_nils$/;"	method	line:140	class:Martyr.Runtime.VirtualElementsBuilder.build
+ElementsFromSubCube	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_elements_builder.rb	/^      class ElementsFromSubCube$/;"	class	line:144	class:Martyr.Runtime.VirtualElementsBuilder.build
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_elements_builder.rb	/^        def initialize(elements, sliced, lookups_by_level_id, unsliced_level_ids_in_grain)$/;"	method	line:150	class:Martyr.Runtime.VirtualElementsBuilder.build.ElementsFromSubCube
+restrict	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_elements_builder.rb	/^        def restrict$/;"	method	line:161	class:Martyr.Runtime.VirtualElementsBuilder.build.ElementsFromSubCube
+restricted_elements	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_elements_builder.rb	/^        def restricted_elements$/;"	method	line:170	class:Martyr.Runtime.VirtualElementsBuilder.build.ElementsFromSubCube
+restrict_one_level	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_elements_builder.rb	/^        def restrict_one_level(level_id)$/;"	method	line:184	class:Martyr.Runtime.VirtualElementsBuilder.build.ElementsFromSubCube
+values_for	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/data_set/virtual_elements_builder.rb	/^        def values_for(level_id)$/;"	method	line:195	class:Martyr.Runtime.VirtualElementsBuilder.build.ElementsFromSubCube
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/base_level_scope.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/base_level_scope.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+BaseLevelScope	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/base_level_scope.rb	/^    class BaseLevelScope$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/base_level_scope.rb	/^      def initialize(collection, level)$/;"	method	line:12	class:Martyr.Runtime.BaseLevelScope
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/degenerate_level_scope.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/degenerate_level_scope.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+DegenerateLevelScope	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/degenerate_level_scope.rb	/^    class DegenerateLevelScope < BaseLevelScope$/;"	class	line:3	class:Martyr.Runtime
+sliceable?	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/degenerate_level_scope.rb	/^      def sliceable?$/;"	method	line:8	class:Martyr.Runtime.DegenerateLevelScope
+slice_with	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/degenerate_level_scope.rb	/^      def slice_with(values)$/;"	method	line:12	class:Martyr.Runtime.DegenerateLevelScope
+loaded?	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/degenerate_level_scope.rb	/^      def loaded?$/;"	method	line:19	class:Martyr.Runtime.DegenerateLevelScope
+load	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/degenerate_level_scope.rb	/^      def load$/;"	method	line:24	class:Martyr.Runtime.DegenerateLevelScope
+all	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/degenerate_level_scope.rb	/^      def all$/;"	method	line:30	class:Martyr.Runtime.DegenerateLevelScope
+recursive_lookup_up	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/degenerate_level_scope.rb	/^      def recursive_lookup_up(degenerate_value, level:)$/;"	method	line:42	class:Martyr.Runtime.DegenerateLevelScope
+recursive_lookup_down	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/degenerate_level_scope.rb	/^      def recursive_lookup_down(degenerate_values, level:)$/;"	method	line:48	class:Martyr.Runtime.DegenerateLevelScope
+cache	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/degenerate_level_scope.rb	/^      def cache$/;"	method	line:60	class:Martyr.Runtime.DegenerateLevelScope
+loaded_cache	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/degenerate_level_scope.rb	/^      def loaded_cache$/;"	method	line:64	class:Martyr.Runtime.DegenerateLevelScope
+degenerate_value_from_query_record	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/degenerate_level_scope.rb	/^      def degenerate_value_from_query_record(record)$/;"	method	line:70	class:Martyr.Runtime.DegenerateLevelScope
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/dimension_scope_collection.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/dimension_scope_collection.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+DimensionScopeCollection	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/dimension_scope_collection.rb	/^    class DimensionScopeCollection < HashWithIndifferentAccess$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/dimension_scope_collection.rb	/^      def initialize(dimension_definitions)$/;"	method	line:11	class:Martyr.Runtime.DimensionScopeCollection
+to_s	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/dimension_scope_collection.rb	/^      def to_s$/;"	method	line:15	class:Martyr.Runtime.DimensionScopeCollection
+register_level	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/dimension_scope_collection.rb	/^      def register_level(level)$/;"	method	line:20	class:Martyr.Runtime.DimensionScopeCollection
+find_level	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/dimension_scope_collection.rb	/^      def find_level(level_id)$/;"	method	line:26	class:Martyr.Runtime.DimensionScopeCollection
+level_scopes	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/dimension_scope_collection.rb	/^      def level_scopes(level_ids)$/;"	method	line:31	class:Martyr.Runtime.DimensionScopeCollection
+with_level_scope	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/dimension_scope_collection.rb	/^      def with_level_scope(level_id)$/;"	method	line:37	class:Martyr.Runtime.DimensionScopeCollection
+level_loaded?	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/dimension_scope_collection.rb	/^      def level_loaded?(level_id)$/;"	method	line:41	class:Martyr.Runtime.DimensionScopeCollection
+lowest_level_of	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/dimension_scope_collection.rb	/^      def lowest_level_of(level_ids)$/;"	method	line:47	class:Martyr.Runtime.DimensionScopeCollection
+lowest_level_ids_of	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/dimension_scope_collection.rb	/^      def lowest_level_ids_of(level_ids)$/;"	method	line:53	class:Martyr.Runtime.DimensionScopeCollection
+levels_and_above_for	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/dimension_scope_collection.rb	/^      def levels_and_above_for(level_ids)$/;"	method	line:60	class:Martyr.Runtime.DimensionScopeCollection
+level_ids_and_above_for	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/dimension_scope_collection.rb	/^      def level_ids_and_above_for(level_ids)$/;"	method	line:66	class:Martyr.Runtime.DimensionScopeCollection
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/level_scope_collection.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/level_scope_collection.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+LevelScopeCollection	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/level_scope_collection.rb	/^    class LevelScopeCollection < HashWithIndifferentAccess$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/level_scope_collection.rb	/^      def initialize(*args)$/;"	method	line:8	class:Martyr.Runtime.LevelScopeCollection
+register_level	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/level_scope_collection.rb	/^      def register_level(level)$/;"	method	line:14	class:Martyr.Runtime.LevelScopeCollection
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+QueryLevelScope	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^    class QueryLevelScope < BaseLevelScope$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def initialize(*args)$/;"	method	line:10	class:Martyr.Runtime.QueryLevelScope
+parent_association_name	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def parent_association_name$/;"	method	line:15	class:Martyr.Runtime.QueryLevelScope
+sliceable?	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def sliceable?$/;"	method	line:19	class:Martyr.Runtime.QueryLevelScope
+nullify	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def nullify$/;"	method	line:23	class:Martyr.Runtime.QueryLevelScope
+slice_with	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def slice_with(values)$/;"	method	line:29	class:Martyr.Runtime.QueryLevelScope
+loaded?	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def loaded?$/;"	method	line:36	class:Martyr.Runtime.QueryLevelScope
+set_bottom_sliced_level	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def set_bottom_sliced_level$/;"	method	line:42	class:Martyr.Runtime.QueryLevelScope
+load	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def load$/;"	method	line:46	class:Martyr.Runtime.QueryLevelScope
+all	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def all$/;"	method	line:66	class:Martyr.Runtime.QueryLevelScope
+all_values	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def all_values$/;"	method	line:70	class:Martyr.Runtime.QueryLevelScope
+keys	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def keys$/;"	method	line:74	class:Martyr.Runtime.QueryLevelScope
+fetch	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def fetch(primary_key_value)$/;"	method	line:79	class:Martyr.Runtime.QueryLevelScope
+recursive_lookup_up	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def recursive_lookup_up(primary_key_value, level:)$/;"	method	line:91	class:Martyr.Runtime.QueryLevelScope
+recursive_lookup_down	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def recursive_lookup_down(records, level:)$/;"	method	line:105	class:Martyr.Runtime.QueryLevelScope
+decorate_scope	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def decorate_scope(&block)$/;"	method	line:115	class:Martyr.Runtime.QueryLevelScope
+fetch_by_parent	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def fetch_by_parent(parent_primary_key_values)$/;"	method	line:126	class:Martyr.Runtime.QueryLevelScope
+full_load	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def full_load$/;"	method	line:147	class:Martyr.Runtime.QueryLevelScope
+load_from_level_above	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def load_from_level_above$/;"	method	line:155	class:Martyr.Runtime.QueryLevelScope
+load_from_level_below	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def load_from_level_below$/;"	method	line:161	class:Martyr.Runtime.QueryLevelScope
+parent_association	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def parent_association$/;"	method	line:171	class:Martyr.Runtime.QueryLevelScope
+set_cache	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def set_cache(scope)$/;"	method	line:180	class:Martyr.Runtime.QueryLevelScope
+cached_records	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def cached_records$/;"	method	line:186	class:Martyr.Runtime.QueryLevelScope
+cached_keys	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def cached_keys$/;"	method	line:190	class:Martyr.Runtime.QueryLevelScope
+cached_records_by_parent	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def cached_records_by_parent$/;"	method	line:195	class:Martyr.Runtime.QueryLevelScope
+cached_records_by_value	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def cached_records_by_value$/;"	method	line:200	class:Martyr.Runtime.QueryLevelScope
+cached_records_by	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def cached_records_by(key)$/;"	method	line:207	class:Martyr.Runtime.QueryLevelScope
+record_primary_key	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def record_primary_key(record)$/;"	method	line:214	class:Martyr.Runtime.QueryLevelScope
+record_parent_primary_key	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/dimension_scopes/query_level_scope.rb	/^      def record_parent_primary_key(record)$/;"	method	line:218	class:Martyr.Runtime.QueryLevelScope
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/base_fact_scope.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/base_fact_scope.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+BaseFactScope	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/base_fact_scope.rb	/^    class BaseFactScope$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/base_fact_scope.rb	/^      def initialize(fact_definition)$/;"	method	line:10	class:Martyr.Runtime.BaseFactScope
+run_scope	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/base_fact_scope.rb	/^      def run_scope$/;"	method	line:15	class:Martyr.Runtime.BaseFactScope
+scope_sql	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/base_fact_scope.rb	/^      def scope_sql$/;"	method	line:19	class:Martyr.Runtime.BaseFactScope
+null?	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/base_fact_scope.rb	/^      def null?$/;"	method	line:23	class:Martyr.Runtime.BaseFactScope
+set_null_scope	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/base_fact_scope.rb	/^      def set_null_scope$/;"	method	line:27	class:Martyr.Runtime.BaseFactScope
+level_key_for_where	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/base_fact_scope.rb	/^      def level_key_for_where(level_id)$/;"	method	line:32	class:Martyr.Runtime.BaseFactScope
+decorate_scope	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/base_fact_scope.rb	/^      def decorate_scope(&block)$/;"	method	line:52	class:Martyr.Runtime.BaseFactScope
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/fact_scope_collection.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/fact_scope_collection.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+FactScopeCollection	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/fact_scope_collection.rb	/^    class FactScopeCollection < HashWithIndifferentAccess$/;"	class	line:3	class:Martyr.Runtime
+add_scope_operator	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/fact_scope_collection.rb	/^      def add_scope_operator(operator)$/;"	method	line:11	class:Martyr.Runtime.FactScopeCollection
+run	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/fact_scope_collection.rb	/^      def run$/;"	method	line:20	class:Martyr.Runtime.FactScopeCollection
+test	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/fact_scope_collection.rb	/^      def test$/;"	method	line:24	class:Martyr.Runtime.FactScopeCollection
+sub_facts	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/fact_scope_collection.rb	/^      def sub_facts$/;"	method	line:32	class:Martyr.Runtime.FactScopeCollection
+main_fact	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/fact_scope_collection.rb	/^      def main_fact$/;"	method	line:36	class:Martyr.Runtime.FactScopeCollection
+select_keys	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/fact_scope_collection.rb	/^      def select_keys$/;"	method	line:43	class:Martyr.Runtime.FactScopeCollection
+combined_sql	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/fact_scope_collection.rb	/^      def combined_sql$/;"	method	line:47	class:Martyr.Runtime.FactScopeCollection
+pretty_sql	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/fact_scope_collection.rb	/^      def pretty_sql$/;"	method	line:52	class:Martyr.Runtime.FactScopeCollection
+join_sub_facts	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/fact_scope_collection.rb	/^      def join_sub_facts$/;"	method	line:65	class:Martyr.Runtime.FactScopeCollection
+combined_scope	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/fact_scope_collection.rb	/^      def combined_scope$/;"	method	line:71	class:Martyr.Runtime.FactScopeCollection
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/main_fact_scope.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/main_fact_scope.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+MainFactScope	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/main_fact_scope.rb	/^    class MainFactScope < BaseFactScope$/;"	class	line:3	class:Martyr.Runtime
+add_scope_operator	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/main_fact_scope.rb	/^      def add_scope_operator(operator)$/;"	method	line:5	class:Martyr.Runtime.MainFactScope
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/null_scope.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/null_scope.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+NullScope	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/null_scope.rb	/^    class NullScope$/;"	class	line:3	class:Martyr.Runtime
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/sub_fact_scope.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/sub_fact_scope.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+SubFactScope	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/sub_fact_scope.rb	/^    class SubFactScope < BaseFactScope$/;"	class	line:3	class:Martyr.Runtime
+add_scope_operator	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/sub_fact_scope.rb	/^      def add_scope_operator(operator)$/;"	method	line:7	class:Martyr.Runtime.SubFactScope
+add_to_join	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/fact_scopes/sub_fact_scope.rb	/^      def add_to_join(main_fact_scope)$/;"	method	line:12	class:Martyr.Runtime.SubFactScope
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_axis.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_axis.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+PivotAxis	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_axis.rb	/^    class PivotAxis$/;"	class	line:3	class:Martyr.Runtime
+inspect	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_axis.rb	/^      def inspect$/;"	method	line:9	class:Martyr.Runtime.PivotAxis
+ids	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_axis.rb	/^      def ids$/;"	method	line:13	class:Martyr.Runtime.PivotAxis
+add_header_column_cells_to_csv	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_axis.rb	/^      def add_header_column_cells_to_csv(csv, row_axis)$/;"	method	line:20	class:Martyr.Runtime.PivotAxis
+csv_empty_row_axis_cells	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_axis.rb	/^      def csv_empty_row_axis_cells$/;"	method	line:32	class:Martyr.Runtime.PivotAxis
+load_values	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_axis.rb	/^      def load_values(cells, reset: false)$/;"	method	line:37	class:Martyr.Runtime.PivotAxis
+index_values_lookup	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_axis.rb	/^      def index_values_lookup$/;"	method	line:42	class:Martyr.Runtime.PivotAxis
+sort_cells_by_values	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_axis.rb	/^      def sort_cells_by_values(cells)$/;"	method	line:46	class:Martyr.Runtime.PivotAxis
+flat_values_nil_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_axis.rb	/^      def flat_values_nil_hash$/;"	method	line:50	class:Martyr.Runtime.PivotAxis
+hash_values_nil_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_axis.rb	/^      def hash_values_nil_hash$/;"	method	line:54	class:Martyr.Runtime.PivotAxis
+flat_grain_value_for	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_axis.rb	/^      def flat_grain_value_for(cell)$/;"	method	line:58	class:Martyr.Runtime.PivotAxis
+hash_grain_value_for	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_axis.rb	/^      def hash_grain_value_for(cell)$/;"	method	line:62	class:Martyr.Runtime.PivotAxis
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_cell.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_cell.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+PivotCell	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_cell.rb	/^    class PivotCell$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_cell.rb	/^      def initialize(metric, element, sub_total_levels = [])$/;"	method	line:11	class:Martyr.Runtime.PivotCell
+inspect	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_cell.rb	/^      def inspect$/;"	method	line:18	class:Martyr.Runtime.PivotCell
+to_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_cell.rb	/^      def to_hash$/;"	method	line:22	class:Martyr.Runtime.PivotCell
+coordinates	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_cell.rb	/^      def coordinates$/;"	method	line:26	class:Martyr.Runtime.PivotCell
+to_axis_values	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_cell.rb	/^      def to_axis_values(pivot_axis, flat: true)$/;"	method	line:30	class:Martyr.Runtime.PivotCell
+value	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_cell.rb	/^      def value$/;"	method	line:34	class:Martyr.Runtime.PivotCell
+warning	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_cell.rb	/^      def warning$/;"	method	line:38	class:Martyr.Runtime.PivotCell
+[]	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_cell.rb	/^      def [](key)$/;"	method	line:42	class:Martyr.Runtime.PivotCell
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_grain_element.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_grain_element.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+PivotGrainElement	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_grain_element.rb	/^    class PivotGrainElement$/;"	class	line:3	class:Martyr.Runtime
+inspect	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_grain_element.rb	/^      def inspect$/;"	method	line:8	class:Martyr.Runtime.PivotGrainElement
+cell_value	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_grain_element.rb	/^      def cell_value(cell)$/;"	method	line:12	class:Martyr.Runtime.PivotGrainElement
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_row.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_row.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+PivotRow	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_row.rb	/^    class PivotRow$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_row.rb	/^      def initialize(pivot_table, header, cells)$/;"	method	line:10	class:Martyr.Runtime.PivotRow
+inspect	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_row.rb	/^      def inspect$/;"	method	line:16	class:Martyr.Runtime.PivotRow
+to_a	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_row.rb	/^      def to_a(previous: nil)$/;"	method	line:22	class:Martyr.Runtime.PivotRow
+cell_at	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_row.rb	/^      def cell_at(column_header)$/;"	method	line:31	class:Martyr.Runtime.PivotRow
+[]	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_row.rb	/^      def [](index)$/;"	method	line:35	class:Martyr.Runtime.PivotRow
+column_headers	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_row.rb	/^      def column_headers$/;"	method	line:39	class:Martyr.Runtime.PivotRow
+cells_by_column_headers	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_row.rb	/^      def cells_by_column_headers$/;"	method	line:43	class:Martyr.Runtime.PivotRow
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+PivotTable	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table.rb	/^    class PivotTable$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table.rb	/^      def initialize(query_context, *args)$/;"	method	line:13	class:Martyr.Runtime.PivotTable
+reload	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table.rb	/^      def reload$/;"	method	line:20	class:Martyr.Runtime.PivotTable
+inspect	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table.rb	/^      def inspect$/;"	method	line:28	class:Martyr.Runtime.PivotTable
+cells	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table.rb	/^      def cells$/;"	method	line:32	class:Martyr.Runtime.PivotTable
+lowest_cells	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table.rb	/^      def lowest_cells$/;"	method	line:36	class:Martyr.Runtime.PivotTable
+sub_totals	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table.rb	/^      def sub_totals$/;"	method	line:44	class:Martyr.Runtime.PivotTable
+transpose	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table.rb	/^      def transpose$/;"	method	line:63	class:Martyr.Runtime.PivotTable.sub_totals
+to_chart	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table.rb	/^      def to_chart(name: nil)$/;"	method	line:68	class:Martyr.Runtime.PivotTable.sub_totals
+to_csv	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table.rb	/^      def to_csv$/;"	method	line:77	class:Martyr.Runtime.PivotTable.sub_totals.to_chart
+rows	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table.rb	/^      def rows$/;"	method	line:87	class:Martyr.Runtime.PivotTable.sub_totals.to_chart
+metrics_sort_order	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table.rb	/^      def metrics_sort_order$/;"	method	line:97	class:Martyr.Runtime.PivotTable.sub_totals.to_chart.rows
+sort_cells	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table.rb	/^      def sort_cells(cells_arr)$/;"	method	line:101	class:Martyr.Runtime.PivotTable.sub_totals.to_chart.rows
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+PivotTableBuilder	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^    class PivotTableBuilder$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^      def initialize(query_context)$/;"	method	line:11	class:Martyr.Runtime.PivotTableBuilder
+select	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^      def select(*metric_ids)$/;"	method	line:19	class:Martyr.Runtime.PivotTableBuilder
+on_columns	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^      def on_columns(*level_ids)$/;"	method	line:26	class:Martyr.Runtime.PivotTableBuilder
+on_rows	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^      def on_rows(*level_ids)$/;"	method	line:34	class:Martyr.Runtime.PivotTableBuilder
+with_totals	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^      def with_totals(rows: true, columns: true)$/;"	method	line:42	class:Martyr.Runtime.PivotTableBuilder
+in_cells	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^      def in_cells(metric_id)$/;"	method	line:50	class:Martyr.Runtime.PivotTableBuilder
+build	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^      def build$/;"	method	line:57	class:Martyr.Runtime.PivotTableBuilder
+metric?	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^      def metric?(id)$/;"	method	line:70	class:Martyr.Runtime.PivotTableBuilder
+validate_metrics_in_level_ids	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^      def validate_metrics_in_level_ids(level_ids)$/;"	method	line:75	class:Martyr.Runtime.PivotTableBuilder
+metric_ids	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^      def metric_ids$/;"	method	line:85	class:Martyr.Runtime.PivotTableBuilder
+metric_definition_count	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^      def metric_definition_count$/;"	method	line:90	class:Martyr.Runtime.PivotTableBuilder
+without_metrics	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^      def without_metrics(collection)$/;"	method	line:94	class:Martyr.Runtime.PivotTableBuilder
+metrics	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^      def metrics$/;"	method	line:98	class:Martyr.Runtime.PivotTableBuilder
+pivot_grain	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^      def pivot_grain$/;"	method	line:102	class:Martyr.Runtime.PivotTableBuilder
+axis_for	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/pivot/pivot_table_builder.rb	/^      def axis_for(collection)$/;"	method	line:106	class:Martyr.Runtime.PivotTableBuilder
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+QueryContext	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^    class QueryContext$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def initialize$/;"	method	line:19	class:Martyr.Runtime.QueryContext
+inspect	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def inspect$/;"	method	line:25	class:Martyr.Runtime.QueryContext
+sub_cubes	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def sub_cubes$/;"	method	line:29	class:Martyr.Runtime.QueryContext
+virtual_metrics	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def virtual_metrics$/;"	method	line:34	class:Martyr.Runtime.QueryContext
+metrics	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def metrics$/;"	method	line:43	class:Martyr.Runtime.QueryContext
+metric_ids	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def metric_ids$/;"	method	line:47	class:Martyr.Runtime.QueryContext
+metric	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def metric(id)$/;"	method	line:52	class:Martyr.Runtime.QueryContext
+metric?	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def metric?(id)$/;"	method	line:57	class:Martyr.Runtime.QueryContext
+supported_level_ids	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def supported_level_ids$/;"	method	line:63	class:Martyr.Runtime.QueryContext
+validate_slice_on!	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def validate_slice_on!(slice_on)$/;"	method	line:67	class:Martyr.Runtime.QueryContext
+memory_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def memory_slice$/;"	method	line:76	class:Martyr.Runtime.QueryContext
+slice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def slice(*args)$/;"	method	line:81	class:Martyr.Runtime.QueryContext
+slice!	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def slice!(*args)$/;"	method	line:86	class:Martyr.Runtime.QueryContext
+sliced_level_ids	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def sliced_level_ids$/;"	method	line:92	class:Martyr.Runtime.QueryContext
+unsliced_level_ids_in_grain	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def unsliced_level_ids_in_grain$/;"	method	line:97	class:Martyr.Runtime.QueryContext
+facts	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def facts(cube_name = nil)$/;"	method	line:105	class:Martyr.Runtime.QueryContext
+elements	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def elements(**options)$/;"	method	line:117	class:Martyr.Runtime.QueryContext
+pivot	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def pivot$/;"	method	line:130	class:Martyr.Runtime.QueryContext
+definition_from_id	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def definition_from_id(id)$/;"	method	line:137	class:Martyr.Runtime.QueryContext
+level_ids_and_above	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def level_ids_and_above$/;"	method	line:147	class:Martyr.Runtime.QueryContext
+fetch_unsupported_level_value	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def fetch_unsupported_level_value(level_id, fact_record)$/;"	method	line:153	class:Martyr.Runtime.QueryContext
+fetch_supported_query_level_record	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def fetch_supported_query_level_record(level_id, fact_key_value)$/;"	method	line:162	class:Martyr.Runtime.QueryContext
+standardizer	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def standardizer$/;"	method	line:168	class:Martyr.Runtime.QueryContext
+dup_internals	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def dup_internals$/;"	method	line:172	class:Martyr.Runtime.QueryContext
+metric_ids_lookup	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def metric_ids_lookup$/;"	method	line:181	class:Martyr.Runtime.QueryContext
+virtual_cube?	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def virtual_cube?$/;"	method	line:185	class:Martyr.Runtime.QueryContext
+default_cube	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def default_cube$/;"	method	line:189	class:Martyr.Runtime.QueryContext
+load_bottom_level_primary_keys	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context.rb	/^      def load_bottom_level_primary_keys$/;"	method	line:193	class:Martyr.Runtime.QueryContext
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context_builder.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context_builder.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+QueryContextBuilder	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context_builder.rb	/^    class QueryContextBuilder$/;"	class	line:6	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context_builder.rb	/^      def initialize(cube)$/;"	method	line:14	class:Martyr.Runtime.QueryContextBuilder
+select	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context_builder.rb	/^      def select(*arr)$/;"	method	line:22	class:Martyr.Runtime.QueryContextBuilder
+slice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context_builder.rb	/^      def slice(*several_variants)$/;"	method	line:39	class:Martyr.Runtime.QueryContextBuilder
+granulate	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context_builder.rb	/^      def granulate(*arr)$/;"	method	line:56	class:Martyr.Runtime.QueryContextBuilder
+decorate	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context_builder.rb	/^      def decorate(level_id, lambda = nil, &block)$/;"	method	line:65	class:Martyr.Runtime.QueryContextBuilder
+build	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context_builder.rb	/^      def build$/;"	method	line:71	class:Martyr.Runtime.QueryContextBuilder
+setup_context_grain	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context_builder.rb	/^      def setup_context_grain(context)$/;"	method	line:89	class:Martyr.Runtime.QueryContextBuilder
+setup_context_dimension_scopes	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context_builder.rb	/^      def setup_context_dimension_scopes(context)$/;"	method	line:96	class:Martyr.Runtime.QueryContextBuilder
+setup_context_sub_cubes_metrics_and_grain	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context_builder.rb	/^      def setup_context_sub_cubes_metrics_and_grain(context)$/;"	method	line:112	class:Martyr.Runtime.QueryContextBuilder
+setup_context_data_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context_builder.rb	/^      def setup_context_data_slice(context)$/;"	method	line:127	class:Martyr.Runtime.QueryContextBuilder
+setup_virtual_cube	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context_builder.rb	/^      def setup_virtual_cube(context)$/;"	method	line:135	class:Martyr.Runtime.QueryContextBuilder
+decorate_all_scopes	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context_builder.rb	/^      def decorate_all_scopes(context)$/;"	method	line:148	class:Martyr.Runtime.QueryContextBuilder
+standardize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/query/query_context_builder.rb	/^      def standardize(object)$/;"	method	line:157	class:Martyr.Runtime.QueryContextBuilder
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/scope_operators/base_fact_scope_operator.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/scope_operators/base_fact_scope_operator.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+BaseFactScopeOperator	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/scope_operators/base_fact_scope_operator.rb	/^    class BaseFactScopeOperator$/;"	class	line:3	class:Martyr.Runtime
+execute	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/scope_operators/base_fact_scope_operator.rb	/^      def execute$/;"	method	line:8	class:Martyr.Runtime.BaseFactScopeOperator
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/scope_operators/fact_scope_operator_for_dimension.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/scope_operators/fact_scope_operator_for_dimension.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+FactScopeOperatorForDimension	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/scope_operators/fact_scope_operator_for_dimension.rb	/^    class FactScopeOperatorForDimension < BaseFactScopeOperator$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/scope_operators/fact_scope_operator_for_dimension.rb	/^      def initialize(dimension_name, level_name, &block)$/;"	method	line:9	class:Martyr.Runtime.FactScopeOperatorForDimension
+supported?	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/scope_operators/fact_scope_operator_for_dimension.rb	/^      def supported?$/;"	method	line:15	class:Martyr.Runtime.FactScopeOperatorForDimension
+common_denominator_level	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/scope_operators/fact_scope_operator_for_dimension.rb	/^      def common_denominator_level(level_definition)$/;"	method	line:19	class:Martyr.Runtime.FactScopeOperatorForDimension
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/scope_operators/fact_scope_operator_for_metric.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/scope_operators/fact_scope_operator_for_metric.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+FactScopeOperatorForMetric	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/scope_operators/fact_scope_operator_for_metric.rb	/^    class FactScopeOperatorForMetric < BaseFactScopeOperator$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/scope_operators/fact_scope_operator_for_metric.rb	/^      def initialize(metric_name, &block)$/;"	method	line:7	class:Martyr.Runtime.FactScopeOperatorForMetric
+supported?	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/scope_operators/fact_scope_operator_for_metric.rb	/^      def supported?$/;"	method	line:12	class:Martyr.Runtime.FactScopeOperatorForMetric
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/data_slice.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/data_slice.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+DataSlice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/data_slice.rb	/^    class DataSlice$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/data_slice.rb	/^      def initialize(definition_resolver)$/;"	method	line:16	class:Martyr.Runtime.DataSlice
+inspect	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/data_slice.rb	/^      def inspect$/;"	method	line:21	class:Martyr.Runtime.DataSlice
+to_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/data_slice.rb	/^      def to_hash$/;"	method	line:25	class:Martyr.Runtime.DataSlice
+keys	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/data_slice.rb	/^      def keys$/;"	method	line:30	class:Martyr.Runtime.DataSlice
+definition_object_for	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/data_slice.rb	/^      def definition_object_for(slice_on)$/;"	method	line:34	class:Martyr.Runtime.DataSlice
+slice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/data_slice.rb	/^      def slice(slice_on, slice_definition)$/;"	method	line:40	class:Martyr.Runtime.DataSlice
+slice_objects	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/data_slice.rb	/^      def slice_objects$/;"	method	line:46	class:Martyr.Runtime.DataSlice
+dimension_names	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/data_slice.rb	/^      def dimension_names$/;"	method	line:51	class:Martyr.Runtime.DataSlice
+for_cube	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/data_slice.rb	/^      def for_cube(sub_cube)$/;"	method	line:57	class:Martyr.Runtime.DataSlice
+for_cube!	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/data_slice.rb	/^      def for_cube!(sub_cube)$/;"	method	line:63	class:Martyr.Runtime.DataSlice
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/metric_data_slice.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/metric_data_slice.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+MetricDataSlice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/metric_data_slice.rb	/^    class MetricDataSlice$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/metric_data_slice.rb	/^      def initialize(metric)$/;"	method	line:9	class:Martyr.Runtime.MetricDataSlice
+keys	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/metric_data_slice.rb	/^      def keys$/;"	method	line:13	class:Martyr.Runtime.MetricDataSlice
+set_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/metric_data_slice.rb	/^      def set_slice(_metric_definition, **options)$/;"	method	line:17	class:Martyr.Runtime.MetricDataSlice
+get_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/metric_data_slice.rb	/^      def get_slice(_metric_id)$/;"	method	line:22	class:Martyr.Runtime.MetricDataSlice
+add_to_dimension_scope	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/metric_data_slice.rb	/^      def add_to_dimension_scope(*)$/;"	method	line:27	class:Martyr.Runtime.MetricDataSlice
+add_to_grain	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/metric_data_slice.rb	/^      def add_to_grain(*)$/;"	method	line:31	class:Martyr.Runtime.MetricDataSlice
+add_to_where	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/metric_data_slice.rb	/^      def add_to_where(fact_scopes, *)$/;"	method	line:36	class:Martyr.Runtime.MetricDataSlice
+compile_or_statement_group	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/metric_data_slice.rb	/^      def compile_or_statement_group(or_statement_group)$/;"	method	line:49	class:Martyr.Runtime.MetricDataSlice
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/plain_dimension_data_slice.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/plain_dimension_data_slice.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+PlainDimensionDataSlice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/plain_dimension_data_slice.rb	/^    class PlainDimensionDataSlice$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/plain_dimension_data_slice.rb	/^      def initialize(dimension_definition)$/;"	method	line:12	class:Martyr.Runtime.PlainDimensionDataSlice
+sorted_levels	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/plain_dimension_data_slice.rb	/^      def sorted_levels$/;"	method	line:17	class:Martyr.Runtime.PlainDimensionDataSlice
+to_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/plain_dimension_data_slice.rb	/^      def to_hash$/;"	method	line:22	class:Martyr.Runtime.PlainDimensionDataSlice
+dimension_name	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/plain_dimension_data_slice.rb	/^      def dimension_name$/;"	method	line:26	class:Martyr.Runtime.PlainDimensionDataSlice
+set_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/plain_dimension_data_slice.rb	/^      def set_slice(level, **options)$/;"	method	line:31	class:Martyr.Runtime.PlainDimensionDataSlice
+get_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/plain_dimension_data_slice.rb	/^      def get_slice(level_id)$/;"	method	line:36	class:Martyr.Runtime.PlainDimensionDataSlice
+add_to_dimension_scope	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/plain_dimension_data_slice.rb	/^      def add_to_dimension_scope(dimension_bus)$/;"	method	line:42	class:Martyr.Runtime.PlainDimensionDataSlice
+add_slice_to_dimension_level	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/plain_dimension_data_slice.rb	/^      def add_slice_to_dimension_level(level_scope, slice_definition)$/;"	method	line:51	class:Martyr.Runtime.PlainDimensionDataSlice
+add_to_grain	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/plain_dimension_data_slice.rb	/^      def add_to_grain(grain)$/;"	method	line:62	class:Martyr.Runtime.PlainDimensionDataSlice
+add_to_where	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/plain_dimension_data_slice.rb	/^      def add_to_where(fact_scopes, dimension_bus)$/;"	method	line:68	class:Martyr.Runtime.PlainDimensionDataSlice
+add_one_level_to_where	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/plain_dimension_data_slice.rb	/^      def add_one_level_to_where(level_id, dimension_bus)$/;"	method	line:76	class:Martyr.Runtime.PlainDimensionDataSlice
+add_to_where_using_fact_strategy	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/plain_dimension_data_slice.rb	/^      def add_to_where_using_fact_strategy(level_scope, slice_definition, operator)$/;"	method	line:96	class:Martyr.Runtime.PlainDimensionDataSlice
+add_to_where_using_join_strategy	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/plain_dimension_data_slice.rb	/^      def add_to_where_using_join_strategy(operator, common_level_scope)$/;"	method	line:104	class:Martyr.Runtime.PlainDimensionDataSlice
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/time_dimension_data_slice.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/time_dimension_data_slice.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+TimeDimensionDataSlice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/data_slices/time_dimension_data_slice.rb	/^    class TimeDimensionDataSlice$/;"	class	line:3	class:Martyr.Runtime
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/has_scoped_levels.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/has_scoped_levels.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+HasScopedLevels	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/has_scoped_levels.rb	/^    module HasScopedLevels$/;"	module	line:3	class:Martyr.Runtime
+scope	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/has_scoped_levels.rb	/^      def scope(supported_level_ids)$/;"	method	line:5	class:Martyr.Runtime.HasScopedLevels
+scope!	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/has_scoped_levels.rb	/^      def scope!(supported_level_ids)$/;"	method	line:11	class:Martyr.Runtime.HasScopedLevels
+scoped_levels	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/has_scoped_levels.rb	/^      def scoped_levels$/;"	method	line:19	class:Martyr.Runtime.HasScopedLevels
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/memory_slice.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/memory_slice.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+MemorySlice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/memory_slice.rb	/^    class MemorySlice$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/memory_slice.rb	/^      def initialize(data_slice)$/;"	method	line:9	class:Martyr.Runtime.MemorySlice
+inspect	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/memory_slice.rb	/^      def inspect$/;"	method	line:14	class:Martyr.Runtime.MemorySlice
+override_values	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/memory_slice.rb	/^      def override_values$/;"	method	line:18	class:Martyr.Runtime.MemorySlice
+keys	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/memory_slice.rb	/^      def keys$/;"	method	line:22	class:Martyr.Runtime.MemorySlice
+to_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/memory_slice.rb	/^      def to_hash$/;"	method	line:26	class:Martyr.Runtime.MemorySlice
+slice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/memory_slice.rb	/^      def slice(slice_on, slice_definition)$/;"	method	line:33	class:Martyr.Runtime.MemorySlice
+slice_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/memory_slice.rb	/^      def slice_hash(slice_hash)$/;"	method	line:43	class:Martyr.Runtime.MemorySlice
+apply_on	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/memory_slice.rb	/^      def apply_on(facts)$/;"	method	line:53	class:Martyr.Runtime.MemorySlice
+for_cube	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/memory_slice.rb	/^      def for_cube(sub_cube)$/;"	method	line:62	class:Martyr.Runtime.MemorySlice
+for_cube!	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/memory_slice.rb	/^      def for_cube!(sub_cube)$/;"	method	line:69	class:Martyr.Runtime.MemorySlice
+dup_internals	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/memory_slice.rb	/^      def dup_internals$/;"	method	line:75	class:Martyr.Runtime.MemorySlice
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/metric_memory_slice.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/metric_memory_slice.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+MetricMemorySlice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/metric_memory_slice.rb	/^    class MetricMemorySlice$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/metric_memory_slice.rb	/^      def initialize(metric, data_slice = nil)$/;"	method	line:11	class:Martyr.Runtime.MetricMemorySlice
+keys	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/metric_memory_slice.rb	/^      def keys$/;"	method	line:16	class:Martyr.Runtime.MetricMemorySlice
+set_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/metric_memory_slice.rb	/^      def set_slice(_metric_definition, **options)$/;"	method	line:20	class:Martyr.Runtime.MetricMemorySlice
+get_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/metric_memory_slice.rb	/^      def get_slice(_metric_id = nil)$/;"	method	line:34	class:Martyr.Runtime.MetricMemorySlice
+apply_on	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/metric_memory_slice.rb	/^      def apply_on(facts)$/;"	method	line:40	class:Martyr.Runtime.MetricMemorySlice
+validate_consistency!	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/metric_memory_slice.rb	/^      def validate_consistency!(metric_id)$/;"	method	line:52	class:Martyr.Runtime.MetricMemorySlice
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/plain_dimension_memory_slice.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/plain_dimension_memory_slice.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+PlainDimensionMemorySlice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/plain_dimension_memory_slice.rb	/^    class PlainDimensionMemorySlice$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/plain_dimension_memory_slice.rb	/^      def initialize(dimension_definition, data_slice = nil)$/;"	method	line:12	class:Martyr.Runtime.PlainDimensionMemorySlice
+to_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/plain_dimension_memory_slice.rb	/^      def to_hash$/;"	method	line:18	class:Martyr.Runtime.PlainDimensionMemorySlice
+set_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/plain_dimension_memory_slice.rb	/^      def set_slice(level, **options)$/;"	method	line:23	class:Martyr.Runtime.PlainDimensionMemorySlice
+get_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/plain_dimension_memory_slice.rb	/^      def get_slice(level_id)$/;"	method	line:33	class:Martyr.Runtime.PlainDimensionMemorySlice
+apply_on	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/memory_slices/plain_dimension_memory_slice.rb	/^      def apply_on(facts)$/;"	method	line:37	class:Martyr.Runtime.PlainDimensionMemorySlice
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/scopeable_slice_data.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/scopeable_slice_data.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+ScopeableSliceData	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/scopeable_slice_data.rb	/^    class ScopeableSliceData$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/scopeable_slice_data.rb	/^      def initialize(data = {})$/;"	method	line:10	class:Martyr.Runtime.ScopeableSliceData
+scope	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/scopeable_slice_data.rb	/^      def scope(sub_cube)$/;"	method	line:15	class:Martyr.Runtime.ScopeableSliceData
+scope!	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/scopeable_slice_data.rb	/^      def scope!(sub_cube)$/;"	method	line:19	class:Martyr.Runtime.ScopeableSliceData
+to_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/scopeable_slice_data.rb	/^      def to_hash$/;"	method	line:24	class:Martyr.Runtime.ScopeableSliceData
+select	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/scopeable_slice_data.rb	/^      def select(&block)$/;"	method	line:28	class:Martyr.Runtime.ScopeableSliceData
+reject	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/scopeable_slice_data.rb	/^      def reject(&block)$/;"	method	line:34	class:Martyr.Runtime.ScopeableSliceData
+data_dup	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/scopeable_slice_data.rb	/^      def data_dup$/;"	method	line:40	class:Martyr.Runtime.ScopeableSliceData
+scoped_data	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/scopeable_slice_data.rb	/^      def scoped_data$/;"	method	line:46	class:Martyr.Runtime.ScopeableSliceData
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/base_slice_definition.rb	/^module Martyr$/;"	module	line:1
+BaseSliceDefinition	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/base_slice_definition.rb	/^  class BaseSliceDefinition$/;"	class	line:2	class:Martyr
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/base_slice_definition.rb	/^    def initialize(*)$/;"	method	line:5	class:Martyr.BaseSliceDefinition
+null?	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/base_slice_definition.rb	/^    def null?$/;"	method	line:10	class:Martyr.BaseSliceDefinition
+null	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/base_slice_definition.rb	/^    def self.null$/;"	singleton method	line:14	class:Martyr.BaseSliceDefinition
+set_null	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/base_slice_definition.rb	/^    def set_null$/;"	method	line:21	class:Martyr.BaseSliceDefinition
+compile_operators	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/base_slice_definition.rb	/^    def compile_operators$/;"	method	line:25	class:Martyr.BaseSliceDefinition
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/metric_slice_definition.rb	/^module Martyr$/;"	module	line:1
+MetricSliceDefinition	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/metric_slice_definition.rb	/^  class MetricSliceDefinition < BaseSliceDefinition$/;"	class	line:3	class:Martyr
+from_interval_set	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/metric_slice_definition.rb	/^    def self.from_interval_set(interval_set)$/;"	singleton method	line:8	class:Martyr.MetricSliceDefinition
+to_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/metric_slice_definition.rb	/^    def to_hash$/;"	method	line:13	class:Martyr.MetricSliceDefinition
+merge	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/metric_slice_definition.rb	/^    def merge(other)$/;"	method	line:17	class:Martyr.MetricSliceDefinition
+combined_statements	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/metric_slice_definition.rb	/^    def combined_statements$/;"	method	line:29	class:Martyr.MetricSliceDefinition
+compile_operators	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/metric_slice_definition.rb	/^    def compile_operators$/;"	method	line:44	class:Martyr.MetricSliceDefinition
+interval_set_to_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/metric_slice_definition.rb	/^    def self.interval_set_to_hash(interval_set)$/;"	singleton method	line:52	class:Martyr.MetricSliceDefinition
+to_interval_set	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/metric_slice_definition.rb	/^    def to_interval_set$/;"	method	line:71	class:Martyr.MetricSliceDefinition
+merge_eq_interval_set	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/metric_slice_definition.rb	/^    def merge_eq_interval_set(interval_set)$/;"	method	line:82	class:Martyr.MetricSliceDefinition
+merge_not_interval_set	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/metric_slice_definition.rb	/^    def merge_not_interval_set(interval_set)$/;"	method	line:89	class:Martyr.MetricSliceDefinition
+gt_value	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/metric_slice_definition.rb	/^    def gt_value$/;"	method	line:96	class:Martyr.MetricSliceDefinition
+lt_value	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/metric_slice_definition.rb	/^    def lt_value$/;"	method	line:100	class:Martyr.MetricSliceDefinition
+gt_operator	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/metric_slice_definition.rb	/^    def gt_operator$/;"	method	line:104	class:Martyr.MetricSliceDefinition
+lt_operator	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/metric_slice_definition.rb	/^    def lt_operator$/;"	method	line:112	class:Martyr.MetricSliceDefinition
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/plain_dimension_level_slice_definition.rb	/^module Martyr$/;"	module	line:1
+PlainDimensionLevelSliceDefinition	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/plain_dimension_level_slice_definition.rb	/^  class PlainDimensionLevelSliceDefinition < BaseSliceDefinition$/;"	class	line:2	class:Martyr
+to_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/plain_dimension_level_slice_definition.rb	/^    def to_hash$/;"	method	line:7	class:Martyr.PlainDimensionLevelSliceDefinition
+merge	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/plain_dimension_level_slice_definition.rb	/^    def merge(other)$/;"	method	line:11	class:Martyr.PlainDimensionLevelSliceDefinition
+compile_operators	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/slices/slice_definitions/plain_dimension_level_slice_definition.rb	/^    def compile_operators$/;"	method	line:19	class:Martyr.PlainDimensionLevelSliceDefinition
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/fact_filler_strategies.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/fact_filler_strategies.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+FactFillerStrategies	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/fact_filler_strategies.rb	/^    module FactFillerStrategies$/;"	module	line:3	class:Martyr.Runtime
+fact_levels_filler_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/fact_filler_strategies.rb	/^      def fact_levels_filler_hash$/;"	method	line:8	class:Martyr.Runtime.FactFillerStrategies
+DegenerateLevelAssociationFillerStrategy	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/fact_filler_strategies.rb	/^      class DegenerateLevelAssociationFillerStrategy$/;"	class	line:28	class:Martyr.Runtime.FactFillerStrategies
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/fact_filler_strategies.rb	/^        def initialize(level_association)$/;"	method	line:29	class:Martyr.Runtime.FactFillerStrategies.DegenerateLevelAssociationFillerStrategy
+value	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/fact_filler_strategies.rb	/^        def value(fact)$/;"	method	line:33	class:Martyr.Runtime.FactFillerStrategies.DegenerateLevelAssociationFillerStrategy
+QueryLevelAssociationFillerStrategy	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/fact_filler_strategies.rb	/^      class QueryLevelAssociationFillerStrategy$/;"	class	line:38	class:Martyr.Runtime.FactFillerStrategies
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/fact_filler_strategies.rb	/^        def initialize(level_association)$/;"	method	line:39	class:Martyr.Runtime.FactFillerStrategies.QueryLevelAssociationFillerStrategy
+value	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/fact_filler_strategies.rb	/^        def value(fact)$/;"	method	line:43	class:Martyr.Runtime.FactFillerStrategies.QueryLevelAssociationFillerStrategy
+UnassociatedLevelFillerStrategy	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/fact_filler_strategies.rb	/^      class UnassociatedLevelFillerStrategy$/;"	class	line:49	class:Martyr.Runtime.FactFillerStrategies
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/fact_filler_strategies.rb	/^        def initialize(level_definition)$/;"	method	line:50	class:Martyr.Runtime.FactFillerStrategies.UnassociatedLevelFillerStrategy
+value	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/fact_filler_strategies.rb	/^        def value(fact)$/;"	method	line:54	class:Martyr.Runtime.FactFillerStrategies.UnassociatedLevelFillerStrategy
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/query_metrics.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/query_metrics.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+QueryMetrics	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/query_metrics.rb	/^    class QueryMetrics < HashWithIndifferentAccess$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/query_metrics.rb	/^      def initialize(sub_cube)$/;"	method	line:16	class:Martyr.Runtime.QueryMetrics
+inspect	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/query_metrics.rb	/^      def inspect$/;"	method	line:20	class:Martyr.Runtime.QueryMetrics
+to_a	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/query_metrics.rb	/^      def to_a$/;"	method	line:24	class:Martyr.Runtime.QueryMetrics
+add_metric	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/query_metrics.rb	/^      def add_metric(metric_id)$/;"	method	line:28	class:Martyr.Runtime.QueryMetrics
+add_all	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/query_metrics.rb	/^      def add_all$/;"	method	line:34	class:Martyr.Runtime.QueryMetrics
+built_in_metrics	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/query_metrics.rb	/^      def built_in_metrics$/;"	method	line:38	class:Martyr.Runtime.QueryMetrics
+custom_metrics	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/query_metrics.rb	/^      def custom_metrics$/;"	method	line:42	class:Martyr.Runtime.QueryMetrics
+custom_rollups	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/query_metrics.rb	/^      def custom_rollups$/;"	method	line:46	class:Martyr.Runtime.QueryMetrics
+metric_ids	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/query_metrics.rb	/^      def metric_ids$/;"	method	line:50	class:Martyr.Runtime.QueryMetrics
+metric_objects	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/query_metrics.rb	/^      def metric_objects$/;"	method	line:54	class:Martyr.Runtime.QueryMetrics
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+SubCube	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^    class SubCube$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^      def initialize(query_context, cube)$/;"	method	line:26	class:Martyr.Runtime.SubCube
+inspect	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^      def inspect$/;"	method	line:35	class:Martyr.Runtime.SubCube
+to_hash	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^      def to_hash$/;"	method	line:39	class:Martyr.Runtime.SubCube
+dimension_definitions	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^      def dimension_definitions$/;"	method	line:43	class:Martyr.Runtime.SubCube
+association_from_id	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^      def association_from_id(id)$/;"	method	line:48	class:Martyr.Runtime.SubCube
+common_denominator_level_association	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^      def common_denominator_level_association(level_id, prefer_query: false)$/;"	method	line:55	class:Martyr.Runtime.SubCube
+set_metrics	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^      def set_metrics(metrics_arr)$/;"	method	line:69	class:Martyr.Runtime.SubCube
+set_all_metrics	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^      def set_all_metrics$/;"	method	line:76	class:Martyr.Runtime.SubCube
+set_grain	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^      def set_grain(grain_arr)$/;"	method	line:80	class:Martyr.Runtime.SubCube
+lowest_level_ids_in_grain	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^      def lowest_level_ids_in_grain$/;"	method	line:86	class:Martyr.Runtime.SubCube
+decorate_all_scopes	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^      def decorate_all_scopes(data_slice)$/;"	method	line:96	class:Martyr.Runtime.SubCube
+elements	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^      def elements(memory_slice, levels: nil, metrics: nil)$/;"	method	line:109	class:Martyr.Runtime.SubCube
+element_locator_for	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^      def element_locator_for(memory_slice, metrics: nil)$/;"	method	line:113	class:Martyr.Runtime.SubCube
+fact_indexer	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^      def fact_indexer$/;"	method	line:118	class:Martyr.Runtime.SubCube
+sanitize_metrics	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^      def sanitize_metrics(metrics: nil)$/;"	method	line:123	class:Martyr.Runtime.SubCube
+sanitize_levels	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube.rb	/^      def sanitize_levels(levels: nil)$/;"	method	line:132	class:Martyr.Runtime.SubCube
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube_grain.rb	/^module Martyr$/;"	module	line:1
+Runtime	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube_grain.rb	/^  module Runtime$/;"	module	line:2	class:Martyr
+SubCubeGrain	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube_grain.rb	/^    class SubCubeGrain$/;"	class	line:3	class:Martyr.Runtime
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube_grain.rb	/^      def initialize(sub_cube)$/;"	method	line:9	class:Martyr.Runtime.SubCubeGrain
+inspect	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube_grain.rb	/^      def inspect$/;"	method	line:15	class:Martyr.Runtime.SubCubeGrain
+to_a	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube_grain.rb	/^      def to_a$/;"	method	line:19	class:Martyr.Runtime.SubCubeGrain
+level_ids	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube_grain.rb	/^      def level_ids$/;"	method	line:23	class:Martyr.Runtime.SubCubeGrain
+null?	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube_grain.rb	/^      def null?$/;"	method	line:27	class:Martyr.Runtime.SubCubeGrain
+add_granularity	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube_grain.rb	/^      def add_granularity(level_id)$/;"	method	line:32	class:Martyr.Runtime.SubCubeGrain
+add_to_select	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube_grain.rb	/^      def add_to_select(fact_scopes)$/;"	method	line:54	class:Martyr.Runtime.SubCubeGrain
+add_to_group_by	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube_grain.rb	/^      def add_to_group_by(fact_scopes)$/;"	method	line:63	class:Martyr.Runtime.SubCubeGrain
+supported_level_associations	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube_grain.rb	/^      def supported_level_associations$/;"	method	line:89	class:Martyr.Runtime.SubCubeGrain
+supported_level_definitions	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube_grain.rb	/^      def supported_level_definitions$/;"	method	line:96	class:Martyr.Runtime.SubCubeGrain
+supported_level_associations_lookup	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube_grain.rb	/^      def supported_level_associations_lookup$/;"	method	line:103	class:Martyr.Runtime.SubCubeGrain
+has_association_with_level?	/Users/amitaharoni/workspace/martyr/lib/martyr/runtime/sub_cubes/sub_cube_grain.rb	/^      def has_association_with_level?(level_id)$/;"	method	line:107	class:Martyr.Runtime.SubCubeGrain
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimension_associations/dimension_association_collection.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimension_associations/dimension_association_collection.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+DimensionAssociationCollection	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimension_associations/dimension_association_collection.rb	/^    class DimensionAssociationCollection < HashWithIndifferentAccess$/;"	class	line:3	class:Martyr.Schema
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimension_associations/dimension_association_collection.rb	/^      def initialize(dimension_definitions)$/;"	method	line:12	class:Martyr.Schema.DimensionAssociationCollection
+has_dimension_level	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimension_associations/dimension_association_collection.rb	/^      def has_dimension_level(dimension_name, level_name, **args)$/;"	method	line:17	class:Martyr.Schema.DimensionAssociationCollection
+find_level_association	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimension_associations/dimension_association_collection.rb	/^      def find_level_association(level_id)$/;"	method	line:28	class:Martyr.Schema.DimensionAssociationCollection
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimension_associations/level_association.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimension_associations/level_association.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+LevelAssociation	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimension_associations/level_association.rb	/^    class LevelAssociation$/;"	class	line:3	class:Martyr.Schema
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimension_associations/level_association.rb	/^      def initialize(collection, level, fact_key: nil, fact_alias: nil)$/;"	method	line:14	class:Martyr.Schema.LevelAssociation
+supported?	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimension_associations/level_association.rb	/^      def supported?$/;"	method	line:21	class:Martyr.Schema.LevelAssociation
+method_missing	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimension_associations/level_association.rb	/^      def method_missing(method_name, *args, &block)$/;"	method	line:28	class:Martyr.Schema.LevelAssociation
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimension_associations/level_association_collection.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimension_associations/level_association_collection.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+LevelAssociationCollection	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimension_associations/level_association_collection.rb	/^    class LevelAssociationCollection < HashWithIndifferentAccess$/;"	class	line:3	class:Martyr.Schema
+has_dimension_level	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimension_associations/level_association_collection.rb	/^      def has_dimension_level(level, **args)$/;"	method	line:8	class:Martyr.Schema.LevelAssociationCollection
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/dimension_definition_collection.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/dimension_definition_collection.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+DimensionDefinitionCollection	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/dimension_definition_collection.rb	/^    class DimensionDefinitionCollection < HashWithIndifferentAccess$/;"	class	line:3	class:Martyr.Schema
+define_dimension	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/dimension_definition_collection.rb	/^      def define_dimension(*args, &block)$/;"	method	line:12	class:Martyr.Schema.DimensionDefinitionCollection
+find_level_definition	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/dimension_definition_collection.rb	/^      def find_level_definition(level_id)$/;"	method	line:16	class:Martyr.Schema.DimensionDefinitionCollection
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/plain_dimension_definition.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/plain_dimension_definition.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+PlainDimensionDefinition	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/plain_dimension_definition.rb	/^    class PlainDimensionDefinition$/;"	class	line:3	class:Martyr.Schema
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/plain_dimension_definition.rb	/^      def initialize(name, **options, &block)$/;"	method	line:12	class:Martyr.Schema.PlainDimensionDefinition
+dimension_definition	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/plain_dimension_definition.rb	/^      def dimension_definition$/;"	method	line:20	class:Martyr.Schema.PlainDimensionDefinition
+dimension?	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/plain_dimension_definition.rb	/^      def dimension?$/;"	method	line:25	class:Martyr.Schema.PlainDimensionDefinition
+build_data_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/plain_dimension_definition.rb	/^      def build_data_slice(*args)$/;"	method	line:29	class:Martyr.Schema.PlainDimensionDefinition
+build_memory_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/plain_dimension_definition.rb	/^      def build_memory_slice(*args)$/;"	method	line:33	class:Martyr.Schema.PlainDimensionDefinition
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/time_dimension_definition.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/time_dimension_definition.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+TimeDimension	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/time_dimension_definition.rb	/^    class TimeDimension$/;"	class	line:3	class:Martyr.Schema
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/time_dimension_definition.rb	/^      def initialize(name, column: name)$/;"	method	line:7	class:Martyr.Schema.TimeDimension
+build_data_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/time_dimension_definition.rb	/^      def build_data_slice(*args)$/;"	method	line:14	class:Martyr.Schema.TimeDimension
+find_level	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/dimensions/time_dimension_definition.rb	/^      def find_level(name)$/;"	method	line:18	class:Martyr.Schema.TimeDimension
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/base_fact_definition.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/base_fact_definition.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+BaseFactDefinition	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/base_fact_definition.rb	/^    class BaseFactDefinition$/;"	class	line:3	class:Martyr.Schema
+supports_dimension_level?	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/base_fact_definition.rb	/^      def supports_dimension_level?(dimension_name, level_name)$/;"	method	line:7	class:Martyr.Schema.BaseFactDefinition
+has_dimension_level?	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/base_fact_definition.rb	/^      def has_dimension_level?(dimension_name, level_name)$/;"	method	line:16	class:Martyr.Schema.BaseFactDefinition
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/fact_definition_collection.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/fact_definition_collection.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+FactDefinitionCollection	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/fact_definition_collection.rb	/^    class FactDefinitionCollection < HashWithIndifferentAccess$/;"	class	line:3	class:Martyr.Schema
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/fact_definition_collection.rb	/^      def initialize(cube)$/;"	method	line:8	class:Martyr.Schema.FactDefinitionCollection
+main_fact	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/fact_definition_collection.rb	/^      def main_fact$/;"	method	line:12	class:Martyr.Schema.FactDefinitionCollection
+build_main_fact	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/fact_definition_collection.rb	/^      def build_main_fact$/;"	method	line:16	class:Martyr.Schema.FactDefinitionCollection
+sub_fact	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/fact_definition_collection.rb	/^      def sub_fact(name, &block)$/;"	method	line:20	class:Martyr.Schema.FactDefinitionCollection
+build_fact_scopes	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/fact_definition_collection.rb	/^      def build_fact_scopes$/;"	method	line:27	class:Martyr.Schema.FactDefinitionCollection
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/main_fact_definition.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/main_fact_definition.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+MainFactDefinition	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/main_fact_definition.rb	/^    class MainFactDefinition < BaseFactDefinition$/;"	class	line:3	class:Martyr.Schema
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/main_fact_definition.rb	/^      def initialize(cube)$/;"	method	line:20	class:Martyr.Schema.MainFactDefinition
+main_query	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/main_fact_definition.rb	/^      def main_query(&scope)$/;"	method	line:26	class:Martyr.Schema.MainFactDefinition
+name	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/main_fact_definition.rb	/^      def name$/;"	method	line:30	class:Martyr.Schema.MainFactDefinition
+build	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/main_fact_definition.rb	/^      def build$/;"	method	line:35	class:Martyr.Schema.MainFactDefinition
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/sub_fact_definition.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/sub_fact_definition.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+SubFactDefinition	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/sub_fact_definition.rb	/^    class SubFactDefinition < BaseFactDefinition$/;"	class	line:3	class:Martyr.Schema
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/sub_fact_definition.rb	/^      def initialize(cube, name, &block)$/;"	method	line:10	class:Martyr.Schema.SubFactDefinition
+supports_metric?	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/sub_fact_definition.rb	/^      def supports_metric?(*)$/;"	method	line:18	class:Martyr.Schema.SubFactDefinition
+has_dimension_level	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/sub_fact_definition.rb	/^      def has_dimension_level(dimension_name, level_name, **args)$/;"	method	line:22	class:Martyr.Schema.SubFactDefinition
+joins_with	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/sub_fact_definition.rb	/^      def joins_with(join_clause, on:)$/;"	method	line:29	class:Martyr.Schema.SubFactDefinition
+build	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/facts/sub_fact_definition.rb	/^      def build$/;"	method	line:35	class:Martyr.Schema.SubFactDefinition
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/base_metric.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/base_metric.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+BaseMetric	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/base_metric.rb	/^    class BaseMetric$/;"	class	line:3	class:Martyr.Schema
+id	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/base_metric.rb	/^      def id$/;"	method	line:9	class:Martyr.Schema.BaseMetric
+metric?	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/base_metric.rb	/^      def metric?$/;"	method	line:16	class:Martyr.Schema.BaseMetric
+human_name	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/base_metric.rb	/^      def human_name$/;"	method	line:20	class:Martyr.Schema.BaseMetric
+build_data_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/base_metric.rb	/^      def build_data_slice(*)$/;"	method	line:24	class:Martyr.Schema.BaseMetric
+build_memory_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/base_metric.rb	/^      def build_memory_slice(*)$/;"	method	line:28	class:Martyr.Schema.BaseMetric
+add_to_select	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/base_metric.rb	/^      def add_to_select(fact_scopes)$/;"	method	line:33	class:Martyr.Schema.BaseMetric
+extract	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/base_metric.rb	/^      def extract(fact)$/;"	method	line:37	class:Martyr.Schema.BaseMetric
+rollup	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/base_metric.rb	/^      def rollup(element)$/;"	method	line:42	class:Martyr.Schema.BaseMetric
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/built_in_metric.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/built_in_metric.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+BuiltInMetric	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/built_in_metric.rb	/^    class BuiltInMetric < BaseMetric$/;"	class	line:3	class:Martyr.Schema
+build_data_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/built_in_metric.rb	/^      def build_data_slice(*args)$/;"	method	line:7	class:Martyr.Schema.BuiltInMetric
+build_memory_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/built_in_metric.rb	/^      def build_memory_slice(*args)$/;"	method	line:11	class:Martyr.Schema.BuiltInMetric
+add_to_select	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/built_in_metric.rb	/^      def add_to_select(fact_scopes)$/;"	method	line:16	class:Martyr.Schema.BuiltInMetric
+extract	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/built_in_metric.rb	/^      def extract(fact)$/;"	method	line:27	class:Martyr.Schema.BuiltInMetric
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/custom_metric.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/custom_metric.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+CustomMetric	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/custom_metric.rb	/^    class CustomMetric < BaseMetric$/;"	class	line:3	class:Martyr.Schema
+build_data_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/custom_metric.rb	/^      def build_data_slice(*)$/;"	method	line:7	class:Martyr.Schema.CustomMetric
+build_memory_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/custom_metric.rb	/^      def build_memory_slice(*args)$/;"	method	line:11	class:Martyr.Schema.CustomMetric
+add_to_select	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/custom_metric.rb	/^      def add_to_select(fact_scopes)$/;"	method	line:16	class:Martyr.Schema.CustomMetric
+extract	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/custom_metric.rb	/^      def extract(fact)$/;"	method	line:20	class:Martyr.Schema.CustomMetric
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/custom_rollup.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/custom_rollup.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+CustomRollup	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/custom_rollup.rb	/^    class CustomRollup < BaseMetric$/;"	class	line:3	class:Martyr.Schema
+build_data_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/custom_rollup.rb	/^      def build_data_slice(*)$/;"	method	line:6	class:Martyr.Schema.CustomRollup
+build_memory_slice	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/custom_rollup.rb	/^      def build_memory_slice(*)$/;"	method	line:10	class:Martyr.Schema.CustomRollup
+add_to_select	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/custom_rollup.rb	/^      def add_to_select(fact_scopes)$/;"	method	line:15	class:Martyr.Schema.CustomRollup
+extract	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/custom_rollup.rb	/^      def extract(fact)$/;"	method	line:19	class:Martyr.Schema.CustomRollup
+rollup	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/custom_rollup.rb	/^      def rollup(element)$/;"	method	line:25	class:Martyr.Schema.CustomRollup
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/metric_definition_collection.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/metric_definition_collection.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+MetricDefinitionCollection	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/metric_definition_collection.rb	/^    class MetricDefinitionCollection < HashWithIndifferentAccess$/;"	class	line:3	class:Martyr.Schema
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/metric_definition_collection.rb	/^      def initialize(cube_name)$/;"	method	line:11	class:Martyr.Schema.MetricDefinitionCollection
+supports_metric?	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/metric_definition_collection.rb	/^      def supports_metric?(metric_name)$/;"	method	line:16	class:Martyr.Schema.MetricDefinitionCollection
+has_sum_metric	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/metric_definition_collection.rb	/^      def has_sum_metric(name, statement, fact_alias: name)$/;"	method	line:20	class:Martyr.Schema.MetricDefinitionCollection
+has_min_metric	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/metric_definition_collection.rb	/^      def has_min_metric(name, statement, fact_alias: name, typecast: :to_i)$/;"	method	line:25	class:Martyr.Schema.MetricDefinitionCollection
+has_max_metric	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/metric_definition_collection.rb	/^      def has_max_metric(name, statement, fact_alias: name, typecast: :to_i)$/;"	method	line:30	class:Martyr.Schema.MetricDefinitionCollection
+has_custom_metric	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/metric_definition_collection.rb	/^      def has_custom_metric(name, block, rollup: :sum)$/;"	method	line:35	class:Martyr.Schema.MetricDefinitionCollection
+has_custom_rollup	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/metrics/metric_definition_collection.rb	/^      def has_custom_rollup(name, block, default: nil)$/;"	method	line:39	class:Martyr.Schema.MetricDefinitionCollection
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/base_level_definition.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/base_level_definition.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+BaseLevelDefinition	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/base_level_definition.rb	/^    class BaseLevelDefinition$/;"	class	line:3	class:Martyr.Schema
+level_definition	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/base_level_definition.rb	/^      def level_definition$/;"	method	line:19	class:Martyr.Schema.BaseLevelDefinition
+dimension_definition	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/base_level_definition.rb	/^      def dimension_definition$/;"	method	line:23	class:Martyr.Schema.BaseLevelDefinition
+supported?	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/base_level_definition.rb	/^      def supported?$/;"	method	line:27	class:Martyr.Schema.BaseLevelDefinition
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/degenerate_level_definition.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/degenerate_level_definition.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+DegenerateLevelDefinition	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/degenerate_level_definition.rb	/^    class DegenerateLevelDefinition < BaseLevelDefinition$/;"	class	line:3	class:Martyr.Schema
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/degenerate_level_definition.rb	/^      def initialize(collection, name, **options)$/;"	method	line:17	class:Martyr.Schema.DegenerateLevelDefinition
+label_key	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/degenerate_level_definition.rb	/^      def label_key$/;"	method	line:32	class:Martyr.Schema.DegenerateLevelDefinition
+label_expression	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/degenerate_level_definition.rb	/^      def label_expression$/;"	method	line:36	class:Martyr.Schema.DegenerateLevelDefinition
+query?	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/degenerate_level_definition.rb	/^      def query?$/;"	method	line:40	class:Martyr.Schema.DegenerateLevelDefinition
+degenerate?	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/degenerate_level_definition.rb	/^      def degenerate?$/;"	method	line:44	class:Martyr.Schema.DegenerateLevelDefinition
+build	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/degenerate_level_definition.rb	/^      def build(collection)$/;"	method	line:48	class:Martyr.Schema.DegenerateLevelDefinition
+default_query_level_with_finder	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/degenerate_level_definition.rb	/^      def default_query_level_with_finder$/;"	method	line:54	class:Martyr.Schema.DegenerateLevelDefinition
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/level_definition_collection.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/level_definition_collection.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+LevelDefinitionCollection	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/level_definition_collection.rb	/^    class LevelDefinitionCollection < HashWithIndifferentAccess$/;"	class	line:3	class:Martyr.Schema
+degenerate_level	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/level_definition_collection.rb	/^      def degenerate_level(*args)$/;"	method	line:6	class:Martyr.Schema.LevelDefinitionCollection
+query_level	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/level_definition_collection.rb	/^      def query_level(*args)$/;"	method	line:10	class:Martyr.Schema.LevelDefinitionCollection
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/query_level_definition.rb	/^module Martyr$/;"	module	line:1
+Schema	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/query_level_definition.rb	/^  module Schema$/;"	module	line:2	class:Martyr
+QueryLevelDefinition	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/query_level_definition.rb	/^    class QueryLevelDefinition < BaseLevelDefinition$/;"	class	line:3	class:Martyr.Schema
+initialize	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/query_level_definition.rb	/^      def initialize(collection, name, scope = nil, **options)$/;"	method	line:16	class:Martyr.Schema.QueryLevelDefinition
+query?	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/query_level_definition.rb	/^      def query?$/;"	method	line:30	class:Martyr.Schema.QueryLevelDefinition
+degenerate?	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/query_level_definition.rb	/^      def degenerate?$/;"	method	line:34	class:Martyr.Schema.QueryLevelDefinition
+parent_association_name_with_default	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/query_level_definition.rb	/^      def parent_association_name_with_default$/;"	method	line:38	class:Martyr.Schema.QueryLevelDefinition
+label_field	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/query_level_definition.rb	/^      def label_field$/;"	method	line:42	class:Martyr.Schema.QueryLevelDefinition
+build	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/query_level_definition.rb	/^      def build(collection)$/;"	method	line:46	class:Martyr.Schema.QueryLevelDefinition
+record_value	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/query_level_definition.rb	/^      def record_value(record)$/;"	method	line:51	class:Martyr.Schema.QueryLevelDefinition
+default_scope	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/query_level_definition.rb	/^      def default_scope$/;"	method	line:58	class:Martyr.Schema.QueryLevelDefinition
+add_label_expression_to_scope	/Users/amitaharoni/workspace/martyr/lib/martyr/schema/plain_dimension_levels/query_level_definition.rb	/^      def add_label_expression_to_scope$/;"	method	line:67	class:Martyr.Schema.QueryLevelDefinition
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/version.rb	/^module Martyr$/;"	module	line:1
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr/virtual_cube.rb	/^module Martyr$/;"	module	line:1
+VirtualCube	/Users/amitaharoni/workspace/martyr/lib/martyr/virtual_cube.rb	/^  class VirtualCube < BaseCube$/;"	class	line:2	class:Martyr
+contained_cube_classes	/Users/amitaharoni/workspace/martyr/lib/martyr/virtual_cube.rb	/^    def self.contained_cube_classes$/;"	singleton method	line:4	class:Martyr.VirtualCube
+metric_definitions	/Users/amitaharoni/workspace/martyr/lib/martyr/virtual_cube.rb	/^    def self.metric_definitions$/;"	singleton method	line:8	class:Martyr.VirtualCube
+use_cube	/Users/amitaharoni/workspace/martyr/lib/martyr/virtual_cube.rb	/^    def self.use_cube(class_name)$/;"	singleton method	line:14	class:Martyr.VirtualCube
+dimension_definitions	/Users/amitaharoni/workspace/martyr/lib/martyr/virtual_cube.rb	/^    def self.dimension_definitions$/;"	singleton method	line:18	class:Martyr.VirtualCube
+supported_dimension_definitions	/Users/amitaharoni/workspace/martyr/lib/martyr/virtual_cube.rb	/^    def self.supported_dimension_definitions$/;"	singleton method	line:22	class:Martyr.VirtualCube
+merge_from_cubes	/Users/amitaharoni/workspace/martyr/lib/martyr/virtual_cube.rb	/^    def self.merge_from_cubes(mergeable)$/;"	singleton method	line:33	class:Martyr
+virtual	/Users/amitaharoni/workspace/martyr/lib/martyr/virtual_cube.rb	/^    def self.virtual?$/;"	singleton method	line:39	class:Martyr
+Martyr	/Users/amitaharoni/workspace/martyr/lib/martyr.rb	/^module Martyr$/;"	module	line:51
+Martyr	/Users/amitaharoni/workspace/martyr/README.md	/^# Martyr$/;"	function	line:1
+The problem	/Users/amitaharoni/workspace/martyr/README.md	/^## The problem$/;"	function	line:13
+Fetch count of all posts that were created 3 days ago	/Users/amitaharoni/workspace/martyr/README.md	/^# Fetch count of all posts that were created 3 days ago$/;"	function	line:17
+Fetch count of all posts that were created by the author whose email is me@domain.com	/Users/amitaharoni/workspace/martyr/README.md	/^# Fetch count of all posts that were created by the author whose email is me@domain.com$/;"	function	line:20
+Fetch count of all posts that were created 3 days ago	/Users/amitaharoni/workspace/martyr/README.md	/^# Fetch count of all posts that were created 3 days ago$/;"	function	line:28
+Fetch count of all posts that were created by the author whose email is me@domain.com	/Users/amitaharoni/workspace/martyr/README.md	/^# Fetch count of all posts that were created by the author whose email is me@domain.com$/;"	function	line:31
+As a compound hash format:	/Users/amitaharoni/workspace/martyr/README.md	/^# As a compound hash format:$/;"	function	line:34
+=> { 'metric' => 'posts_cube.post_count', 'post.created_at' => {gt: 3.days.ago}, 'authors.email' => {with: 'first_row@domain.com'} }	/Users/amitaharoni/workspace/martyr/README.md	/^# => { 'metric' => 'posts_cube.post_count', 'post.created_at' => {gt: 3.days.ago}, 'authors.email' => {with: 'first_row@domain.com'} }$/;"	function	line:48
+Semantic layer DSL	/Users/amitaharoni/workspace/martyr/README.md	/^## Semantic layer DSL$/;"	function	line:74
+Query interface	/Users/amitaharoni/workspace/martyr/README.md	/^## Query interface$/;"	function	line:115
+One DB query, two reports	/Users/amitaharoni/workspace/martyr/README.md	/^# One DB query, two reports$/;"	function	line:147
+Virtual cubes DSL	/Users/amitaharoni/workspace/martyr/README.md	/^## Virtual cubes DSL$/;"	function	line:152
+Using virtual cubes	/Users/amitaharoni/workspace/martyr/README.md	/^## Using virtual cubes$/;"	function	line:178
+Installation	/Users/amitaharoni/workspace/martyr/README.md	/^## Installation$/;"	function	line:191
+Usage	/Users/amitaharoni/workspace/martyr/README.md	/^## Usage$/;"	function	line:207
+Development	/Users/amitaharoni/workspace/martyr/README.md	/^## Development$/;"	function	line:211
+Contributing	/Users/amitaharoni/workspace/martyr/README.md	/^## Contributing$/;"	function	line:217
+define_date_functions	/Users/amitaharoni/workspace/martyr/spec/helpers/intervals_spec.rb	/^def define_date_functions$/;"	method	line:3
+MartyrSpec	/Users/amitaharoni/workspace/martyr/spec/models/spec_models.rb	/^module MartyrSpec$/;"	module	line:1
+Common	/Users/amitaharoni/workspace/martyr/spec/models/spec_models.rb	/^  class Common < Martyr::Cube$/;"	class	line:2	class:MartyrSpec
+DegeneratesAndBottomLevels	/Users/amitaharoni/workspace/martyr/spec/models/spec_models.rb	/^  class DegeneratesAndBottomLevels < Common$/;"	class	line:37	class:MartyrSpec
+DegeneratesAndAllLevels	/Users/amitaharoni/workspace/martyr/spec/models/spec_models.rb	/^  class DegeneratesAndAllLevels < Common$/;"	class	line:65	class:MartyrSpec
+DegeneratesAndHighLevels	/Users/amitaharoni/workspace/martyr/spec/models/spec_models.rb	/^  class DegeneratesAndHighLevels < Common$/;"	class	line:94	class:MartyrSpec
+DegeneratesAndHoleAndLowLevel	/Users/amitaharoni/workspace/martyr/spec/models/spec_models.rb	/^  class DegeneratesAndHoleAndLowLevel < Common$/;"	class	line:116	class:MartyrSpec
+DegeneratesAndNoQueryLevel	/Users/amitaharoni/workspace/martyr/spec/models/spec_models.rb	/^  class DegeneratesAndNoQueryLevel < Common$/;"	class	line:142	class:MartyrSpec
+NoHighLevels	/Users/amitaharoni/workspace/martyr/spec/models/spec_models.rb	/^  class NoHighLevels < Common$/;"	class	line:165	class:MartyrSpec
+DegeneratesAndCustomersAndSubFacts	/Users/amitaharoni/workspace/martyr/spec/models/spec_models.rb	/^  class DegeneratesAndCustomersAndSubFacts < Common$/;"	class	line:190	class:MartyrSpec
+InvoiceCube	/Users/amitaharoni/workspace/martyr/spec/models/spec_models.rb	/^  class InvoiceCube < Common$/;"	class	line:242	class:MartyrSpec
+PlaylistCube	/Users/amitaharoni/workspace/martyr/spec/models/spec_models.rb	/^  class PlaylistCube < Common$/;"	class	line:262	class:MartyrSpec
+VirtualCubeTest	/Users/amitaharoni/workspace/martyr/spec/models/spec_models.rb	/^  class VirtualCubeTest < Martyr::VirtualCube$/;"	class	line:276	class:MartyrSpec
+MartyrSpec	/Users/amitaharoni/workspace/martyr/spec/models/spec_models_OLD.rb	/^module MartyrSpec$/;"	module	line:1
+Common	/Users/amitaharoni/workspace/martyr/spec/models/spec_models_OLD.rb	/^  class Common < Martyr::Cube$/;"	class	line:2	class:MartyrSpec
+TrackSalesMartBasic	/Users/amitaharoni/workspace/martyr/spec/models/spec_models_OLD.rb	/^  class TrackSalesMartBasic < Common$/;"	class	line:10	class:MartyrSpec
+Schema1	/Users/amitaharoni/workspace/martyr/spec/models/spec_models_OLD.rb	/^  class Schema1 < Martyr::Cube$/;"	class	line:213	class:MartyrSpec
+Test1	/Users/amitaharoni/workspace/martyr/spec/models/spec_models_OLD.rb	/^  class Test1 < Schema1$/;"	class	line:248	class:MartyrSpec
+Test2	/Users/amitaharoni/workspace/martyr/spec/models/spec_models_OLD.rb	/^  class Test2 < Schema1$/;"	class	line:270	class:MartyrSpec
+TrackSalesMartWithSubFacts	/Users/amitaharoni/workspace/martyr/spec/models/spec_models_OLD.rb	/^  class TrackSalesMartWithSubFacts < Common$/;"	class	line:285	class:MartyrSpec

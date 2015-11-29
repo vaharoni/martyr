@@ -127,6 +127,10 @@ module Martyr
         builder.build
       end
 
+      def total(metrics: nil)
+        elements(levels: [], metrics: metrics).first
+      end
+
       def pivot
         Runtime::PivotTableBuilder.new(self)
       end

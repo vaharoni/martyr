@@ -114,17 +114,22 @@ module Martyr
       #   Add all cubes with metric-slices on them.
       #   If the shared grain is missing a level in the grain - add all cubes that support that level.
       #   If the shared grain is missing a level in ths slice - add all cubes that support that level.
+      #
+      # @option sort [Array, Hash] either
       def elements(**options)
         load_bottom_level_primary_keys
         builder = VirtualElementsBuilder.new(memory_slice, unsliced_level_ids_in_grain: unsliced_level_ids_in_grain,
           virtual_metrics: virtual_metrics)
+
+        sort_args = options.delete(:sort) || {}
+        sorter = LevelSorter.new(standardizer.standardize(sort_args)) { |sort_argument| definition_from_id(sort_argument) }
 
         sub_cubes.each do |sub_cube|
           next unless sub_cube.metric_objects.present? or sub_cube.lowest_level_ids_in_grain.present?
           memory_slice_for_cube = memory_slice.for_cube(sub_cube)
           builder.add sub_cube.elements(memory_slice_for_cube, **options), sliced: memory_slice_for_cube.to_hash.present?
         end
-        builder.build
+        sorter.sort(builder.build)
       end
 
       def total(metrics: nil)

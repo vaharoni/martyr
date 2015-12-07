@@ -9,7 +9,14 @@ module Martyr
       #
       # @attribute fact_alias [String] the alias to give in the `AS` part of the SQL fact statement.
       #
-      attr_accessor :name, :fact_key, :fact_alias
+      # @attribute sort [Proc] optional lambda function for sorting.
+      #   For query levels it accepts the record:
+      #     ->(record) { record.custom_sort_order }
+      #
+      #   For degenerates it accepts the value:
+      #     ->(value) { value[1..2] }
+      #
+      attr_accessor :name, :fact_key, :fact_alias, :sort
 
       delegate :dimension_name, :dimension_definition, to: :collection
       alias_method :slice_id, :dimension_name

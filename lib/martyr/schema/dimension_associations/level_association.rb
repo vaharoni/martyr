@@ -11,11 +11,12 @@ module Martyr
 
       # @param collection [LevelAssociationCollection]
       # @param level [BaseLevelDefinition]
-      def initialize(collection, level, fact_key: nil, fact_alias: nil)
+      def initialize(collection, level, fact_key: nil, fact_alias: nil, sort: nil)
         @collection = collection
         @level = level
         @fact_key = fact_key || level.fact_key
         @fact_alias = fact_alias || level.fact_alias
+        @sort = sort || level.sort
       end
 
       def supported?

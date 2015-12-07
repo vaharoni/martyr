@@ -17,27 +17,27 @@ module Martyr
         has_key? second_element_from_id(metric_name, fallback: true)
       end
 
-      def has_sum_metric(name, statement, fact_alias: name, typecast: :to_i)
+      def has_sum_metric(name, statement, fact_alias: name, typecast: :to_i, sort: LevelSorter.identity)
         register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias,
-            rollup_function: :sum, typecast: typecast
+            rollup_function: :sum, typecast: typecast, sort: sort
       end
 
-      def has_min_metric(name, statement, fact_alias: name, typecast: :to_i)
+      def has_min_metric(name, statement, fact_alias: name, typecast: :to_i, sort: LevelSorter.identity)
         register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias,
-            rollup_function: :min, typecast: typecast
+            rollup_function: :min, typecast: typecast, sort: sort
       end
 
-      def has_max_metric(name, statement, fact_alias: name, typecast: :to_i)
+      def has_max_metric(name, statement, fact_alias: name, typecast: :to_i, sort: LevelSorter.identity)
         register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias,
-            rollup_function: :max, typecast: typecast
+            rollup_function: :max, typecast: typecast, sort: sort
       end
 
-      def has_custom_metric(name, block, rollup: :sum)
-        register CustomMetric.new cube_name: cube_name, name: name, block: block, rollup_function: rollup
+      def has_custom_metric(name, block, rollup: :sum, sort: LevelSorter.identity)
+        register CustomMetric.new cube_name: cube_name, name: name, block: block, rollup_function: rollup, sort: sort
       end
 
-      def has_custom_rollup(name, block, default: nil)
-        register CustomRollup.new cube_name: cube_name, name: name, block: block, default: default
+      def has_custom_rollup(name, block, default: nil, sort: LevelSorter.identity)
+        register CustomRollup.new cube_name: cube_name, name: name, block: block, default: default, sort: sort
       end
 
     end

@@ -17,9 +17,9 @@ module Martyr
         has_key? second_element_from_id(metric_name, fallback: true)
       end
 
-      def has_sum_metric(name, statement, fact_alias: name)
+      def has_sum_metric(name, statement, fact_alias: name, typecast: :to_i)
         register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias,
-            rollup_function: :sum
+            rollup_function: :sum, typecast: typecast
       end
 
       def has_min_metric(name, statement, fact_alias: name, typecast: :to_i)

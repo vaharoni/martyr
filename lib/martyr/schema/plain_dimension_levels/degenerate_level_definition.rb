@@ -20,7 +20,7 @@ module Martyr
                 query_level_key: options[:query_level_key] || name,
                 fact_key: options[:fact_key] || "#{dimension_name}_#{name}",
                 fact_alias: options[:fact_alias] || "#{dimension_name}_#{name}",
-                sort: options[:sort] || LevelSorter.identity }
+                sort: options[:sort] || Sorter.identity }
 
         hash.merge! label_expression: options[:label_expression] if options[:label_expression]
 

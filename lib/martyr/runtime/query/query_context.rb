@@ -122,7 +122,7 @@ module Martyr
           virtual_metrics: virtual_metrics)
 
         sort_args = options.delete(:sort) || {}
-        sorter = LevelSorter.new(standardizer.standardize(sort_args)) { |sort_argument| definition_from_id(sort_argument) }
+        sorter = Sorter.new(standardizer.standardize(sort_args)) { |sort_argument| definition_from_id(sort_argument) }
 
         sub_cubes.each do |sub_cube|
           next unless sub_cube.metric_objects.present? or sub_cube.lowest_level_ids_in_grain.present?

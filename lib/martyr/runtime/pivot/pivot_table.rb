@@ -7,14 +7,14 @@ module Martyr
       # @attribute row_axis [PivotAxis]
       # @attribute column_axis [PivotAxis]
       # @attribute pivot_grain [Array<String>] array of level ids
-      attr_accessor :metrics, :row_axis, :column_axis, :pivot_grain, :row_totals, :column_totals
+      attr_accessor :metrics, :row_axis, :column_axis, :pivot_grain, :row_totals, :column_totals, :sort
       attr_reader :elements
 
       def initialize(query_context, *args)
         super(*args)
 
         # We don't restrict metrics since custom rollups may have dependencies
-        @elements = query_context.elements(levels: pivot_grain)
+        @elements = query_context.elements(levels: pivot_grain, sort: sort)
       end
 
       def reload
@@ -99,6 +99,7 @@ module Martyr
       end
 
       def sort_cells(cells_arr)
+        return cells_arr if sort.present?
         cells_arr.sort_by do |cell|
           pivot_grain.map{|level_id| cell[level_id] || '' } + [metrics_sort_order[cell.metric_id]]
         end

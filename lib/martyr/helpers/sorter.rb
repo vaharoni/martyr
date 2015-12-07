@@ -1,5 +1,5 @@
 module Martyr
-  class LevelSorter
+  class Sorter
 
     def self.default_for_query(label_field)
       ->(record) { record.send(label_field) }
@@ -9,8 +9,12 @@ module Martyr
       ->(value) { value }
     end
 
-    def initialize(arg)
-      @order_hash = arg.is_a?(Hash) ? arg : Hash[Array.wrap(arg).map{|x| [x, :asc]}]
+    def self.args_to_hash(arg)
+      arg.is_a?(Hash) ? arg : Hash[Array.wrap(arg).map{|x| [x, :asc]}]
+    end
+
+    def initialize(args)
+      @order_hash = self.class.args_to_hash(args)
       @definition_arr = []
       @order_hash.keys.each do |key|
         @definition_arr << yield(key)
@@ -31,6 +35,16 @@ module Martyr
 
     def extract_value_from_definition(element, definition)
       definition.is_a?(Schema::QueryLevelDefinition) ? element.record_for(definition.id) : element.fetch(definition.id)
+    end
+
+    def direction_at(index)
+      @order_hash.values[index]
+    end
+
+    def sorter_proc_at(index)
+      direction = direction_at(index)
+      return direction if direction.respond_to?(:call)
+      @definition_arr[index].sort
     end
 
     # @param elements [Array<Element>] elements to be sorted
@@ -55,9 +69,8 @@ module Martyr
     def build_sort_order_lookup(uniq_values)
       lookups = []
       uniq_values.each_with_index do |uniq_values_arr, i|
-        sorted_values = uniq_values_arr.sort_by {|x| @definition_arr[i].sort.call(x) }
-        direction = @order_hash[@order_hash.keys[i]]
-        sorted_values.reverse! if direction.to_s == 'desc'
+        sorted_values = uniq_values_arr.sort_by { |x| sorter_proc_at(i).call(x) }
+        sorted_values.reverse! if direction_at(i).to_s == 'desc'
         lookups << Hash[sorted_values.each_with_index.map{|value, i| [value, i]}]
       end
       lookups

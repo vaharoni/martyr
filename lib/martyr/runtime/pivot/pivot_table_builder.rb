@@ -3,7 +3,7 @@ module Martyr
     class PivotTableBuilder
       ALL_METRICS_KEY = 'metrics'
 
-      attr_reader :query_context, :on_columns_args, :on_rows_args, :in_cells_arg, :row_totals, :column_totals
+      attr_reader :query_context, :on_columns_args, :on_rows_args, :sort_args, :in_cells_arg, :row_totals, :column_totals
       delegate :standardizer, :definition_from_id, to: :query_context
 
       delegate :cells, :elements, :to_chart, :to_csv, to: :table
@@ -12,6 +12,7 @@ module Martyr
         @query_context = query_context
         @on_columns_args = []
         @on_rows_args = []
+        @sort_args = {}
         @row_totals = false
         @column_totals = false
       end
@@ -21,6 +22,11 @@ module Martyr
           @metrics = standardizer.standardize(metric_ids)
           self
         end
+      end
+
+      def sort(*args)
+        @sort_args.merge! Sorter.args_to_hash(args.length == 1 ? args.first : args)
+        self
       end
 
       def on_columns(*level_ids)
@@ -61,7 +67,7 @@ module Martyr
         raise Query::Error.new('Metrics can either be on columns or rows or in cells') if metric_definition_count > 1
         PivotTable.new(query_context, metrics: metrics, pivot_grain: pivot_grain,
                        row_axis: axis_for(on_rows_args), column_axis: axis_for(on_columns_args),
-                       row_totals: row_totals, column_totals: column_totals).reload
+                       row_totals: row_totals, column_totals: column_totals, sort: sort_args).reload
       end
       alias_method :table, :build
 

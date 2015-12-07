@@ -17,26 +17,26 @@ module Martyr
         has_key? second_element_from_id(metric_name, fallback: true)
       end
 
-      def has_sum_metric(name, statement, fact_alias: name, typecast: :to_i, sort: LevelSorter.identity)
+      def has_sum_metric(name, statement, fact_alias: name, typecast: :to_i, sort: Sorter.identity)
         register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias,
             rollup_function: :sum, typecast: typecast, sort: sort
       end
 
-      def has_min_metric(name, statement, fact_alias: name, typecast: :to_i, sort: LevelSorter.identity)
+      def has_min_metric(name, statement, fact_alias: name, typecast: :to_i, sort: Sorter.identity)
         register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias,
             rollup_function: :min, typecast: typecast, sort: sort
       end
 
-      def has_max_metric(name, statement, fact_alias: name, typecast: :to_i, sort: LevelSorter.identity)
+      def has_max_metric(name, statement, fact_alias: name, typecast: :to_i, sort: Sorter.identity)
         register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias,
             rollup_function: :max, typecast: typecast, sort: sort
       end
 
-      def has_custom_metric(name, block, rollup: :sum, sort: LevelSorter.identity)
+      def has_custom_metric(name, block, rollup: :sum, sort: Sorter.identity)
         register CustomMetric.new cube_name: cube_name, name: name, block: block, rollup_function: rollup, sort: sort
       end
 
-      def has_custom_rollup(name, block, default: nil, sort: LevelSorter.identity)
+      def has_custom_rollup(name, block, default: nil, sort: Sorter.identity)
         register CustomRollup.new cube_name: cube_name, name: name, block: block, default: default, sort: sort
       end
 

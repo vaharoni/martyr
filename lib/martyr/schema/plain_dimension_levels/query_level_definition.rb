@@ -24,7 +24,7 @@ module Martyr
               fact_alias: options[:fact_alias] || "#{dimension_name}_#{name}_id",
               parent_association_name: options[:parent_association_name]
 
-        self.sort = options[:sort] || LevelSorter.default_for_query(label_field)
+        self.sort = options[:sort] || Sorter.default_for_query(label_field)
         add_label_expression_to_scope
       end
 

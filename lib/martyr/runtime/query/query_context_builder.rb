@@ -9,7 +9,7 @@ module Martyr
       include Martyr::Translations
 
       attr_reader :cube
-      delegate :elements, :facts, :pivot, to: :build
+      delegate :elements, :facts, :pivot, :total, :totals, to: :build
 
       def initialize(cube)
         @cube = cube

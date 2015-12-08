@@ -135,6 +135,7 @@ module Martyr
       def total(metrics: nil)
         elements(levels: [], metrics: metrics).first
       end
+      alias_method :totals, :total
 
       def pivot
         Runtime::PivotTableBuilder.new(self)

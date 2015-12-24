@@ -53,8 +53,8 @@ module Martyr
       # @param fact_scopes [Runtime::FactScopeCollection]
       def add_to_select(fact_scopes)
         supported_level_associations.each do |level_object|
-          fact_scopes.main_fact.decorate_scope do |scope|
-            scope.select("#{level_object.fact_key} AS #{level_object.fact_alias}")
+          fact_scopes.add_select_operator_for_dimension do |operator|
+            operator.add_select(level_object.fact_key, as: level_object.fact_alias)
           end
         end
       end
@@ -62,8 +62,8 @@ module Martyr
       # @param fact_scopes [Runtime::FactScopeCollection]
       def add_to_group_by(fact_scopes)
         supported_level_associations.each do |level_object|
-          fact_scopes.main_fact.decorate_scope do |scope|
-            scope.group(level_object.fact_key)
+          fact_scopes.add_group_operator do |operator|
+            operator.add_group(level_object.fact_alias)
           end
         end
       end

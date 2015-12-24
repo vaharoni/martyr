@@ -67,18 +67,19 @@ module Martyr
       # @param dimension_bus [Runtime::QueryContext]
       def add_to_where(fact_scopes, dimension_bus)
         scoped_levels.keys.each do |level_id|
-          scope_operator = add_one_level_to_where(level_id, dimension_bus)
-          fact_scopes.add_scope_operator(scope_operator)
+          add_one_level_to_where(fact_scopes, level_id, dimension_bus)
         end
       end
 
+      private
+
       # @return [FactScopeOperatorForDimension]
-      def add_one_level_to_where(level_id, dimension_bus)
+      def add_one_level_to_where(fact_scopes, level_id, dimension_bus)
         level_scope = dimension_bus.level_scope(level_id)
         slice_definition = get_slice(level_id)
 
         # Building operator used to slice the fact
-        FactScopeOperatorForDimension.new(level_scope.dimension_name, level_scope.name) do |operator|
+        fact_scopes.add_where_operator_for_dimension(level_scope.dimension_name, level_scope.name) do |operator|
           if slice_definition.null?
             operator.decorate_scope {|fact_scope| fact_scope.where('0=1')}
             next
@@ -95,17 +96,13 @@ module Martyr
 
       def add_to_where_using_fact_strategy(level_scope, slice_definition, operator)
         return unless slice_definition.with.present?
-        operator.decorate_scope do |fact_scope|
-          level_key = operator.level_key_for_where(level_scope.id)
-          fact_scope.where(level_key => slice_definition.with)
-        end
+        level_key = operator.level_key_for_where(level_scope.id)
+        operator.add_where(level_key => slice_definition.with)
       end
 
       def add_to_where_using_join_strategy(operator, common_level_scope)
-        operator.decorate_scope do |fact_scope|
-          level_key = operator.level_key_for_where(common_level_scope.id)
-          fact_scope.where(level_key => common_level_scope.keys)
-        end
+        level_key = operator.level_key_for_where(common_level_scope.id)
+        operator.add_where(level_key => common_level_scope.keys)
       end
     end
   end

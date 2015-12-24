@@ -46,8 +46,8 @@ module MartyrSpec
     has_dimension_level :invoices, :invoice_line
     has_dimension_level :albums, :track
 
-    has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
-    has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+    has_sum_metric :units_sold, 'invoice_lines.quantity'
+    has_sum_metric :amount, 'invoice_lines.unit_price * invoice_lines.quantity'
 
     has_custom_metric :commission, ->(fact) { (fact['amount'] * 0.3) }
 
@@ -83,8 +83,8 @@ module MartyrSpec
     # Album is not connected to the fact query so only the bottom level is available
     has_dimension_level :albums, :track
 
-    has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
-    has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+    has_sum_metric :units_sold, 'invoice_lines.quantity'
+    has_sum_metric :amount, 'invoice_lines.unit_price * invoice_lines.quantity'
 
     main_query do
       InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
@@ -105,8 +105,8 @@ module MartyrSpec
     # High level - query without degenerates
     has_dimension_level :invoices, :invoice
 
-    has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
-    has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+    has_sum_metric :units_sold, 'invoice_lines.quantity'
+    has_sum_metric :amount, 'invoice_lines.unit_price * invoice_lines.quantity'
 
     main_query do
       InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
@@ -131,8 +131,8 @@ module MartyrSpec
     has_dimension_level :invoices, :invoice
     has_dimension_level :invoices, :invoice_line
 
-    has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
-    has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+    has_sum_metric :units_sold, 'invoice_lines.quantity'
+    has_sum_metric :amount, 'invoice_lines.unit_price * invoice_lines.quantity'
 
     main_query do
       InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
@@ -154,8 +154,8 @@ module MartyrSpec
     has_dimension_level :invoices, :country
     has_dimension_level :invoices, :city
 
-    has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
-    has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+    has_sum_metric :units_sold, 'invoice_lines.quantity'
+    has_sum_metric :amount, 'invoice_lines.unit_price * invoice_lines.quantity'
 
     main_query do
       InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
@@ -179,8 +179,8 @@ module MartyrSpec
     has_dimension_level :invoices, :invoice
     has_dimension_level :invoices, :invoice_line
 
-    has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
-    has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+    has_sum_metric :units_sold, 'invoice_lines.quantity'
+    has_sum_metric :amount, 'invoice_lines.unit_price * invoice_lines.quantity'
 
     main_query do
       InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)
@@ -204,11 +204,11 @@ module MartyrSpec
 
     has_dimension_level :invoices, :invoice_line
 
-    has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
-    has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+    has_sum_metric :units_sold, 'invoice_lines.quantity'
+    has_sum_metric :amount, 'invoice_lines.unit_price * invoice_lines.quantity'
 
     # Sub facts
-    has_sum_metric :invoice_count, 'SUM(invoice_counts.invoice_count)'
+    has_sum_metric :invoice_count, 'invoice_counts.invoice_count'
     has_dimension_level :first_invoice, :yes_no,
       fact_key: 'CASE customer_first_invoices.first_invoice_id WHEN invoices.id THEN 1 ELSE 0 END'
 
@@ -251,8 +251,8 @@ module MartyrSpec
     has_dimension_level :invoices, :invoice_line
     has_dimension_level :albums, :track
 
-    has_sum_metric :units_sold, 'SUM(invoice_lines.quantity)'
-    has_sum_metric :amount, 'SUM(invoice_lines.unit_price * invoice_lines.quantity)'
+    has_sum_metric :units_sold, 'invoice_lines.quantity'
+    has_sum_metric :amount, 'invoice_lines.unit_price * invoice_lines.quantity'
 
     main_query do
       InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)

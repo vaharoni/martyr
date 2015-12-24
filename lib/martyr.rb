@@ -4,6 +4,7 @@ require 'csv'
 require 'active_support'
 require 'active_support/core_ext'
 require 'active_model'
+require 'active_record'
 
 require 'martyr/helpers/translations'
 require 'martyr/runtime/slices/has_scoped_levels'
@@ -11,6 +12,7 @@ require 'martyr/runtime/data_set/element_common'
 
 Dir.glob(File.expand_path '../martyr/helpers/*.rb', __FILE__).each{|x| require File.expand_path(x).split('.rb').first}
 Dir.glob(File.expand_path '../martyr/level_concern/*.rb', __FILE__).each{|x| require File.expand_path(x).split('.rb').first}
+Dir.glob(File.expand_path '../martyr/runtime/scope_operators/*.rb', __FILE__).each{|x| require File.expand_path(x).split('.rb').first}
 Dir.glob(File.expand_path '../martyr/**/*.rb', __FILE__).each{|x| require File.expand_path(x).split('.rb').first}
 
 # require 'martyr/base'

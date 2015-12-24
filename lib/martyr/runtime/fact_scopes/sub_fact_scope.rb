@@ -4,11 +4,6 @@ module Martyr
 
       delegate :add_to_join, to: :fact_definition
 
-      def add_scope_operator(operator)
-        operator.fact_scope = self
-        operator.execute if operator.supported?
-      end
-
       def add_to_join(main_fact_scope)
         raise Schema::Error.new("Sub query #{name} does not have a join clause. Did you forget to call `joins_with`?") unless fact_definition.join_clause
         main_fact_scope.decorate_scope do |scope|

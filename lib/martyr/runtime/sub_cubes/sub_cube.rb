@@ -7,7 +7,7 @@ module Martyr
       include Martyr::Runtime::FactFillerStrategies
 
       attr_reader :query_context, :cube, :fact_scopes, :metrics, :grain
-      delegate :combined_sql, :pretty_sql, :test, :select_keys, to: :fact_scopes
+      delegate :combined_sql, :test, to: :fact_scopes
 
       # TODO: supported_* methods are delegated to the grain, but there are equivalent methods in the cube that mean
       #       something else and sometimes needed. #select_supported_level_ids, for instance, is relying on those

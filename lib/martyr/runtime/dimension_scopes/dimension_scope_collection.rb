@@ -67,6 +67,12 @@ module Martyr
         levels_and_above_for(level_ids).map(&:id)
       end
 
+      def register_element_helper_methods(mod)
+        values.each do |dimension_reference|
+          dimension_reference.register_element_helper_methods(mod)
+        end
+      end
+
     end
   end
 end

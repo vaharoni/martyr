@@ -18,10 +18,9 @@ module Martyr
       @levels = levels_collection_class.new(dimension: self, &block)
     end
 
-    # TODO: manually delegate methods to improve performance
-    # Delegate everything to the concrete levels
-    # def method_missing(name, *args, &block)
-    #   levels.respond_to?(name) ? levels.send(name, *args, &block) : super
-    # end
+    # @param mod [Module]
+    def register_element_helper_methods(mod)
+      level_objects.each {|l| l.register_element_helper_methods(mod)}
+    end
   end
 end

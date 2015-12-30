@@ -186,6 +186,20 @@ module Martyr
         end
       end
 
+      def element_helper_module
+        return @element_helper_module if @element_helper_module
+        @element_helper_module = Module.new
+        dimension_scopes.register_element_helper_methods(@element_helper_module)
+
+        metric_ids.each do |metric_id|
+          metric_name = second_element_from_id(metric_id)
+          @element_helper_module.module_eval do
+            define_method(metric_name) { fetch(metric_id) }
+          end
+        end
+        @element_helper_module
+      end
+
       private
 
       def metric_ids_lookup

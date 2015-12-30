@@ -4,7 +4,7 @@ module Martyr
       include ActiveModel::Model
       include Martyr::Level
 
-      # @attribute fact_key [String] the field in the fact where the degenerate attribute resides. E.g.:
+      # @attribute fact_key [String] the field in the fact where the attribute resides. E.g.:
       #   degenerate_level :country, fact_key: 'invoices.country'
       #
       # @attribute fact_alias [String] the alias to give in the `AS` part of the SQL fact statement.

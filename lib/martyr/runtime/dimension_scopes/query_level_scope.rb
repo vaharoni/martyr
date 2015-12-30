@@ -5,7 +5,7 @@ module Martyr
       # @attribute primary_keys_for_load [Array<Integer>] primary keys to restrict when loading the level with full_load
       attr_accessor :primary_keys_for_load
 
-      delegate :record_value, :primary_key, :label_key, :label_expression, to: :level
+      delegate :record_value, :primary_key, :label_key, :label_expression, :register_element_helper_methods, to: :level
 
       def initialize(*args)
         super

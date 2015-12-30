@@ -15,7 +15,8 @@ module Martyr
       #   Coordinate objects.
       # @attribute fact_indexer [#dimension_bus, #get_element, #cube_name]
       # @attribute restrict_level_ids [Array<String>] level IDs that are supported by the cube this locator belongs to.
-      attr_accessor :metrics, :memory_slice, :fact_indexer, :restrict_level_ids
+      # @attribute helper_module [Module] a module to be included into every element
+      attr_accessor :metrics, :memory_slice, :fact_indexer, :restrict_level_ids, :helper_module
 
       delegate :dimension_bus, :cube_name, to: :fact_indexer
       delegate :definition_from_id, to: :dimension_bus
@@ -75,6 +76,7 @@ module Martyr
       def finalize_element(element, exclude_metric_id: nil)
         exclude_metric_id = Array.wrap(exclude_metric_id)
         element.element_locator = self
+        element.extend(helper_module) if helper_module.present?
         element.rollup *metrics.reject{|m| exclude_metric_id.include? m.id.to_s }
         element
       end

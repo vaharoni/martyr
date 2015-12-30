@@ -4,7 +4,8 @@ module Martyr
 
       LABEL_EXPRESSION_ALIAS = 'martyr_label_expression'
 
-      attr_accessor :scope, :primary_key, :label_key, :label_expression, :parent_association_name
+      attr_accessor :scope, :primary_key, :label_key, :label_expression, :id_method, :record_method, :value_method,
+        :parent_association_name
 
       # @param collection [DimensionDefinitionCollection]
       # @param name [String, Symbol]
@@ -20,6 +21,9 @@ module Martyr
               primary_key: options[:primary_key] || 'id',
               label_key: options[:label_key] || name.to_s,
               label_expression: options[:label_expression],
+              id_method: options[:id_method] || "#{dimension_name}_#{name}_id",
+              record_method: options[:record_method] || "#{dimension_name}_#{name}_record",
+              value_method: options[:value_method] || "#{dimension_name}_#{name}",
               fact_key: options[:fact_key] || "#{dimension_name}_#{name}_id",
               fact_alias: options[:fact_alias] || "#{dimension_name}_#{name}_id",
               parent_association_name: options[:parent_association_name]
@@ -51,6 +55,17 @@ module Martyr
       # @param record [ActiveRecord::Base]
       def record_value(record)
         record.try(label_field)
+      end
+
+      # @param mod [Module]
+      def register_element_helper_methods(mod)
+        level_id = id
+        level_definition = self
+        mod.module_eval do
+          define_method(level_definition.id_method) { key_for(level_id) }
+          define_method(level_definition.record_method) { record_for(level_id) }
+          define_method(level_definition.value_method) { fetch(level_id) }
+        end
       end
 
       private

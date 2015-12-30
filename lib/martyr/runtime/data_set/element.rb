@@ -56,22 +56,6 @@ module Martyr
         raise Query::Error.new("Error: `#{level_id}` must be included in the element grain") unless grain_hash.keys.include?(level_id)
         facts.first.record_for(level_id)
       end
-
-      private
-
-      def method_missing(method, *args, &block)
-        fully_qualified_metric_id = find_metric_id(method)
-        return fetch(fully_qualified_metric_id) if fully_qualified_metric_id
-        super
-      end
-
-      # @return [String] the fully qualified metric ID if only one exists
-      def find_metric_id(key)
-        candidates = metric_ids.select{|metric_id| second_element_from_id(metric_id) == key.to_s}
-        return candidates.first if candidates.length == 1
-        nil
-      end
-
     end
   end
 end

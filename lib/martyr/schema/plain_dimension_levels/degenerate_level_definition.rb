@@ -9,7 +9,7 @@ module Martyr
       #   receives two arguments - `scope` and `values`. E.g.:
       #   ->(scope, values) { scope.where('billing_country' => values) }
       #
-      attr_accessor :query_level_key, :query_level_with_finder
+      attr_accessor :query_level_key, :query_level_with_finder, :value_method
       attr_reader :loaded
 
       # @param collection [DimensionDefinitionCollection]
@@ -18,6 +18,7 @@ module Martyr
         @collection = collection
         hash = {name: name.to_s,
                 query_level_key: options[:query_level_key] || name,
+                value_method: options[:value_method] || "#{dimension_name}_#{name}",
                 fact_key: options[:fact_key] || "#{dimension_name}_#{name}",
                 fact_alias: options[:fact_alias] || "#{dimension_name}_#{name}",
                 sort: options[:sort] || Sorter.identity }
@@ -48,6 +49,15 @@ module Martyr
 
       def build(collection)
         Runtime::DegenerateLevelScope.new(collection, self)
+      end
+
+      # @param mod [Module]
+      def register_element_helper_methods(mod)
+        level_id = id
+        level_definition = self
+        mod.module_eval do
+          define_method(level_definition.value_method) { fetch(level_id) }
+        end
       end
 
       private

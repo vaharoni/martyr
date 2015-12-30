@@ -2,7 +2,7 @@ module Martyr
   module Runtime
     class DegenerateLevelScope < BaseLevelScope
 
-      delegate :query_level_with_finder, :query_level_key, to: :level
+      delegate :query_level_with_finder, :query_level_key, :register_element_helper_methods, to: :level
       delegate :nullify, to: :query_level_below
 
       def sliceable?

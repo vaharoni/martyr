@@ -49,6 +49,8 @@ module MartyrSpec
     has_sum_metric :units_sold, 'invoice_lines.quantity'
     has_sum_metric :amount, 'invoice_lines.unit_price * invoice_lines.quantity'
 
+    has_count_distinct_metric :customer_count, level: 'customers.last_name'
+
     has_custom_metric :commission, ->(fact) { (fact.amount * 0.3) }, depends_on: 'amount'
 
     # If one rollup is dependent on the other, make sure they are ordered correctly

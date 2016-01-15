@@ -4,13 +4,14 @@ module Martyr
       include Martyr::Registrable
       include Martyr::Translations
 
-      attr_reader :cube_name, :standardizer
+      attr_reader :cube, :standardizer
+      delegate :cube_name, to: :cube
 
       alias_method :find_metric, :find_or_error
 
-      def initialize(cube_name)
+      def initialize(cube)
         super()
-        @cube_name = cube_name
+        @cube = cube
         @standardizer = Martyr::MetricIdStandardizer.new(cube_name)
       end
 
@@ -31,6 +32,14 @@ module Martyr
       def has_max_metric(name, statement, fact_alias: name, typecast: :to_i, sort: Sorter.identity, fact_grain: [])
         register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias,
             rollup_function: :max, typecast: typecast, sort: sort, fact_grain: Array.wrap(fact_grain)
+      end
+
+      # @param level [String] The level ID on which to perform the distinct count. The level must be connected to the
+      #   fact with has_dimension_level.
+      def has_count_distinct_metric(name, level:, fact_alias: name, typecast: :to_i, sort: Sorter.identity, fact_grain: [])
+        level_object = cube.supported_dimension_definitions.find_level_definition(level)
+        register CountDistinctMetric.new cube_name: cube_name, name: name, fact_alias: fact_alias,
+            typecast: typecast, sort: sort, level: level_object, fact_grain: Array.wrap(fact_grain)
       end
 
       def has_custom_metric(name, block, rollup: :sum, sort: Sorter.identity, depends_on: [], fact_grain: [])

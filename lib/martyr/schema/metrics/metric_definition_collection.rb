@@ -32,6 +32,11 @@ module Martyr
             rollup_function: :max, typecast: typecast, sort: sort
       end
 
+      def has_count_distinct_metric(name, statement, fact_alias: name, typecast: :to_i, sort: Sorter.identity)
+        register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias,
+            rollup_function: :count_distinct, typecast: typecast, sort: sort
+      end
+
       def has_custom_metric(name, block, rollup: :sum, sort: Sorter.identity)
         register CustomMetric.new cube_name: cube_name, name: name, block: block, rollup_function: rollup, sort: sort
       end

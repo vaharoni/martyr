@@ -48,6 +48,7 @@ module MartyrSpec
 
     has_sum_metric :units_sold, 'invoice_lines.quantity'
     has_sum_metric :amount, 'invoice_lines.unit_price * invoice_lines.quantity'
+    has_count_distinct_metric :invoices_with_rock_genre, "CASE WHEN genres.name = 'Rock' THEN invoices.id ELSE NULL END"
 
     has_custom_metric :commission, ->(fact) { (fact['amount'] * 0.3) }
 

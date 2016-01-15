@@ -13,8 +13,8 @@ module Martyr
       # = DSL
 
       delegate :has_dimension_level, :find_dimension_association, :find_level_association, to: :dimension_associations
-      delegate :find_metric, :has_count_metric, :has_min_metric, :has_max_metric, :has_sum_metric, :has_custom_metric,
-               :has_custom_rollup, to: :metric_definitions
+      delegate :find_metric, :has_count_metric, :has_min_metric, :has_max_metric, :has_sum_metric,
+               :has_count_distinct_metric, :has_custom_metric, :has_custom_rollup, to: :metric_definitions
 
       # @param cube [Martyr::Cube]
       def initialize(cube)

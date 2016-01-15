@@ -310,24 +310,6 @@ describe 'Runtime Queries' do
       GROUP BY customer_country
       SQL
     end
-
-    it 'works with count_distinct metric' do
-      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:invoices_with_rock_genre).granulate('media_types.name', 'genres.name').build.sub_cubes.first
-      sub_cube.test
-      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
-      SELECT media_types_name, genres_name, COUNT(DISTINCT invoices_with_rock_genre) AS invoices_with_rock_genre
-      FROM (SELECT media_types.name AS media_types_name,
-          genres.name AS genres_name,
-          CASE WHEN genres.name = 'Rock' THEN invoices.id ELSE NULL END AS invoices_with_rock_genre
-        FROM "invoice_lines"
-          INNER JOIN "tracks" ON "tracks"."id" = "invoice_lines"."track_id"
-          INNER JOIN "genres" ON "genres"."id" = "tracks"."genre_id"
-          INNER JOIN "media_types" ON "media_types"."id" = "tracks"."media_type_id"
-          INNER JOIN "invoices" ON "invoices"."id" = "invoice_lines"."invoice_id"
-          INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id") martyr_wrapper
-      GROUP BY media_types_name, genres_name
-      SQL
-    end
   end
 
 

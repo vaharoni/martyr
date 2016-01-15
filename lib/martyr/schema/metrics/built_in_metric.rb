@@ -25,15 +25,11 @@ module Martyr
 
       private
 
-      # Used for the outside wrapper only
       def data_rollup_sql
-        case rollup_function.to_s
-          when 'none'
-            fact_alias
-          when 'count_distinct'
-            "COUNT(DISTINCT #{fact_alias}) AS #{fact_alias}"
-          else
-            "#{rollup_function.to_s.upcase}(#{fact_alias}) AS #{fact_alias}"
+        if rollup_function.to_s == 'none'
+          fact_alias
+        else
+          "#{rollup_function.to_s.upcase}(#{fact_alias}) AS #{fact_alias}"
         end
       end
 

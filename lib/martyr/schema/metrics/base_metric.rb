@@ -4,7 +4,7 @@ module Martyr
       include ActiveModel::Model
       extend Martyr::Translations
 
-      attr_accessor :cube_name, :name, :rollup_function, :sort
+      attr_accessor :cube_name, :name, :rollup_function, :sort, :fact_grain
 
       def id
         "#{cube_name}.#{name}"

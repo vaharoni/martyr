@@ -2,7 +2,7 @@ module Martyr
   module Schema
     class CustomMetric < BaseMetric
 
-      attr_accessor :block
+      attr_accessor :block, :depends_on
 
       def build_data_slice(*)
         raise Runtime::Error.new("Custom metrics cannot be sliced: attempted on metric `#{name}`")

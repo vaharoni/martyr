@@ -13,7 +13,7 @@ module Martyr
 
       def initialize(cube)
         @cube = cube
-        @select_args_by_cube = {}
+        @metric_dependency_resolver = MetricDependencyResolver.new(cube)
         @data_slice = {}
         @granulate_args = []
       end
@@ -22,9 +22,7 @@ module Martyr
       def select(*arr)
         dup.instance_eval do
           standardize(arr).each do |metric_id|
-            cube_name = first_element_from_id(metric_id)
-            @select_args_by_cube[cube_name] ||= []
-            @select_args_by_cube[cube_name] << metric_id
+            @metric_dependency_resolver.add_metric(metric_id)
           end
           self
         end
@@ -94,7 +92,6 @@ module Martyr
       # Build the dimension scope objects supported by the grain AND slices.
       #   DegeneratesAndBottomLevels.granulate('genres.name', 'media_types.name').slice('customers.country', with: 'USA')
       def setup_context_dimension_scopes(context)
-        default_grains = cube.contained_cube_classes.flat_map(&:default_grain)
         relevant_dimensions = (default_grains + context.level_ids_in_grain + @data_slice.keys).map { |x| first_element_from_id(x) }
         context.dimension_scopes = cube.build_dimension_scopes(relevant_dimensions.uniq)
 
@@ -111,14 +108,13 @@ module Martyr
       # If no grain was given, select all levels - separately for each cube.
       def setup_context_sub_cubes_metrics_and_grain(context)
         cube.contained_cube_classes.index_by(&:cube_name).each do |cube_name, cube_class|
+          metric_ids = @metric_dependency_resolver.metric_ids_for(cube_name, all: true)
+          grain = (@metric_dependency_resolver.inferred_fact_grain_for(cube_name) + @granulate_args).uniq
+
           sub_cube = Runtime::SubCube.new(context, cube_class)
           context.sub_cubes_hash[cube_name] = sub_cube
-          if @select_args_by_cube.present?
-            sub_cube.set_metrics(@select_args_by_cube[cube_name])
-          else
-            sub_cube.set_all_metrics
-          end
-          sub_cube.set_grain(@granulate_args)
+          sub_cube.set_metrics(metric_ids)
+          sub_cube.set_grain(grain)
         end
       end
 
@@ -135,11 +131,7 @@ module Martyr
       def setup_virtual_cube(context)
         return unless cube.virtual?
         context.virtual_cube = cube
-        if @select_args_by_cube.present?
-          context.virtual_cube_metric_ids = @select_args_by_cube[cube.cube_name]
-        else
-          context.virtual_cube_metric_ids = cube.metric_definitions.values.map(&:id)
-        end
+        context.virtual_cube_metric_ids = @metric_dependency_resolver.metric_ids_for(cube.cube_name, all: true)
       end
 
       # Step 6 (depends on steps 3 and 4)
@@ -159,6 +151,11 @@ module Martyr
           raise_if_not_ok: cube.contained_cube_classes.length > 1)
 
         @standardizer.standardize(object)
+      end
+
+      def default_grains
+        (@metric_dependency_resolver.inferred_fact_grain +
+          cube.contained_cube_classes.flat_map(&:default_fact_grain)).uniq
       end
 
     end

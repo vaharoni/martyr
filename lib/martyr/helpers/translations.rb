@@ -2,9 +2,13 @@ module Martyr
   module Translations
 
     def with_standard_id(id)
+      x, y = id_components(id)
+      y.nil? ? yield(id.to_s) : yield(x, y)
+    end
+
+    def id_components(id)
       id_s = id.to_s
-      x, y = id_s.split('.')
-      y.nil? ? yield(id_s) : yield(x, y)
+      id_s.split('.')
     end
 
     def first_element_from_id(id)

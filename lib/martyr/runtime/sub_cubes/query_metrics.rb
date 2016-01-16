@@ -31,10 +31,6 @@ module Martyr
         end
       end
 
-      def add_all
-        merge! cube.metrics
-      end
-
       def built_in_metrics
         values.select{|x| x.is_a?(Schema::BuiltInMetric)}
       end

@@ -73,10 +73,6 @@ module Martyr
         end
       end
 
-      def set_all_metrics
-        metrics.add_all
-      end
-
       def set_grain(grain_arr)
         select_supported_level_ids(grain_arr).each do |level_id|
           @grain.add_granularity(level_id)
@@ -113,7 +109,7 @@ module Martyr
       def element_locator_for(memory_slice, metrics: nil)
         ElementLocator.new memory_slice: memory_slice, metrics: sanitize_metrics(metrics: metrics),
           fact_indexer: fact_indexer, helper_module: query_context.element_helper_module,
-          restrict_level_ids: query_context.level_ids_and_above_for(sanitize_levels.map(&:id) + cube.default_grain)
+          restrict_level_ids: query_context.level_ids_and_above_for(sanitize_levels.map(&:id) + cube.default_fact_grain)
       end
 
       def fact_indexer

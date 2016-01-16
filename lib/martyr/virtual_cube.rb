@@ -24,7 +24,7 @@ module Martyr
     end
 
     class << self
-      delegate :has_custom_rollup, to: :metric_definitions
+      delegate :find_metric, :has_custom_rollup, to: :metric_definitions
       delegate :select, :slice, :granulate, :pivot, to: :new_query_context_builder
       alias_method :all, :new_query_context_builder
     end
@@ -40,5 +40,19 @@ module Martyr
       true
     end
 
+    # @override
+    def self.find_metric_id(metric_id)
+      cube_name, metric_name = id_components(metric_id)
+      if cube_name == self.cube_name
+        find_metric(metric_name)
+      else
+        find_cube(cube_name).find_metric(metric_name)
+      end
+    end
+
+    def self.find_cube(cube_name)
+      contained_cube_classes.find{ |cube| cube.cube_name == cube_name } ||
+        raise(Schema::Error.new "Could not find `#{cube_name}`")
+    end
   end
 end

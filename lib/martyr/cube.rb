@@ -1,6 +1,5 @@
 module Martyr
   class Cube < BaseCube
-    extend Martyr::Translations
     extend Martyr::LevelComparator
 
     def self.contained_cube_classes
@@ -45,19 +44,19 @@ module Martyr
       @dimension_definitions
     end
 
-    def self.set_default_grain(*level_ids_arr)
-      @default_grain = level_ids_arr
+    def self.set_default_fact_grain(*level_ids_arr)
+      @default_fact_grain = level_ids_arr
     end
 
-    def self.default_grain
-      @default_grain || []
+    def self.default_fact_grain
+      @default_fact_grain || []
     end
 
     # @return [Array<LevelAssociation>]
-    def self.default_grain_level_associations
+    def self.default_fact_grain_level_associations
       level_association_lookup = level_associations.index_by(&:id)
-      default_grain.map do |x|
-        level_association_lookup[x] || raise(Schema::Error.new("`#{x}` is in the default grain but not connected to the fact query"))
+      default_fact_grain.map do |x|
+        level_association_lookup[x] || raise(Schema::Error.new("`#{x}` is in the default fact grain but not connected to the fact query"))
       end
     end
 

@@ -49,13 +49,13 @@ module MartyrSpec
     has_sum_metric :units_sold, 'invoice_lines.quantity'
     has_sum_metric :amount, 'invoice_lines.unit_price * invoice_lines.quantity'
 
-    has_custom_metric :commission, ->(fact) { (fact['amount'] * 0.3) }
+    has_custom_metric :commission, ->(fact) { (fact['amount'] * 0.3) }, depends_on: 'amount'
 
     # If one rollup is dependent on the other, make sure they are ordered correctly
-    has_custom_rollup :avg_transaction, ->(fact_set) { fact_set['amount'] / fact_set['units_sold'] }
-    has_custom_rollup :usa_amount, ->(fact_set) { fact_set.locate('customers.country', with: 'USA')['amount'] }
-    has_custom_rollup :cross_country_avg_transaction, ->(fact_set) { fact_set.locate(reset: 'customers.*')['avg_transaction'] }
-    has_custom_rollup :usa_avg_transaction, ->(fact_set) { fact_set.locate('customers.country', with: 'USA')['avg_transaction'] }
+    has_custom_rollup :avg_transaction, ->(fact_set) { fact_set['amount'] / fact_set['units_sold'] }, depends_on: %w(amount units_sold)
+    has_custom_rollup :usa_amount, ->(fact_set) { fact_set.locate('customers.country', with: 'USA')['amount'] }, depends_on: 'amount', fact_grain: 'customers.country'
+    has_custom_rollup :cross_country_avg_transaction, ->(fact_set) { fact_set.locate(reset: 'customers.*')['avg_transaction'] }, depends_on: 'avg_transaction'
+    has_custom_rollup :usa_avg_transaction, ->(fact_set) { fact_set.locate('customers.country', with: 'USA')['avg_transaction'] }, depends_on: 'avg_transaction', fact_grain: 'customers.country'
 
     main_query do
       InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)

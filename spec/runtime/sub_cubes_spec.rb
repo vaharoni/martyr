@@ -215,7 +215,9 @@ describe 'Runtime Queries' do
   describe 'sub facts' do
     it 'sets up JOIN, SELECT, and GROUP BY correctly for sub facts that expose metrics and dimensions without propagating unsuported dimensions' do
       sub_cube = MartyrSpec::DegeneratesAndCustomersAndSubFacts.
-          slice('media_types.name' => {with: 'AAC audio file'}, 'genres.name' => {with: 'Rock'}).granulate('first_invoice.yes_no', 'media_types.name', 'genres.name').build.sub_cubes.first
+        select(:units_sold, :amount, :invoice_count).
+        slice('media_types.name' => {with: 'AAC audio file'}, 'genres.name' => {with: 'Rock'}).
+        granulate('first_invoice.yes_no', 'media_types.name', 'genres.name').build.sub_cubes.first
       sub_cube.test
 
       expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip

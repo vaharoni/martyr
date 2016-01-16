@@ -109,7 +109,7 @@ module Martyr
       def element_locator_for(memory_slice, metrics: nil)
         ElementLocator.new memory_slice: memory_slice, metrics: sanitize_metrics(metrics: metrics),
           fact_indexer: fact_indexer, helper_module: query_context.element_helper_module,
-          restrict_level_ids: query_context.level_ids_and_above_for(sanitize_levels.map(&:id) + cube.default_fact_grain)
+          restrict_level_ids: grain.supported_level_definition_ids
       end
 
       def fact_indexer

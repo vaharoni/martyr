@@ -109,7 +109,8 @@ module Martyr
       def setup_context_sub_cubes_metrics_and_grain(context)
         cube.contained_cube_classes.index_by(&:cube_name).each do |cube_name, cube_class|
           metric_ids = @metric_dependency_resolver.metric_ids_for(cube_name, all: true)
-          grain = (@metric_dependency_resolver.inferred_fact_grain_for(cube_name) + @granulate_args).uniq
+          grain = (@granulate_args + @metric_dependency_resolver.inferred_fact_grain_for(cube_name) +
+                   cube_class.default_fact_grain).uniq
 
           sub_cube = Runtime::SubCube.new(context, cube_class)
           context.sub_cubes_hash[cube_name] = sub_cube

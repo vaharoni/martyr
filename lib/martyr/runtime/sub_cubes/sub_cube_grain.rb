@@ -100,6 +100,10 @@ module Martyr
         end
       end
 
+      def supported_level_definition_ids
+        supported_level_definitions.map(&:id)
+      end
+
       def supported_level_associations_lookup
         @_supported_level_associations_lookup ||= supported_level_associations.index_by(&:id)
       end

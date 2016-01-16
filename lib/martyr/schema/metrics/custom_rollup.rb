@@ -24,7 +24,7 @@ module Martyr
       # @param element [Runtime::Element]
       def rollup(element)
         catch(:empty_element) do
-          block.call Runtime::RollupFactSet.new(cube_name, name, element)
+          block.call(element)
         end || default
       end
 

@@ -76,6 +76,7 @@ module Martyr
       def finalize_element(element, exclude_metric_id: nil)
         exclude_metric_id = Array.wrap(exclude_metric_id)
         element.element_locator = self
+        element.helper_module = helper_module
         element.extend(helper_module) if helper_module.present?
         element.rollup *metrics.reject{|m| exclude_metric_id.include? m.id.to_s }
         element

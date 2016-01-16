@@ -5,7 +5,8 @@ module Martyr
       include Martyr::Runtime::ElementCommon
 
       # @attribute element_locator [ElementLocator] this is added to an element in the process of building it
-      attr_accessor :element_locator
+      # @attribute helper_module [Module] this is kept for reference, although the element object should already extend it
+      attr_accessor :element_locator, :helper_module
 
       attr_reader :facts
       delegate :cube_name, to: :element_locator

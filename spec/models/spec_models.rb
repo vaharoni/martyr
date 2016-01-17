@@ -50,6 +50,7 @@ module MartyrSpec
     has_sum_metric :amount, 'invoice_lines.unit_price * invoice_lines.quantity'
 
     has_count_distinct_metric :customer_count, level: 'customers.last_name'
+    has_count_distinct_metric :customer_from_usa_count, level: 'customers.last_name', null_unless: "customers.country = 'USA'"
 
     has_custom_metric :commission, ->(fact) { (fact.amount * 0.3) }
 

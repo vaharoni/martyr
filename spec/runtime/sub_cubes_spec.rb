@@ -22,6 +22,42 @@ describe 'Runtime Queries' do
       SQL
     end
 
+    it 'works for a simple COUNT DISTINCT metric' do
+      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:customer_count).granulate('media_types.name', 'genres.name').build.sub_cubes.first
+      sub_cube.test
+      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+      SELECT media_types_name, genres_name, COUNT(DISTINCT customer_id) AS customer_count
+      FROM (SELECT media_types.name AS media_types_name,
+          genres.name AS genres_name,
+          customers.id AS customer_id
+        FROM "invoice_lines"
+          INNER JOIN "tracks" ON "tracks"."id" = "invoice_lines"."track_id"
+          INNER JOIN "genres" ON "genres"."id" = "tracks"."genre_id"
+          INNER JOIN "media_types" ON "media_types"."id" = "tracks"."media_type_id"
+          INNER JOIN "invoices" ON "invoices"."id" = "invoice_lines"."invoice_id"
+          INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id") martyr_wrapper
+      GROUP BY media_types_name, genres_name
+      SQL
+    end
+
+    it 'works for a COUNT DISTINCT with helper' do
+      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:customer_from_usa_count).granulate('media_types.name', 'genres.name').build.sub_cubes.first
+      sub_cube.test
+      expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
+      SELECT media_types_name, genres_name, COUNT(DISTINCT customer_from_usa_count_distinct_helper) AS customer_from_usa_count
+      FROM (SELECT media_types.name AS media_types_name,
+          genres.name AS genres_name,
+          CASE WHEN customers.country = 'USA' THEN customers.id ELSE NULL END AS customer_from_usa_count_distinct_helper
+        FROM "invoice_lines"
+          INNER JOIN "tracks" ON "tracks"."id" = "invoice_lines"."track_id"
+          INNER JOIN "genres" ON "genres"."id" = "tracks"."genre_id"
+          INNER JOIN "media_types" ON "media_types"."id" = "tracks"."media_type_id"
+          INNER JOIN "invoices" ON "invoices"."id" = "invoice_lines"."invoice_id"
+          INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id") martyr_wrapper
+      GROUP BY media_types_name, genres_name
+      SQL
+    end
+
     it 'sets the level keys on SELECT and GROUP BY for all supported hierarchy for multiple degenerate levels that are connected to the fact' do
       sub_cube = MartyrSpec::DegeneratesAndAllLevels.select(:units_sold).granulate('customers.city').build.sub_cubes.first
       sub_cube.test

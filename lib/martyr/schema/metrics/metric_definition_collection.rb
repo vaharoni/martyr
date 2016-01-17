@@ -37,10 +37,21 @@ module Martyr
 
       # @param level [String] The level ID on which to perform the distinct count. The level must be connected to the
       #   fact with has_dimension_level.
-      def has_count_distinct_metric(name, level:, fact_alias: name, typecast: :to_i, sort: Sorter.identity, fact_grain: [])
+      # @option null_unless [String] an SQL fragment that creates a helper field on which the COUNT DISTINCT occurs.
+      #   Example:
+      #     1. has_count_distinct_metric 'customer_count', level: 'customers.name'
+      #        Count distinct occurs on `customers.name`
+      #
+      #     2. has_count_distinct_metric 'customer_with_property_count', level: 'customers.name', null_unless: 'customers.property'
+      #        A helper field is created on which the COUNT DISTINCT occurs:
+      #       CASE WHEN customers.property THEN customers.id ELSE NULL END AS customer_with_property_count_helper
+      #
+      #       Since COUNT DISTINCT ignores null values, this can be an effective way to create boolean values
+      #
+      def has_count_distinct_metric(name, level:, null_unless: nil, fact_alias: name, typecast: :to_i, sort: Sorter.identity, fact_grain: [])
         level_object = cube.supported_dimension_definitions.find_level_definition(level)
-        register CountDistinctMetric.new cube_name: cube_name, name: name, fact_alias: fact_alias,
-            typecast: typecast, sort: sort, level: level_object, fact_grain: Array.wrap(fact_grain)
+        register CountDistinctMetric.new cube_name: cube_name, name: name, fact_alias: fact_alias, typecast: typecast,
+            sort: sort, level: level_object, null_unless: null_unless, fact_grain: Array.wrap(fact_grain)
       end
 
       def has_custom_metric(name, block, rollup: :sum, sort: Sorter.identity, depends_on: [], fact_grain: [])

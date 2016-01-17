@@ -3,18 +3,19 @@ module Martyr
     class CountDistinctMetric < BuiltInMetric
 
       # @attribute level [Schema::BaseLevelDefinition]
-      attr_accessor :level
+      # @attribute null_unless [String] @see MetricDefinitionCollection#has_count_distinct_metric
+      attr_accessor :level, :null_unless
 
       # @override
       def add_to_select(fact_scopes)
         fact_scopes.add_select_operator_for_metric(name) do |operator|
-          operator.add_select(level.fact_key, as: level.fact_alias, data_rollup_sql: data_rollup_sql)
+          operator.add_select(select_statement, as: inner_sql_helper_field, data_rollup_sql: data_rollup_sql)
         end
       end
 
       # @override
       def data_rollup_sql
-        "COUNT(DISTINCT #{level.fact_alias}) AS #{fact_alias}"
+        "COUNT(DISTINCT #{inner_sql_helper_field}) AS #{fact_alias}"
       end
 
       # @override
@@ -50,6 +51,19 @@ module Martyr
         # Scenario 3
         element.facts.map{ |x| x.fact_key_for(level.id) }.uniq.length
       end
+
+      private
+
+      def select_statement
+        return level.fact_key unless null_unless.present?
+        "CASE WHEN #{null_unless} THEN #{level.fact_key} ELSE NULL END"
+      end
+
+      def inner_sql_helper_field
+        return level.fact_alias unless null_unless.present?
+        [fact_alias, 'distinct_helper'].join('_')
+      end
+
     end
   end
 end

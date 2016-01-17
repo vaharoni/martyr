@@ -68,6 +68,10 @@ module Martyr
         end
       end
 
+      def helper_methods
+        [id_method, record_method, value_method]
+      end
+
       private
 
       # @return [Proc] a lambda object representing running #all on the guessed-class

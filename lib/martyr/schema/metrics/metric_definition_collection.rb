@@ -4,7 +4,7 @@ module Martyr
       include Martyr::Registrable
       include Martyr::Translations
 
-      attr_reader :cube, :standardizer
+      attr_reader :cube, :dependency_inferrer, :standardizer
       delegate :cube_name, to: :cube
 
       alias_method :find_metric, :find_or_error
@@ -12,6 +12,7 @@ module Martyr
       def initialize(cube)
         super()
         @cube = cube
+        @dependency_inferrer = cube.metric_dependency_inferrer
         @standardizer = Martyr::MetricIdStandardizer.new(cube_name)
       end
 
@@ -19,19 +20,19 @@ module Martyr
         has_key? second_element_from_id(metric_name, fallback: true)
       end
 
-      def has_sum_metric(name, statement, fact_alias: name, typecast: :to_i, sort: Sorter.identity, fact_grain: [])
-        register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias,
-            rollup_function: :sum, typecast: typecast, sort: sort, fact_grain: Array.wrap(fact_grain)
+      # @see register_built_in_metric
+      def has_sum_metric(*args)
+        register_built_in_metric(:sum, *args)
       end
 
-      def has_min_metric(name, statement, fact_alias: name, typecast: :to_i, sort: Sorter.identity, fact_grain: [])
-        register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias,
-            rollup_function: :min, typecast: typecast, sort: sort, fact_grain: Array.wrap(fact_grain)
+      # @see register_built_in_metric
+      def has_min_metric(*args)
+        register_built_in_metric(:min, *args)
       end
 
-      def has_max_metric(name, statement, fact_alias: name, typecast: :to_i, sort: Sorter.identity, fact_grain: [])
-        register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias,
-            rollup_function: :max, typecast: typecast, sort: sort, fact_grain: Array.wrap(fact_grain)
+      # @see register_built_in_metric
+      def has_max_metric(*args)
+        register_built_in_metric(:max, *args)
       end
 
       # @param level [String] The level ID on which to perform the distinct count. The level must be connected to the
@@ -43,13 +44,32 @@ module Martyr
       end
 
       def has_custom_metric(name, block, rollup: :sum, sort: Sorter.identity, depends_on: [], fact_grain: [])
+        inferrer = dependency_inferrer.infer_from_block(depends_on:
+            standardizer.standardize(depends_on), fact_grain: fact_grain, &block)
+
         register CustomMetric.new cube_name: cube_name, name: name, block: block, rollup_function: rollup, sort: sort,
-            depends_on: standardizer.standardize(Array.wrap(depends_on)), fact_grain: Array.wrap(fact_grain)
+            depends_on: inferrer.depends_on, fact_grain: inferrer.fact_grain
       end
 
       def has_custom_rollup(name, block, default: nil, sort: Sorter.identity, depends_on: [], fact_grain: [])
+        inferrer = dependency_inferrer.infer_from_block(depends_on:
+            standardizer.standardize(depends_on), fact_grain: fact_grain, &block)
+
         register CustomRollup.new cube_name: cube_name, name: name, block: block, default: default, sort: sort,
-            depends_on: standardizer.standardize(Array.wrap(depends_on)), fact_grain: Array.wrap(fact_grain)
+          depends_on: inferrer.depends_on, fact_grain: inferrer.fact_grain
+      end
+
+      private
+
+      def register(metric)
+        super
+        dependency_inferrer.add_metric(metric)
+        metric
+      end
+
+      def register_built_in_metric(rollup_function, name, statement, fact_alias: name, typecast: :to_i, sort: Sorter.identity, fact_grain: [])
+        register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias,
+          rollup_function: rollup_function, typecast: typecast, sort: sort, fact_grain: Array.wrap(fact_grain)
       end
 
     end

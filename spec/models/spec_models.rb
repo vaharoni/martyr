@@ -51,13 +51,13 @@ module MartyrSpec
 
     has_count_distinct_metric :customer_count, level: 'customers.last_name'
 
-    has_custom_metric :commission, ->(fact) { (fact.amount * 0.3) }, depends_on: 'amount'
+    has_custom_metric :commission, ->(fact) { (fact.amount * 0.3) }
 
     # If one rollup is dependent on the other, make sure they are ordered correctly
-    has_custom_rollup :avg_transaction, ->(element) { (element.amount.to_f / element.units_sold).round(2) }, depends_on: %w(amount units_sold)
-    has_custom_rollup :usa_amount, ->(element) { element.locate('customers.country', with: 'USA').amount }, depends_on: 'amount', fact_grain: 'customers.country'
-    has_custom_rollup :cross_country_avg_transaction, ->(element) { element.locate(reset: 'customers.*').avg_transaction }, depends_on: 'avg_transaction'
-    has_custom_rollup :usa_avg_transaction, ->(element) { element.locate('customers.country', with: 'USA').avg_transaction }, depends_on: 'avg_transaction', fact_grain: 'customers.country'
+    has_custom_rollup :avg_transaction, ->(element) { (element.amount.to_f / element.units_sold).round(2) }
+    has_custom_rollup :usa_amount, ->(element) { element.locate('customers.country', with: 'USA').amount }
+    has_custom_rollup :cross_country_avg_transaction, ->(element) { element.locate(reset: 'customers.*').avg_transaction }
+    has_custom_rollup :usa_avg_transaction, ->(element) { element.locate('customers.country', with: 'USA').avg_transaction }
 
     main_query do
       InvoiceLine.joins(track: [:genre, :media_type], invoice: :customer)

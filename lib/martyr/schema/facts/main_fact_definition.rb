@@ -2,10 +2,7 @@ module Martyr
   module Schema
     class MainFactDefinition < BaseFactDefinition
 
-      attr_reader :metric_definitions
-      delegate :dimension_definitions, to: :cube
-
-      alias_method :metrics, :metric_definitions
+      delegate :dimension_definitions, to: :@cube
 
       delegate :supports_metric?, to: :metric_definitions
       delegate :supports_dimension?, to: :dimension_associations
@@ -19,9 +16,16 @@ module Martyr
       # @param cube [Martyr::Cube]
       def initialize(cube)
         @cube = cube
-        @dimension_associations = DimensionAssociationCollection.new(dimension_definitions)
-        @metric_definitions ||= Schema::MetricDefinitionCollection.new(cube)
       end
+
+      def dimension_associations
+        @dimension_associations ||= DimensionAssociationCollection.new(dimension_definitions)
+      end
+
+      def metric_definitions
+        @metric_definitions ||= Schema::MetricDefinitionCollection.new(@cube)
+      end
+      alias_method :metrics, :metric_definitions
 
       def main_query(&scope)
         @scope = scope

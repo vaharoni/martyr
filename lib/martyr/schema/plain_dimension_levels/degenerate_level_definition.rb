@@ -60,6 +60,10 @@ module Martyr
         end
       end
 
+      def helper_methods
+        [value_method]
+      end
+
       private
 
       def default_query_level_with_finder

@@ -106,6 +106,7 @@ module Martyr
       end
     end
 
+    # @return [Array<String>]
     def self.supported_level_ids
       supported_level_definitions.map(&:id)
     end
@@ -118,6 +119,11 @@ module Martyr
       level_ids = Array.wrap(level_ids)
       unsupported = level_ids - supported_level_ids
       level_ids - unsupported
+    end
+
+    # @return [Schema::DependencyInferrer]
+    def self.metric_dependency_inferrer
+      @metric_dependency_inferrer ||= Schema::DependencyInferrer.new.add_cube_levels(self)
     end
 
   end

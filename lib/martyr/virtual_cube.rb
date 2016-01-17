@@ -27,6 +27,7 @@ module Martyr
       delegate :find_metric, :has_custom_rollup, to: :metric_definitions
       delegate :select, :slice, :granulate, :pivot, to: :new_query_context_builder
       alias_method :all, :new_query_context_builder
+      alias_method :metrics, :metric_definitions
     end
 
     # @param mergeable [#merge!]
@@ -54,5 +55,17 @@ module Martyr
       contained_cube_classes.find{ |cube| cube.cube_name == cube_name } ||
         raise(Schema::Error.new "Could not find `#{cube_name}`")
     end
+
+    # @return [Schema::DependencyInferrer]
+    def self.metric_dependency_inferrer
+      return @metric_dependency_inferrer if @metric_dependency_inferrer
+      inferrer = Schema::DependencyInferrer.new
+      inferrer.add_cube_levels(self)
+      contained_cube_classes.each do |contained_cube|
+        inferrer.add_cube_levels(contained_cube)
+      end
+      @metric_dependency_inferrer = inferrer
+    end
+
   end
 end

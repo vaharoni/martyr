@@ -2,7 +2,7 @@ module Martyr
   class Sorter
 
     def self.default_for_query(label_field)
-      ->(record) { record.send(label_field) }
+      ->(record) { record.try(label_field) }
     end
 
     def self.identity
@@ -65,7 +65,7 @@ module Martyr
       arr.map!(&:keys)
     end
 
-    # @param uniq_values [Array<Array>] see return value of #extract_uniq_values
+    # @param uniq_values [Array<Hash>] see return value of #extract_uniq_values
     def build_sort_order_lookup(uniq_values)
       lookups = []
       uniq_values.each_with_index do |uniq_values_arr, i|

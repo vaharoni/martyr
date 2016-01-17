@@ -24,11 +24,16 @@ module Martyr
         @metric_keys_hash[metric.id.to_s] = metric.id
       end
 
-      # @return [DependencyInferrer::Instance]
+      # @return [#depends_on, #fact_grain] an object responding to these methods
+      # The idea is that the block won't be evaluated if the user intervened with one of the options
       def infer_from_block(depends_on: nil, fact_grain: nil, &block)
-        instance = Instance.new(self, depends_on: depends_on, fact_grain: fact_grain)
-        block.call(instance)
-        instance
+        if (depends_on.nil? or depends_on == []) and (fact_grain.nil? or fact_grain == [])
+          evaluator = BlockEvaluator.new(self)
+          block.call(evaluator)
+          evaluator
+        else
+          UserValues.new(depends_on, fact_grain)
+        end
       end
 
       private
@@ -41,31 +46,30 @@ module Martyr
         end
       end
 
-      class Instance
-        def initialize(inferrer, depends_on: nil, fact_grain: nil)
+      class UserValues
+        attr_reader :depends_on, :fact_grain
+
+        def initialize(depends_on, fact_grain)
+          @depends_on = depends_on == false ? [] : Array.wrap(depends_on)
+          @fact_grain = fact_grain == false ? [] : Array.wrap(fact_grain)
+        end
+      end
+
+      class BlockEvaluator
+        include Comparable
+
+        def initialize(inferrer)
           @inferrer = inferrer
           @depends_on_hash = {}
           @fact_grain_hash = {}
-          @depends_on = depends_on == false ? false : Array.wrap(depends_on)
-          @fact_grain = fact_grain == false ? false : Array.wrap(fact_grain)
         end
 
-        # @return [Array<String>, []]
-        #   if the user explicitly set depends_on: false, an empty array is returned
-        #   if the user provided depends_on arguments, they are returned
-        #   otherwise, the inferred value is used
         def depends_on
-          return [] if @depends_on == false
-          @depends_on.presence || @depends_on_hash.keys
+          @depends_on_hash.keys
         end
 
-        # @return [Array<String>, []]
-        #   if the user explicitly set fact_grain: false, an empty array is returned
-        #   if the user provided fact_grain arguments, they are returned
-        #   otherwise, the inferred value is used
         def fact_grain
-          return [] if @fact_grain == false
-          @fact_grain.presence || @fact_grain_hash.keys
+          @fact_grain_hash.keys
         end
 
         def locate(*args)
@@ -103,6 +107,14 @@ module Martyr
         def fact_key_for(level_id)
           infer_fact_grain(level_id)
           self
+        end
+
+        def <=>(_other)
+          0
+        end
+
+        def coerce(other)
+          [other, other]
         end
 
         private

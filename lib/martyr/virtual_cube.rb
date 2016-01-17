@@ -60,7 +60,6 @@ module Martyr
     def self.metric_dependency_inferrer
       return @metric_dependency_inferrer if @metric_dependency_inferrer
       inferrer = Schema::DependencyInferrer.new
-      inferrer.add_cube_levels(self)
       contained_cube_classes.each do |contained_cube|
         inferrer.add_cube_levels(contained_cube)
       end

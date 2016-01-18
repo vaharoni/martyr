@@ -75,10 +75,10 @@ module Martyr
         def locate(*args)
           main_arg = args.first
           if main_arg.is_a?(String)
-            infer_fact_grain(main_arg)
+            infer_either(main_arg)
           elsif main_arg.is_a?(Hash)
             main_arg.keys.each do |arg|
-              infer_fact_grain(arg)
+              infer_either(arg)
             end
           end
           self

@@ -50,5 +50,11 @@ module Martyr
 
       find_metric(metric_name)
     end
+
+    # @param metric_id [String] fully qualified metric ID
+    # @return [Boolean]
+    def self.metric?(metric_id)
+      find_metric_id(metric_id).present? rescue false
+    end
   end
 end

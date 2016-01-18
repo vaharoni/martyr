@@ -69,6 +69,7 @@ module Martyr
       def build
         return @context if @context
         context = QueryContext.new
+        add_metric_slices_to_metric_dependencies
         setup_context_grain_and_metrics(context)
         setup_context_dimension_scopes(context)
         setup_context_sub_cubes_metrics_and_grain(context)
@@ -81,6 +82,12 @@ module Martyr
       private
 
       # = Building steps
+
+      def add_metric_slices_to_metric_dependencies
+        @data_slice.keys.select{ |slice_on| cube.metric?(slice_on) }.each do |metric_id|
+          @metric_dependency_resolver.add_metric(metric_id, explicit: false)
+        end
+      end
 
       # Step 1
       # Add all levels to the query grain

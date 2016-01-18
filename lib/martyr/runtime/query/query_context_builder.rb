@@ -69,7 +69,7 @@ module Martyr
       def build
         return @context if @context
         context = QueryContext.new
-        setup_context_grain(context)
+        setup_context_grain_and_metrics(context)
         setup_context_dimension_scopes(context)
         setup_context_sub_cubes_metrics_and_grain(context)
         setup_context_data_slice(context)
@@ -84,8 +84,9 @@ module Martyr
 
       # Step 1
       # Add all levels to the query grain
-      def setup_context_grain(context)
+      def setup_context_grain_and_metrics(context)
         context.level_ids_in_grain = Array.wrap(@granulate_args)
+        context.metrics = @metric_dependency_resolver.metrics
       end
 
       # Step 2 (relies on Steps 1)

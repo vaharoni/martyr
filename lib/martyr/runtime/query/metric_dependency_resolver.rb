@@ -12,6 +12,20 @@ module Martyr
         @inferred_fact_grain_by_cube = {}
       end
 
+      # @option all [Boolean] send true if all metrics, including dependents, should be retrieved. Otherwise, only
+      #   explicitly asked-for metrics will be included in the result set
+      # @return [Array<BaseMetric>]
+      def metrics(all: false)
+        metric_entries = @metrics_by_cube.flat_map { |_cube_name, metric_ids_hash| metric_ids_hash.values }
+        metric_entries.select! { |entry| entry[:explicit] } unless all
+        metric_entries.map { |entry| entry[:metric] }
+      end
+
+      # @return [Array<String>] metric IDs
+      def metric_ids(all: false)
+        metrics(all: all).map(&:id)
+      end
+
       # @param cube_name [String]
       # @option all [Boolean] send true if all metrics, including dependents, should be retrieved. Otherwise, only
       #   explicitly asked-for metrics will be included in the result set
@@ -23,6 +37,7 @@ module Martyr
       end
 
       # @see metrics_for
+      # @return [Array<String>] metric IDs
       def metric_ids_for(cube_name, all: false)
         relevant_entries_for(cube_name, all: all).map(&:first)
       end

@@ -4,13 +4,14 @@ module Martyr
       include Martyr::LevelComparator
       include Martyr::Translations
 
+      # @attribute metrics [Array<BaseMetric>] metrics that were requested as part of the query, without dependencies
       # @attribute sub_cubes_hash [Hash] of the format { cube_name => Runtime::SubCube }
       # @attribute dimension_scopes [Runtime::DimensionScopeCollection] see BaseCube::build_dimension_scopes
       # @attribute level_ids_in_grain [Array<String>] array of level IDs
       # @attribute virtual_cube [VirtualCube]
       # @attribute virtual_cube_metric_ids [Array<String>]
 
-      attr_accessor :sub_cubes_hash, :dimension_scopes, :level_ids_in_grain, :virtual_cube, :virtual_cube_metric_ids
+      attr_accessor :metrics, :sub_cubes_hash, :dimension_scopes, :level_ids_in_grain, :virtual_cube, :virtual_cube_metric_ids
       attr_reader :data_slice
       delegate :level_scope, :level_scopes, :with_level_scope, :lowest_level_of, :lowest_level_ids_of,
         :levels_and_above_for, :level_ids_and_above_for, :level_loaded?, to: :dimension_scopes
@@ -23,7 +24,7 @@ module Martyr
       end
 
       def inspect
-        "#<QueryContext grain: #{level_ids_in_grain}, memory_slice: #{memory_slice.to_hash}, data_slice: #{data_slice.to_hash}, sub_cubes: #{sub_cubes}>"
+        "#<QueryContext metric_ids: #{metric_ids}, grain: #{level_ids_in_grain}, memory_slice: #{memory_slice.to_hash}, data_slice: #{data_slice.to_hash}, sub_cubes: #{sub_cubes}>"
       end
 
       def sub_cubes
@@ -39,13 +40,18 @@ module Martyr
         end
       end
 
-      # @return [Array<BaseMetric>] all metrics, including virtuals
-      def metrics
+      # @return [Array<String>] only metric IDs that were requested as part of the query, without dependencies
+      def metric_ids
+        metrics.map(&:id)
+      end
+
+      # @return [Array<BaseMetric>] all metrics, including those that are added by dependencies and virtuals
+      def all_metrics
         sub_cubes.flat_map { |sub_cube| sub_cube.metric_objects } + virtual_metrics
       end
 
-      def metric_ids
-        metrics.map(&:id)
+      def all_metric_ids
+        all_metrics.map(&:id)
       end
 
       # @param id [String] has to be fully qualified (cube_name.metric_name)
@@ -191,7 +197,7 @@ module Martyr
         @element_helper_module = Module.new
         dimension_scopes.register_element_helper_methods(@element_helper_module)
 
-        metric_ids.each do |metric_id|
+        all_metric_ids.each do |metric_id|
           metric_name = second_element_from_id(metric_id)
           @element_helper_module.module_eval do
             define_method(metric_name) { fetch(metric_id) }
@@ -203,7 +209,7 @@ module Martyr
       private
 
       def metric_ids_lookup
-        @metric_ids_lookup ||= metrics.index_by(&:id)
+        @metric_ids_lookup ||= all_metrics.index_by(&:id)
       end
 
       def virtual_cube?

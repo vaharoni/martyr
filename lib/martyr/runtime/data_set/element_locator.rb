@@ -24,7 +24,9 @@ module Martyr
       # @param level_ids [Array<String>] the granularity at which the elements need to be fetched
       # @return [Array<Element>]
       def all(level_ids)
-        fact_indexer.elements_by(memory_slice, level_ids).map {|element| finalize_element(element)}
+        Schema::CountDistinctMetric.enable_rollup_strategy_caching(metrics) do
+          fact_indexer.elements_by(memory_slice, level_ids).map {|element| finalize_element(element)}
+        end
       end
 
       # Get an element based on coordinates.

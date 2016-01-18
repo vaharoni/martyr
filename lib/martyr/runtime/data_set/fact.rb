@@ -4,12 +4,13 @@ module Martyr
       include Martyr::LevelComparator
       include Martyr::Translations
 
-      attr_reader :sub_cube, :raw
+      attr_reader :sub_cube, :raw, :grain_level_ids
       delegate :dimension_bus, to: :sub_cube
 
       def initialize(sub_cube, query_result_hash)
         @sub_cube = sub_cube
         @raw = query_result_hash
+        @grain_level_ids = []
         merge_value_by_levels_hash
         merge_built_in_metrics_hash
         merge_custom_metrics_hash
@@ -46,6 +47,7 @@ module Martyr
       def merge_value_by_levels_hash
         sub_cube.fact_levels_filler_hash.each do |level_id, filler|
           store level_id, filler.value(self)
+          @grain_level_ids << level_id
         end
       end
 

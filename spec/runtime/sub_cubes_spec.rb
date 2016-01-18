@@ -29,6 +29,7 @@ describe 'Runtime Queries' do
       SELECT media_types_name, genres_name, COUNT(DISTINCT customer_id) AS customer_count
       FROM (SELECT media_types.name AS media_types_name,
           genres.name AS genres_name,
+          1 AS customer_count,
           customers.id AS customer_id
         FROM "invoice_lines"
           INNER JOIN "tracks" ON "tracks"."id" = "invoice_lines"."track_id"
@@ -47,6 +48,7 @@ describe 'Runtime Queries' do
       SELECT media_types_name, genres_name, COUNT(DISTINCT customer_from_usa_count_distinct_helper) AS customer_from_usa_count
       FROM (SELECT media_types.name AS media_types_name,
           genres.name AS genres_name,
+          CASE WHEN customers.country = 'USA' THEN 1 ELSE 0 END AS customer_from_usa_count,
           CASE WHEN customers.country = 'USA' THEN customers.id ELSE NULL END AS customer_from_usa_count_distinct_helper
         FROM "invoice_lines"
           INNER JOIN "tracks" ON "tracks"."id" = "invoice_lines"."track_id"

@@ -37,6 +37,12 @@ module Martyr
 
       # @override
       def add_to_select(fact_scopes)
+        # Adding an inner SQL statement with the metric's fact_alias is essential for metric slices
+        # Note that it is not used for the rollup in the wrapper
+        fact_scopes.add_select_operator_for_metric(name) do |operator|
+          operator.add_select(inner_sql_statement, as: fact_alias)
+        end
+
         fact_scopes.add_select_operator_for_metric(name) do |operator|
           operator.add_select(select_statement, as: inner_sql_helper_field, data_rollup_sql: data_rollup_sql)
         end
@@ -53,6 +59,11 @@ module Martyr
       end
 
       private
+
+      def inner_sql_statement
+        return '1' unless null_unless.present?
+        "CASE WHEN #{null_unless} THEN 1 ELSE 0 END"
+      end
 
       def select_statement
         return level.fact_key unless null_unless.present?

@@ -10,7 +10,7 @@ module Martyr
         @metric_name = metric_name
       end
 
-      def add_select(what, as:, data_rollup_sql:)
+      def add_select(what, as:, data_rollup_sql: nil)
         @what = what
         @as = as
         @data_rollup_sql = data_rollup_sql
@@ -23,7 +23,7 @@ module Martyr
       end
 
       def handle_outer(wrapper)
-        wrapper.add_to_select(data_rollup_sql)
+        wrapper.add_to_select(data_rollup_sql) if data_rollup_sql.present?
       end
 
       def supported_for?(fact_scope)

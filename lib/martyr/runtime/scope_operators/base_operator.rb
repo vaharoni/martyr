@@ -1,31 +1,6 @@
 module Martyr
   module Runtime
 
-    # Fact scope operators is a unit of instructions relating to the operation of decorating an SQL statement that
-    # is being built. The main method is #execute, which decorates a fact_scope object by the instructions it
-    # contains.
-    #
-    # It answers the following questions:
-    #
-    # 1. Which multi dimensional entity are we decorating?
-    #     Which dimension and which level? Which metric?
-    #     This can only be determined by the query context based on the user query.
-    #     It is set during object initialization.
-    #
-    # 2. Which scope object should the decorations run on?
-    #     If the fact contains sub queries, for example, there is some logic that needs to determine whether the
-    #     operation can be executed on the sub queries.
-    #     This is determined by the schema structure. Before a call to #execute is made, the `fact_scope` attribute
-    #     must be initialized by the caller.
-    #
-    # 3. What is the decorating action?
-    #     Is it a `where`, `select`, `group`, and on which values?
-    #     This can only be determined by the query context based on the user query, but also taking into account some
-    #     schema information.
-    #     It is set by sending a block during object initialization. This block is run when #execute is invoked,
-    #     and delegates some utility methods to the later-initialized `fact_scope` attribute.
-    #
-
     class BaseOperator
       attr_reader :setup_block, :operation_args
       attr_accessor :fact_scope

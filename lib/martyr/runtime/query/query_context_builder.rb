@@ -70,6 +70,7 @@ module Martyr
         return @context if @context
         context = QueryContext.new
         add_metric_slices_to_metric_dependencies
+        add_all_metrics_if_none_selected
         setup_context_grain_and_metrics(context)
         setup_context_dimension_scopes(context)
         setup_context_sub_cubes_metrics_and_grain(context)
@@ -86,6 +87,13 @@ module Martyr
       def add_metric_slices_to_metric_dependencies
         @data_slice.keys.select{ |slice_on| cube.metric?(slice_on) }.each do |metric_id|
           @metric_dependency_resolver.add_metric(metric_id, explicit: false)
+        end
+      end
+
+      def add_all_metrics_if_none_selected
+        return if @metric_dependency_resolver.metric_ids.present?
+        cube.metrics.values.each do |metric|
+          @metric_dependency_resolver.add_metric(metric.id)
         end
       end
 

@@ -13,7 +13,7 @@ module Martyr
       #       something else and sometimes needed. #select_supported_level_ids, for instance, is relying on those
       #       methods in the cube, not the grain.
       #       This is confusing.
-      delegate :cube_name, :dimension_associations, :select_supported_level_ids, to: :cube
+      delegate :cube_name, :dimension_associations, :select_supported_level_ids, :standardizer, to: :cube
       delegate :supported_level_associations, :supported_level_definitions, :has_association_with_level?, to: :grain
 
       delegate :find_metric, :metric_ids, :metric_objects, :built_in_metrics, :custom_metrics, to: :metrics
@@ -109,7 +109,7 @@ module Martyr
       def element_locator_for(memory_slice, metrics: nil)
         ElementLocator.new memory_slice: memory_slice, metrics: sanitize_metrics(metrics: metrics),
           fact_indexer: fact_indexer, helper_module: query_context.element_helper_module,
-          restrict_level_ids: grain.supported_level_definition_ids
+          restrict_level_ids: grain.supported_level_definition_ids, standardizer: standardizer
       end
 
       def fact_indexer

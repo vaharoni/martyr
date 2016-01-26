@@ -16,7 +16,8 @@ module Martyr
       # @attribute fact_indexer [#dimension_bus, #get_element, #cube_name]
       # @attribute restrict_level_ids [Array<String>] level IDs that are supported by the cube this locator belongs to.
       # @attribute helper_module [Module] a module to be included into every element
-      attr_accessor :metrics, :memory_slice, :fact_indexer, :restrict_level_ids, :helper_module
+      # @attribute standardizer [MetricIdStandardizer] used to standardize user input given in procs calling locate
+      attr_accessor :metrics, :memory_slice, :fact_indexer, :restrict_level_ids, :helper_module, :standardizer
 
       delegate :dimension_bus, :cube_name, to: :fact_indexer
       delegate :definition_from_id, to: :dimension_bus
@@ -59,6 +60,7 @@ module Martyr
       def locate(grain_hash, *several_variants)
         slice_hash, reset_arr, options = sanitize_args_for_locate(*several_variants)
         dimensions_slice_hash, metrics_slice_hash = separate_dimensions_and_metrics(slice_hash)
+        metrics_slice_hash = standardizer.standardize(metrics_slice_hash)
         new_memory_slice = metrics_slice_hash.present? ? memory_slice.dup_internals.slice_hash(metrics_slice_hash) : memory_slice
         new_coords = coordinates_from_grain_hash(grain_hash, memory_slice: new_memory_slice).locate(dimensions_slice_hash, reset: reset_arr)
         get(new_coords.grain_hash, memory_slice: new_memory_slice, **options)

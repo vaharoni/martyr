@@ -126,5 +126,9 @@ module Martyr
       @metric_dependency_inferrer ||= Schema::DependencyInferrer.new.add_cube_levels(self)
     end
 
+    def self.standardizer
+      @standardizer ||= Martyr::MetricIdStandardizer.new(cube_name, raise_if_not_ok: false)
+    end
+
   end
 end

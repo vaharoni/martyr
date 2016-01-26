@@ -66,5 +66,9 @@ module Martyr
       @metric_dependency_inferrer = inferrer
     end
 
+    def self.standardizer
+      @standardizer ||= Martyr::MetricIdStandardizer.new(cube_name, raise_if_not_ok: true)
+    end
+
   end
 end

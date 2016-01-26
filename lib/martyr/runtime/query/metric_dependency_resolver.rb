@@ -59,9 +59,10 @@ module Martyr
       #   send false for metrics that were added due to dependency.
       def add_metric(metric_id, explicit: true)
         cube_name = first_element_from_id(metric_id)
+        metric = cube.find_metric_id(metric_id)
+        add_count_distinct_fact_grain_dependency(metric, explicit)
         return unless @metrics_by_cube[cube_name].try(:[], metric_id).nil?
 
-        metric = cube.find_metric_id(metric_id)
         register_metric(metric, explicit)
         add_fact_grain_dependency(metric)
         add_dependent_metrics(metric)
@@ -74,11 +75,17 @@ module Martyr
         @metrics_by_cube[metric.cube_name][metric.id] = { metric: metric, explicit: explicit }
       end
 
+      # The level which count-distinct metric A depends on is added only if another metric depends on metric A,
+      # and only if the user did not specify a custom fact_grain for metric A.
+      def add_count_distinct_fact_grain_dependency(metric, explicit)
+        return unless !explicit and metric.is_a?(Schema::CountDistinctMetric) and metric.fact_grain.blank?
+        store_inferred_fact_grain(metric.cube_name, metric.level_id)
+      end
+
       def add_fact_grain_dependency(metric)
         return unless metric.respond_to?(:fact_grain) and metric.fact_grain.present?
         metric.fact_grain.each do |level_id|
-          @inferred_fact_grain_by_cube[metric.cube_name] ||= {}
-          @inferred_fact_grain_by_cube[metric.cube_name][level_id] = true
+          store_inferred_fact_grain(metric.cube_name, level_id)
         end
       end
 
@@ -95,6 +102,11 @@ module Martyr
         candidates = @metrics_by_cube[cube_name] || []
         candidates.select!{ |_metric_id, metric_entry| metric_entry[:explicit] } unless all
         candidates
+      end
+
+      def store_inferred_fact_grain(cube_name, level_id)
+        @inferred_fact_grain_by_cube[cube_name] ||= {}
+        @inferred_fact_grain_by_cube[cube_name][level_id] = true
       end
     end
   end

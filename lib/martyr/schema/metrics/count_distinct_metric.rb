@@ -163,7 +163,8 @@ module Martyr
         end
 
         def uniq(element)
-          element.facts.map{ |x| x.fact_key_for(metric.level_id) }.uniq.length
+          # We check for fetch(metric.id) > 0 for the sake of the use of +null_unless+ option
+          element.facts.select { |x| x.fetch(metric.id) > 0 }.map{ |x| x.fact_key_for(metric.level_id) }.uniq.length
         end
       end
     end

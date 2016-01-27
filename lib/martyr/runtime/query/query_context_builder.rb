@@ -19,7 +19,9 @@ module Martyr
       end
 
       # select(:a, :b, :c)
+      # select(:all)
       def select(*arr)
+        @all_metrics = true and return self if arr.length == 1 and arr.first.to_s == 'all'
         dup.instance_eval do
           standardize(arr).each do |metric_id|
             @metric_dependency_resolver.add_metric(metric_id)
@@ -91,6 +93,7 @@ module Martyr
       end
 
       def add_all_metrics_if_none_selected
+        return unless @all_metrics
         return if @metric_dependency_resolver.metric_ids.present?
         cube.metrics.values.each do |metric|
           @metric_dependency_resolver.add_metric(metric.id)

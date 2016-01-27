@@ -15,7 +15,20 @@ module Martyr
     end
 
     def self.new_query_context_builder
-      Runtime::QueryContextBuilder.new(self)
+      Runtime::QueryContextBuilder.new(self, @named_scopes.try(:query_helper_module))
+    end
+
+    # @return [NamedScopedCollection] and extends for the first time the helper module used to delegate scope names to
+    #   a new query context builder
+    def self.named_scopes
+      return @named_scopes if @named_scopes
+      @named_scopes = Schema::NamedScopeCollection.new
+      extend(@named_scopes.cube_helper_module)
+      @named_scopes
+    end
+
+    class << self
+      delegate :scope, to: :named_scopes
     end
 
     def self.dimension_definitions

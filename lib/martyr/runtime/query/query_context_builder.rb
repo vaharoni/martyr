@@ -8,21 +8,23 @@ module Martyr
       include Martyr::LevelComparator
       include Martyr::Translations
 
-      attr_reader :cube
+      attr_reader :cube, :scope_helper_module
       delegate :elements, :facts, :pivot, :total, :totals, to: :build
 
-      def initialize(cube)
+      def initialize(cube, scope_helper_module)
         @cube = cube
         @metric_dependency_resolver = MetricDependencyResolver.new(cube)
         @data_slice = {}
         @granulate_args = []
+        @scope_helper_module = scope_helper_module
+        extend_scope_helper
       end
 
       # select(:a, :b, :c)
       # select(:all)
       def select(*arr)
         @all_metrics = true and return self if arr.length == 1 and arr.first.to_s == 'all'
-        dup.instance_eval do
+        dup.extend_scope_helper.instance_eval do
           standardize(arr).each do |metric_id|
             @metric_dependency_resolver.add_metric(metric_id)
           end
@@ -37,7 +39,7 @@ module Martyr
       #   slice('artist.name', with: 'AC/DC')
       #
       def slice(*several_variants)
-        dup.instance_eval do
+        dup.extend_scope_helper.instance_eval do
           if several_variants.length == 1 and several_variants.first.is_a?(Hash)
             several_variants.first.stringify_keys.except(PivotCell::METRIC_COORD_KEY).each do |slice_on, slice_definition|
               @data_slice.merge! standardize(slice_on) => slice_definition
@@ -54,7 +56,7 @@ module Martyr
 
       # granulate('artist.name', 'genre.name')
       def granulate(*arr)
-        dup.instance_eval do
+        dup.extend_scope_helper.instance_eval do
           @granulate_args += arr
           self
         end
@@ -162,6 +164,13 @@ module Martyr
         context.sub_cubes_hash.each do |_cube_name, sub_cube|
           sub_cube.decorate_all_scopes context.data_slice.for_cube(sub_cube)
         end
+      end
+
+      protected
+
+      def extend_scope_helper
+        return self unless scope_helper_module
+        extend(scope_helper_module)
       end
 
       private

@@ -16,20 +16,19 @@ module Martyr
         @metric_dependency_resolver = MetricDependencyResolver.new(cube)
         @data_slice = {}
         @granulate_args = []
+        @decorations = {}
         @scope_helper_module = scope_helper_module
         extend_scope_helper
       end
 
       # select(:a, :b, :c)
       # select(:all)
-      def select(*arr)
+      def select!(*arr)
         @all_metrics = true and return self if arr.length == 1 and arr.first.to_s == 'all'
-        dup.extend_scope_helper.instance_eval do
-          standardize(arr).each do |metric_id|
-            @metric_dependency_resolver.add_metric(metric_id)
-          end
-          self
+        standardize(arr).each do |metric_id|
+          @metric_dependency_resolver.add_metric(metric_id)
         end
+        self
       end
 
       # Variant 1 - full slice as one hash:
@@ -38,36 +37,47 @@ module Martyr
       # Variant 2 - on one dimension or metric
       #   slice('artist.name', with: 'AC/DC')
       #
-      def slice(*several_variants)
-        dup.extend_scope_helper.instance_eval do
-          if several_variants.length == 1 and several_variants.first.is_a?(Hash)
-            several_variants.first.stringify_keys.except(PivotCell::METRIC_COORD_KEY).each do |slice_on, slice_definition|
-              @data_slice.merge! standardize(slice_on) => slice_definition
-            end
-          elsif several_variants.length == 2
-            slice_on, slice_definition = several_variants
+      def slice!(*several_variants)
+        if several_variants.length == 1 and several_variants.first.is_a?(Hash)
+          several_variants.first.stringify_keys.except(PivotCell::METRIC_COORD_KEY).each do |slice_on, slice_definition|
             @data_slice.merge! standardize(slice_on) => slice_definition
-          else
-            ArgumentError.new("wrong number of arguments (#{several_variants.length} for 1..2)")
           end
-          self
+        elsif several_variants.length == 2
+          slice_on, slice_definition = several_variants
+          @data_slice.merge! standardize(slice_on) => slice_definition
+        else
+          ArgumentError.new("wrong number of arguments (#{several_variants.length} for 1..2)")
         end
+        self
       end
 
       # granulate('artist.name', 'genre.name')
-      def granulate(*arr)
-        dup.extend_scope_helper.instance_eval do
-          @granulate_args += arr
-          self
-        end
+      def granulate!(*arr)
+        @granulate_args += arr
+        self
       end
 
       # @param level_id [String]
       # @param *args [Array] will be sent to includes
-      def decorate(level_id, lambda = nil, &block)
-        @decorations ||= {}
+      def decorate!(level_id, lambda = nil, &block)
         @decorations[level_id] = lambda || block
         self
+      end
+
+      def select(*args)
+        data_dup.select!(*args)
+      end
+
+      def slice(*args)
+        data_dup.slice!(*args)
+      end
+
+      def granulate(*args)
+        data_dup.granulate!(*args)
+      end
+
+      def decorate(*args)
+        data_dup.decorate!(*args)
       end
 
       def build
@@ -116,7 +126,7 @@ module Martyr
         relevant_dimensions = (default_grains + context.level_ids_in_grain + @data_slice.keys).map { |x| first_element_from_id(x) }
         context.dimension_scopes = cube.build_dimension_scopes(relevant_dimensions.uniq)
 
-        @decorations.try(:each) do |level_id, proc|
+        @decorations.each do |level_id, proc|
           context.dimension_scopes.find_level(level_id).decorate_scope(&proc)
         end
       end
@@ -174,6 +184,17 @@ module Martyr
       end
 
       private
+
+      def data_dup
+        dup.instance_eval do
+          @decorations = @decorations.try(:dup)
+          @data_slice = @data_slice.dup
+          @granulate_args = @granulate_args.dup
+          @metric_dependency_resolver = @metric_dependency_resolver.data_dup
+          extend_scope_helper
+          self
+        end
+      end
 
       def standardize(object)
         @standardizer ||= Martyr::MetricIdStandardizer.new(cube.contained_cube_classes.first.cube_name,

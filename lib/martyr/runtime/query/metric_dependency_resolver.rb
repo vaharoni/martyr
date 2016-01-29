@@ -12,6 +12,14 @@ module Martyr
         @inferred_fact_grain_by_cube = {}
       end
 
+      def to_hash
+        Hash[@metrics_by_cube.map{ |cube_name, arr| [cube_name, arr.keys] }]
+      end
+
+      def inspect
+        to_hash.inspect
+      end
+
       # @option all [Boolean] send true if all metrics, including dependents, should be retrieved. Otherwise, only
       #   explicitly asked-for metrics will be included in the result set
       # @return [Array<BaseMetric>]
@@ -66,6 +74,14 @@ module Martyr
         register_metric(metric, explicit)
         add_fact_grain_dependency(metric)
         add_dependent_metrics(metric)
+      end
+
+      def data_dup
+        dup.instance_eval do
+          @metrics_by_cube = @metrics_by_cube.deep_dup
+          @inferred_fact_grain_by_cube = @inferred_fact_grain_by_cube.deep_dup
+          self
+        end
       end
 
       private

@@ -7,13 +7,11 @@ module Martyr
 
       def initialize(name, proc)
         @name = name.to_s
-        @proc = proc
+        @proc = proc.to_proc
       end
 
       def run(query_context_builder, *args)
-        query_context_builder.instance_exec(@proc, *args) do |proc, *args|
-          proc.call(*args)
-        end
+        query_context_builder.instance_exec(*args, &@proc)
       end
 
     end

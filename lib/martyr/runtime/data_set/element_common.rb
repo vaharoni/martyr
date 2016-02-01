@@ -25,7 +25,8 @@ module Martyr
         @metrics_hash ||= {}
         metrics.each do |metric|
           next if @metrics_hash[metric.id]
-          store metric.id, FutureMetric.wrap(self, metric, :rollup)
+          value = empty? ? 0 : FutureMetric.wrap(self, metric, :rollup)
+          store metric.id, value
           @metrics_hash[metric.id] = metric
         end
         self

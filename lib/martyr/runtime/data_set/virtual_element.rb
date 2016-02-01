@@ -42,7 +42,7 @@ module Martyr
         @future_virtual_metrics_hash = {}
       end
 
-      def null?
+      def empty?
         real_elements.empty?
       end
 
@@ -70,8 +70,10 @@ module Martyr
 
       def locate(*args)
         new_real_elements = find_real_elements(:locate, *args)
-        throw(:empty_element) unless new_real_elements.present?
-        VirtualElement.new(new_real_elements.first.grain_hash, memory_slice, locators, new_real_elements)
+
+        # Allows falling back to an empty real element if no real elements are found to calculate the new grain hash
+        representative = new_real_elements.first || locators.first.locate(grain_hash, *args)
+        VirtualElement.new(representative.grain_hash, memory_slice, locators, new_real_elements)
       end
 
       def key_for(level_id)
@@ -107,10 +109,8 @@ module Martyr
       # @param args [Array] args for locate
       def find_real_elements(method_name, *args)
         locators.map do |locator|
-          catch(:empty_element) do
-            locator.send(method_name, grain_hash, *args)
-          end
-        end.compact
+          locator.send(method_name, grain_hash, *args)
+        end.reject(&:empty?).compact
       end
 
     end

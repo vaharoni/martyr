@@ -50,13 +50,11 @@ module Martyr
           elements.index_by do |element|
             (pivot_grain - reset).map{|level_id| element[level_id]}
           end.flat_map do |_sub_total_key, representative|
-            catch(:empty_element) do
-              element = representative.locate reset: reset
-              metrics.map do |metric|
-                PivotCell.new(metric, element, reset)
-              end
+            element = representative.locate reset: reset
+            metrics.map do |metric|
+              PivotCell.new(metric, element, reset)
             end
-          end.compact
+          end.reject(:empty?).compact
         end
       end
 

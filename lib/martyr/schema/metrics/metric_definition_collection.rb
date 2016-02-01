@@ -62,11 +62,11 @@ module Martyr
             depends_on: inferrer.depends_on, fact_grain: inferrer.fact_grain
       end
 
-      def has_custom_rollup(name, block, default: nil, sort: Sorter.identity, depends_on: [], fact_grain: [])
+      def has_custom_rollup(name, block, sort: Sorter.identity, depends_on: [], fact_grain: [])
         inferrer = dependency_inferrer.infer_from_block(depends_on:
             standardizer.standardize(depends_on), fact_grain: fact_grain, &block)
 
-        register CustomRollup.new cube_name: cube_name, name: name, block: block, default: default, sort: sort,
+        register CustomRollup.new cube_name: cube_name, name: name, block: block, sort: sort,
           depends_on: inferrer.depends_on, fact_grain: inferrer.fact_grain
       end
 

@@ -1,7 +1,7 @@
 module Martyr
   module Schema
     class CustomRollup < BaseMetric
-      attr_accessor :cube_name, :name, :block, :default, :depends_on
+      attr_accessor :cube_name, :name, :block, :depends_on
 
       def build_data_slice(*)
         raise Runtime::Error.new("Rollups cannot be sliced: attempted on rollup `#{name}`")
@@ -23,9 +23,7 @@ module Martyr
       # @override
       # @param element [Runtime::Element]
       def rollup(element)
-        catch(:empty_element) do
-          block.call(element)
-        end || default
+        block.call(element)
       end
 
     end

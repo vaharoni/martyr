@@ -9,6 +9,7 @@ module Martyr
       attr_accessor :element_locator, :helper_module
 
       attr_reader :facts
+      delegate :empty?, to: :facts
       delegate :cube_name, to: :element_locator
       delegate :grain_level_ids, :grain_hash, to: :@coordinates
 
@@ -19,7 +20,6 @@ module Martyr
       def initialize(coordinates, values_hash, facts)
         @coordinates = coordinates
         @facts = facts
-
         merge! values_hash
       end
 

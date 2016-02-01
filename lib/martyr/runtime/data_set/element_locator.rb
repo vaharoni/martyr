@@ -37,9 +37,11 @@ module Martyr
       # @param exclude_metric_id [nil, String, Array<String>] @see #finalize_elements
       def get(grain_hash, exclude_metric_id: nil, memory_slice: nil)
         memory_slice ||= self.memory_slice
-        throw(:empty_element) if restrict_level_ids.present? and (grain_hash.keys - restrict_level_ids).present?
-        elm = fact_indexer.get_element(memory_slice, grain_hash)
-        throw(:empty_element) unless elm
+
+        elm = fact_indexer.get_element(memory_slice, grain_hash) unless restrict_level_ids.present? and
+          (grain_hash.keys - restrict_level_ids).present?
+
+        elm ||= empty_element(grain_hash, memory_slice: memory_slice)
         finalize_element(elm, exclude_metric_id: exclude_metric_id)
       end
 
@@ -125,6 +127,11 @@ module Martyr
           raise Query::Error.new('Can only reset on dimensions') unless
             definition_from_id(first_element_from_id(id)).respond_to?(:dimension?)
         end
+      end
+
+      def empty_element(grain_hash, memory_slice: nil)
+        coordinates = coordinates_from_grain_hash(grain_hash, memory_slice: memory_slice)
+        Element.new(coordinates, {}, [])
       end
 
     end

@@ -34,6 +34,8 @@ module Martyr
       end
 
       # @param memory_slice [MemorySlice] cross cubes memory slice
+      # @option real_elements [Array<Element>] note that an empty array is a valid input, representing an empty virtual
+      #   element.
       def initialize(grain_hash, memory_slice, locators, real_elements = nil)
         @grain_hash = grain_hash
         @memory_slice = memory_slice
@@ -51,7 +53,7 @@ module Martyr
       end
 
       def coordinates_object
-        real_elements.first.coordinates_object
+        representative.coordinates_object
       end
 
       def facts(cube_name = nil)
@@ -70,18 +72,15 @@ module Martyr
 
       def locate(*args)
         new_real_elements = find_real_elements(:locate, *args)
-
-        # Allows falling back to an empty real element if no real elements are found to calculate the new grain hash
-        representative = new_real_elements.first || locators.first.locate(grain_hash, *args)
-        VirtualElement.new(representative.grain_hash, memory_slice, locators, new_real_elements)
+        VirtualElement.new(representative(*args).grain_hash, memory_slice, locators, new_real_elements)
       end
 
       def key_for(level_id)
-        real_elements.first.key_for(level_id)
+        representative.key_for(level_id)
       end
 
       def record_for(level_id)
-        real_elements.first.record_for(level_id)
+        representative.record_for(level_id)
       end
 
       def warnings
@@ -111,6 +110,12 @@ module Martyr
         locators.map do |locator|
           locator.send(method_name, grain_hash, *args)
         end.reject(&:empty?).compact
+      end
+
+      # Allows falling back to an empty real element if no real elements are found to calculate the new grain hash
+      # @return [Element] could be empty element
+      def representative(*locate_args)
+        real_elements.first || locators.first.locate(grain_hash, *locate_args)
       end
 
     end

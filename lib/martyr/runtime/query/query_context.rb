@@ -139,9 +139,16 @@ module Martyr
       end
 
       def total(metrics: nil)
-        elements(levels: [], metrics: metrics).first
+        elements(levels: [], metrics: metrics).first || empty_element(metrics: metrics)
       end
       alias_method :totals, :total
+
+      def empty_element(metrics: nil)
+        return sub_cubes.first.element_locator_for(memory_slice, metrics: metrics).empty_element unless virtual_cube?
+
+        locators = sub_cubes.map {|sub_cube| sub_cube.element_locator_for(memory_slice, metrics: metrics) }
+        VirtualElement.new({}, memory_slice, locators, []).rollup(*virtual_metrics)
+      end
 
       def pivot
         Runtime::PivotTableBuilder.new(self)

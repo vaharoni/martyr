@@ -41,7 +41,7 @@ module Martyr
         elm = fact_indexer.get_element(memory_slice, grain_hash) unless restrict_level_ids.present? and
           (grain_hash.keys - restrict_level_ids).present?
 
-        elm ||= empty_element(grain_hash, memory_slice: memory_slice)
+        elm ||= unfinalized_empty_element(grain_hash, memory_slice: memory_slice)
         finalize_element(elm, exclude_metric_id: exclude_metric_id)
       end
 
@@ -66,6 +66,10 @@ module Martyr
         new_memory_slice = metrics_slice_hash.present? ? memory_slice.dup_internals.slice_hash(metrics_slice_hash) : memory_slice
         new_coords = coordinates_from_grain_hash(grain_hash, memory_slice: new_memory_slice).locate(dimensions_slice_hash, reset: reset_arr)
         get(new_coords.grain_hash, memory_slice: new_memory_slice, **options)
+      end
+
+      def empty_element(grain_hash={}, memory_slice: nil)
+        finalize_element unfinalized_empty_element(grain_hash, memory_slice: memory_slice)
       end
 
       private
@@ -129,7 +133,7 @@ module Martyr
         end
       end
 
-      def empty_element(grain_hash, memory_slice: nil)
+      def unfinalized_empty_element(grain_hash, memory_slice: nil)
         coordinates = coordinates_from_grain_hash(grain_hash, memory_slice: memory_slice)
         Element.new(coordinates, {}, [])
       end

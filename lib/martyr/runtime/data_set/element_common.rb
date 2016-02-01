@@ -11,6 +11,20 @@ module Martyr
         attr_reader :metrics_hash
       end
 
+      # Grain and coordinates are different.
+      # Coordinates can include "background" multi-value slices such as: 'media.types' => ['a', 'b', 'c']
+      # Grain always have one value for each level
+      # Coordinates always include the grain.
+
+      def grain_has_level_id?(level_id)
+        grain_level_ids.include?(level_id)
+      end
+
+      def coordinates_have_level_id?(level_id)
+        coordinates.keys.include?(level_id)
+      end
+      alias_method :has_level_id?, :coordinates_have_level_id?
+
       def metrics
         metrics_hash.values
       end

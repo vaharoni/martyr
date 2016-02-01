@@ -30,11 +30,11 @@ module Martyr
       end
       alias_method :[], :fetch
 
-      def coordinates(*)
+      def coordinates
         @coordinates.to_hash
       end
 
-      def coordinates_object(*)
+      def coordinates_object
         @coordinates
       end
 
@@ -49,13 +49,17 @@ module Martyr
       end
 
       def key_for(level_id)
-        raise Query::Error.new("Error: `#{level_id}` must be included in the element grain") unless grain_hash.keys.include?(level_id)
+        raise Query::Error.new("Error: `#{level_id}` must be included in the element grain") unless coordinates.keys.include?(level_id)
         facts.first.fact_key_for(level_id)
       end
 
       def record_for(level_id)
-        raise Query::Error.new("Error: `#{level_id}` must be included in the element grain") unless grain_hash.keys.include?(level_id)
+        raise Query::Error.new("Error: `#{level_id}` must be included in the element grain") unless coordinates.keys.include?(level_id)
         facts.first.record_for(level_id)
+      end
+
+      def has_metric_id?(metric_id)
+        metric_ids.include? MetricIdStandardizer.new(cube_name).standardize(metric_id)
       end
     end
   end

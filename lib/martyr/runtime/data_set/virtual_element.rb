@@ -83,6 +83,14 @@ module Martyr
         representative.record_for(level_id)
       end
 
+      def grain_level_ids
+        grain_hash.keys
+      end
+
+      def has_metric_id?(metric_id)
+        metric_ids.include?(metric_id)
+      end
+
       def warnings
         arr = real_elements.flat_map do |elm|
           elm.metrics.map{|metric| [metric.id, warning(metric.id)]}

@@ -76,8 +76,8 @@ module Martyr
         data_dup.granulate!(*args)
       end
 
-      def decorate(*args)
-        data_dup.decorate!(*args)
+      def decorate(*args, &block)
+        data_dup.decorate!(*args, &block)
       end
 
       def build
@@ -187,7 +187,7 @@ module Martyr
 
       def data_dup
         dup.instance_eval do
-          @decorations = @decorations.try(:dup)
+          @decorations = @decorations.dup
           @data_slice = @data_slice.dup
           @granulate_args = @granulate_args.dup
           @metric_dependency_resolver = @metric_dependency_resolver.data_dup

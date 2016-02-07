@@ -18,7 +18,7 @@ module Martyr
       end
 
       def extract(fact)
-        block.call(fact)
+        fact.instance_exec(&block)
       end
 
     end

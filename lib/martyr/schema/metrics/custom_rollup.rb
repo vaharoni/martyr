@@ -23,7 +23,7 @@ module Martyr
       # @override
       # @param element [Runtime::Element]
       def rollup(element)
-        block.call(element)
+        element.instance_exec(&block)
       end
 
     end

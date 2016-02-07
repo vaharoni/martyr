@@ -29,7 +29,7 @@ module Martyr
       def infer_from_block(depends_on: nil, fact_grain: nil, &block)
         if (depends_on.nil? or depends_on == []) and (fact_grain.nil? or fact_grain == [])
           evaluator = BlockEvaluator.new(self)
-          block.call(evaluator)
+          evaluator.instance_exec(&block)
           evaluator
         else
           UserValues.new(depends_on, fact_grain)

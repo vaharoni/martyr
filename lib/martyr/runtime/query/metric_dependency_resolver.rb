@@ -1,8 +1,6 @@
 module Martyr
   module Runtime
     class MetricDependencyResolver
-      include Martyr::Translations
-
       attr_reader :cube
 
       # @param cube [BaseCube] either virtual or regular cube
@@ -66,12 +64,10 @@ module Martyr
       # @option explicit [Boolean] indicates whether the metric was asked to be included as part of a query.
       #   send false for metrics that were added due to dependency.
       def add_metric(metric_id, explicit: true)
-        cube_name = first_element_from_id(metric_id)
         metric = cube.find_metric_id(metric_id)
         add_count_distinct_fact_grain_dependency(metric, explicit)
-        return unless @metrics_by_cube[cube_name].try(:[], metric_id).nil?
+        return unless register_metric(metric, explicit)
 
-        register_metric(metric, explicit)
         add_fact_grain_dependency(metric)
         add_dependent_metrics(metric)
       end
@@ -86,9 +82,27 @@ module Martyr
 
       private
 
+      # @param metric [BaseMetric]
+      # @param explicit [Boolean] see #add_metric
+      # @return [Boolean]
+      #   true if the metric was added for the first time.
+      #   false if the metric was already added before
+      #
+      # @note this method makes sure to set the explicit flag to true if explicit param is true. The flag will not be
+      #   changed if explicit param is false.
+      #
+      # This makes sure that if the user specifies select('a', 'b') and 'a' depends on 'b', then 'b' will be marked
+      # as explicit, despite the fact it was added as explicit=false when 'a' was added.
+      #
       def register_metric(metric, explicit)
         @metrics_by_cube[metric.cube_name] ||= {}
+        if @metrics_by_cube[metric.cube_name].has_key?(metric.id)
+          @metrics_by_cube[metric.cube_name][metric.id][:explicit] = true if explicit
+          return false
+        end
+
         @metrics_by_cube[metric.cube_name][metric.id] = { metric: metric, explicit: explicit }
+        true
       end
 
       # The level which count-distinct metric A depends on is added only if another metric depends on metric A,

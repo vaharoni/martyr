@@ -48,10 +48,13 @@ module Martyr
       #
       #       Since COUNT DISTINCT ignores null values, this can be an effective way to create boolean values
       #
-      def has_count_distinct_metric(name, level:, null_unless: nil, fact_alias: name, typecast: :to_i, sort: Sorter.identity, fact_grain: [])
+      def has_count_distinct_metric(name, level:, null_unless: nil, fact_alias: name, typecast: :to_i,
+        sort: Sorter.identity, fact_grain: [], sub_query: [], sub_queries: [])
+
         level_association = cube.dimension_associations.find_level_association(level)
         register CountDistinctMetric.new cube_name: cube_name, name: name, fact_alias: fact_alias, typecast: typecast,
-            sort: sort, level: level_association, null_unless: null_unless, fact_grain: Array.wrap(fact_grain)
+            sort: sort, level: level_association, null_unless: null_unless, fact_grain: Array.wrap(fact_grain),
+            sub_queries: Array.wrap(sub_queries) + Array.wrap(sub_query)
       end
 
       def has_custom_metric(name, block, rollup: :sum, sort: Sorter.identity, depends_on: [], fact_grain: [])
@@ -78,9 +81,12 @@ module Martyr
         metric
       end
 
-      def register_built_in_metric(rollup_function, name, statement, fact_alias: name, typecast: :to_i, sort: Sorter.identity, fact_grain: [])
+      def register_built_in_metric(rollup_function, name, statement, fact_alias: name, typecast: :to_i,
+        sort: Sorter.identity, fact_grain: [], sub_query: [], sub_queries: [])
+
         register BuiltInMetric.new cube_name: cube_name, name: name, statement: statement, fact_alias: fact_alias,
-          rollup_function: rollup_function, typecast: typecast, sort: sort, fact_grain: Array.wrap(fact_grain)
+          rollup_function: rollup_function, typecast: typecast, sort: sort, fact_grain: Array.wrap(fact_grain),
+          sub_queries: Array.wrap(sub_queries) + Array.wrap(sub_query)
       end
 
     end

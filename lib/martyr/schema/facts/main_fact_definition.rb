@@ -16,6 +16,7 @@ module Martyr
       # @param cube [Martyr::Cube]
       def initialize(cube)
         @cube = cube
+        @joins_by_default = true
       end
 
       def dimension_associations

@@ -59,6 +59,12 @@ module Martyr
         @inferred_fact_grain_by_cube[cube_name].try(:keys) || []
       end
 
+      # @return [Array<String>] array of sub facts that need to be joined in order to support the required metrics,
+      #   as provided under the `sub_queries` key of the metric definition.
+      def sub_facts_for(cube_name)
+        metrics_for(cube_name, all: true).flat_map {|metric| metric.sub_queries if metric.respond_to?(:sub_queries) }.compact
+      end
+
       # Recursively add the metric and its dependencies
       # @param metric_id [String] fully qualified metric ID (with cube name)
       # @option explicit [Boolean] indicates whether the metric was asked to be included as part of a query.

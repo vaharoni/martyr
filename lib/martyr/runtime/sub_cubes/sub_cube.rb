@@ -26,8 +26,6 @@ module Martyr
       def initialize(query_context, cube)
         @query_context = query_context
         @cube = cube
-        @fact_scopes = cube.build_fact_scopes
-
         @metrics = QueryMetrics.new(self)
         @grain = SubCubeGrain.new(self)
       end
@@ -79,14 +77,13 @@ module Martyr
         end
       end
 
+      def set_sub_facts(sub_facts_arr)
+        @fact_scopes = cube.build_fact_scopes(sub_facts_arr)
+      end
+
       def lowest_level_ids_in_grain
         grain.level_ids
       end
-
-      # TODO: remove
-      # def set_grain_to_all_if_empty
-      #   grain.set_all_if_empty
-      # end
 
       # @param data_slice [DataSlice] that is scoped to the cube
       def decorate_all_scopes(data_slice)

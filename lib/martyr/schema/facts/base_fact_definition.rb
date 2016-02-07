@@ -1,7 +1,7 @@
 module Martyr
   module Schema
     class BaseFactDefinition
-      attr_reader :cube, :scope, :dimension_associations
+      attr_reader :cube, :scope, :dimension_associations, :joins_by_default
       alias_method :dimensions, :dimension_associations
 
       def supports_dimension_level?(dimension_name, level_name)

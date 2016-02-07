@@ -9,8 +9,10 @@ module Martyr
 
       def initialize(cube, name, &block)
         @cube = cube
-        @name = name
+        @name = name.to_s
         @dimension_associations = DimensionAssociationCollection.new(dimension_definitions)
+        @joins_by_default = false
+
         scope = instance_eval(&block)
         @scope = -> { scope }
       end
@@ -26,9 +28,10 @@ module Martyr
         dimension_associations.has_dimension_level(dimension_name, level_name, **args)
       end
 
-      def joins_with(join_clause, on:)
+      def joins_with(join_clause, on:, by_default: false)
         @join_clause = join_clause
         @join_on = on
+        @joins_by_default = by_default
       end
 
       # @return [Runtime::SubFactScope]

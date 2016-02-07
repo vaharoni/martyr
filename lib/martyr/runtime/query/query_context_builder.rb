@@ -87,7 +87,7 @@ module Martyr
         add_all_metrics_if_none_selected
         setup_context_grain_and_metrics(context)
         setup_context_dimension_scopes(context)
-        setup_context_sub_cubes_metrics_and_grain(context)
+        setup_context_sub_cubes_metrics_and_grain_and_sub_facts(context)
         setup_context_data_slice(context)
         setup_virtual_cube(context)
         decorate_all_scopes(context)
@@ -137,16 +137,18 @@ module Martyr
       # requested it will yield an empty cube.
       # If no metrics were given, select all.
       # If no grain was given, select all levels - separately for each cube.
-      def setup_context_sub_cubes_metrics_and_grain(context)
+      def setup_context_sub_cubes_metrics_and_grain_and_sub_facts(context)
         cube.contained_cube_classes.index_by(&:cube_name).each do |cube_name, cube_class|
           metric_ids = @metric_dependency_resolver.metric_ids_for(cube_name, all: true)
           grain = (@granulate_args + @metric_dependency_resolver.inferred_fact_grain_for(cube_name) +
                    cube_class.default_fact_grain).uniq
+          sub_facts = @metric_dependency_resolver.sub_facts_for(cube_name)
 
           sub_cube = Runtime::SubCube.new(context, cube_class)
           context.sub_cubes_hash[cube_name] = sub_cube
           sub_cube.set_metrics(metric_ids)
           sub_cube.set_grain(grain)
+          sub_cube.set_sub_facts(sub_facts)
         end
       end
 

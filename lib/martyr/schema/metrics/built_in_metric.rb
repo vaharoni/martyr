@@ -2,7 +2,7 @@ module Martyr
   module Schema
     class BuiltInMetric < BaseMetric
 
-      attr_accessor :statement, :fact_alias, :typecast
+      attr_accessor :statement, :fact_alias, :typecast, :sub_queries
 
       def build_data_slice(*args)
         Runtime::MetricDataSlice.new(self, *args)

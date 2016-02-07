@@ -306,11 +306,6 @@ describe 'Runtime Queries' do
           INNER JOIN "invoices" ON "invoices"."id" = "invoice_lines"."invoice_id"
           INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id"
           INNER JOIN (SELECT invoices.customer_id,
-                      COUNT(invoices.id) AS invoice_count
-                      FROM "invoices"
-                      WHERE "invoices"."customer_id" = #{customer_id}
-                      GROUP BY invoices.customer_id) invoice_counts ON invoice_counts.customer_id = customers.id
-          INNER JOIN (SELECT invoices.customer_id,
                       MIN(invoices.id) AS first_invoice_id
                       FROM "invoices"
                       WHERE "invoices"."customer_id" = #{customer_id}
@@ -336,11 +331,6 @@ describe 'Runtime Queries' do
           INNER JOIN "media_types" ON "media_types"."id" = "tracks"."media_type_id"
           INNER JOIN "invoices" ON "invoices"."id" = "invoice_lines"."invoice_id"
           INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id"
-          INNER JOIN (SELECT invoices.customer_id,
-                      COUNT(invoices.id) AS invoice_count
-                      FROM "invoices"
-                      WHERE "invoices"."customer_id" IN (#{customer_ids})
-                      GROUP BY invoices.customer_id) invoice_counts ON invoice_counts.customer_id = customers.id
           INNER JOIN (SELECT invoices.customer_id,
                       MIN(invoices.id) AS first_invoice_id
                       FROM "invoices"

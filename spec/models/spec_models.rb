@@ -211,7 +211,7 @@ module MartyrSpec
     has_sum_metric :amount, 'invoice_lines.unit_price * invoice_lines.quantity'
 
     # Sub facts
-    has_sum_metric :invoice_count, 'invoice_counts.invoice_count'
+    has_sum_metric :invoice_count, 'invoice_counts.invoice_count', sub_query: 'invoice_counts'
     has_dimension_level :first_invoice, :yes_no,
       fact_key: 'CASE customer_first_invoices.first_invoice_id WHEN invoices.id THEN 1 ELSE 0 END'
 
@@ -230,7 +230,7 @@ module MartyrSpec
     end
 
     sub_query :customer_first_invoices do
-      joins_with 'INNER JOIN', on: "#{name}.customer_id = customers.id"
+      joins_with 'INNER JOIN', on: "#{name}.customer_id = customers.id", by_default: true
       has_dimension_level :customers, :last_name, fact_key: 'invoices.customer_id'
 
       Invoice.

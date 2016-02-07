@@ -49,9 +49,9 @@ module Martyr
       #       Since COUNT DISTINCT ignores null values, this can be an effective way to create boolean values
       #
       def has_count_distinct_metric(name, level:, null_unless: nil, fact_alias: name, typecast: :to_i, sort: Sorter.identity, fact_grain: [])
-        level_object = cube.supported_dimension_definitions.find_level_definition(level)
+        level_association = cube.dimension_associations.find_level_association(level)
         register CountDistinctMetric.new cube_name: cube_name, name: name, fact_alias: fact_alias, typecast: typecast,
-            sort: sort, level: level_object, null_unless: null_unless, fact_grain: Array.wrap(fact_grain)
+            sort: sort, level: level_association, null_unless: null_unless, fact_grain: Array.wrap(fact_grain)
       end
 
       def has_custom_metric(name, block, rollup: :sum, sort: Sorter.identity, depends_on: [], fact_grain: [])

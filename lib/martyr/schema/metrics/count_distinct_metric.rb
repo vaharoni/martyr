@@ -30,7 +30,7 @@ module Martyr
         end
       end
 
-      # @attribute level [Schema::BaseLevelDefinition]
+      # @attribute level [Schema::LevelAssociation]
       # @attribute null_unless [String] @see MetricDefinitionCollection#has_count_distinct_metric
       attr_accessor :level, :null_unless
       delegate :id, to: :level, prefix: true

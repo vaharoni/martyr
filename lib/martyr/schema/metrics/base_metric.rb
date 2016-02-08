@@ -50,8 +50,26 @@ module Martyr
           when 'max'
             element.facts.map{|x| x.fetch(id)}.compact.max
           when 'none'
-            values = element.facts.map{|x| x.fetch(id)}
-            return values.first if values.uniq.length == 1
+
+            # Two scenarios:
+            #   (1) The user does not specify a fact_grain on a rollup: :none custom metric
+            #         The custom metric operates on the fact grain and is not rolled up when the element contains
+            #         multiple facts. We return it only if the facts length is 1.
+            #
+            #   (2) fact_grain exists
+            #         The custom metric operates on the levels provided by the user. There are three scenarios depending
+            #         on the element grain:
+            #         - Same level as the fact grain
+            #             There is only one fact, and facts.first returns it
+            #
+            #         - More detailed level than the fact grain
+            #             We should be able to pick any random fact.
+            #
+            #         - Less detailed than the fact grain
+            #             If there is only one fact, we return its value, otherwise we avoid rolling up and return nil
+            #
+            element.facts.first.fetch(id) if element.facts.length == 1 or
+              (fact_grain.present? and (fact_grain - element.grain_level_ids).empty?)
         end
       end
     end

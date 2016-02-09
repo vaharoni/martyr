@@ -106,11 +106,6 @@ module Martyr
     autoload :QueryMetrics, File.expand_path('../martyr/runtime/sub_cubes/query_metrics', __FILE__)
     autoload :SubCube, File.expand_path('../martyr/runtime/sub_cubes/sub_cube', __FILE__)
     autoload :SubCubeGrain, File.expand_path('../martyr/runtime/sub_cubes/sub_cube_grain', __FILE__)
-
-    module FactFillerStrategies
-      autoload :DegenerateLevelAssociationFillerStrategy, File.expand_path('../martyr/runtime/sub_cubes/fact_filler_strategies', __FILE__)
-      autoload :QueryLevelAssociationFillerStrategy, File.expand_path('../martyr/runtime/sub_cubes/fact_filler_strategies', __FILE__)
-      autoload :UnassociatedLevelFillerStrategy, File.expand_path('../martyr/runtime/sub_cubes/fact_filler_strategies', __FILE__)
-    end
+    autoload :FactFillerStrategies, File.expand_path('../martyr/runtime/sub_cubes/fact_filler_strategies', __FILE__)
   end
 end

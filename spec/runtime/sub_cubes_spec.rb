@@ -96,8 +96,8 @@ describe 'Runtime Queries' do
           INNER JOIN "media_types" ON "media_types"."id" = "tracks"."media_type_id"
           INNER JOIN "invoices" ON "invoices"."id" = "invoice_lines"."invoice_id"
           INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id"
-        WHERE "media_types"."name" = 'AAC audio file' AND
-           "genres"."name" = 'Rock') martyr_wrapper
+        WHERE ((media_types.name) IN ('AAC audio file')) AND
+           ((genres.name) IN ('Rock'))) martyr_wrapper
       GROUP BY media_types_name, genres_name
       SQL
     end
@@ -120,8 +120,8 @@ describe 'Runtime Queries' do
           INNER JOIN "media_types" ON "media_types"."id" = "tracks"."media_type_id"
           INNER JOIN "invoices" ON "invoices"."id" = "invoice_lines"."invoice_id"
           INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id"
-        WHERE "media_types"."name" = 'AAC audio file' AND
-           "genres"."name" = 'Rock') martyr_wrapper
+        WHERE ((media_types.name) IN ('AAC audio file')) AND
+           ((genres.name) IN ('Rock'))) martyr_wrapper
       GROUP BY customer_id, media_types_name, genres_name
       SQL
     end
@@ -160,7 +160,7 @@ describe 'Runtime Queries' do
           INNER JOIN "media_types" ON "media_types"."id" = "tracks"."media_type_id"
           INNER JOIN "invoices" ON "invoices"."id" = "invoice_lines"."invoice_id"
           INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id"
-        WHERE "tracks"."id" = #{track.id}) martyr_wrapper
+        WHERE ((tracks.id) IN (#{track.id}))) martyr_wrapper
       GROUP BY track_id
       SQL
     end
@@ -179,7 +179,7 @@ describe 'Runtime Queries' do
           INNER JOIN "media_types" ON "media_types"."id" = "tracks"."media_type_id"
           INNER JOIN "invoices" ON "invoices"."id" = "invoice_lines"."invoice_id"
           INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id"
-        WHERE "invoice_lines"."id" = 5) martyr_wrapper
+        WHERE ((invoice_lines.id) IN (5))) martyr_wrapper
       GROUP BY invoice_line_id
       SQL
     end
@@ -188,7 +188,7 @@ describe 'Runtime Queries' do
       sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('albums.album' => {with: 'Restless and Wild'}).granulate('albums.album').build.sub_cubes.first
       sub_cube.test
 
-      track_ids = Album.find_by(title: 'Restless and Wild').track_ids.join(', ')
+      track_ids = Album.find_by(title: 'Restless and Wild').track_ids.join(',')
       expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
       SELECT track_id, SUM(units_sold) AS units_sold
       FROM (SELECT tracks.id AS track_id,
@@ -199,7 +199,7 @@ describe 'Runtime Queries' do
           INNER JOIN "media_types" ON "media_types"."id" = "tracks"."media_type_id"
           INNER JOIN "invoices" ON "invoices"."id" = "invoice_lines"."invoice_id"
           INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id"
-        WHERE "tracks"."id" IN (#{track_ids})) martyr_wrapper
+        WHERE ((tracks.id) IN (#{track_ids}))) martyr_wrapper
       GROUP BY track_id
       SQL
     end
@@ -208,7 +208,7 @@ describe 'Runtime Queries' do
       sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('customers.country' => {with: 'USA'}).granulate('customers.country').build.sub_cubes.first
       sub_cube.test
 
-      customer_ids = Customer.where(country: 'USA').map(&:id).join(', ')
+      customer_ids = Customer.where(country: 'USA').map(&:id).join(',')
       expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
       SELECT customer_id, SUM(units_sold) AS units_sold
       FROM (SELECT customers.id AS customer_id,
@@ -219,7 +219,7 @@ describe 'Runtime Queries' do
           INNER JOIN "media_types" ON "media_types"."id" = "tracks"."media_type_id"
           INNER JOIN "invoices" ON "invoices"."id" = "invoice_lines"."invoice_id"
           INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id"
-        WHERE "customers"."id" IN (#{customer_ids})) martyr_wrapper
+        WHERE ((customers.id) IN (#{customer_ids}))) martyr_wrapper
       GROUP BY customer_id
       SQL
     end
@@ -228,7 +228,7 @@ describe 'Runtime Queries' do
       sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('invoices.country' => {with: 'USA'}).granulate('invoices.country').build.sub_cubes.first
       sub_cube.test
 
-      invoice_line_ids = Invoice.includes(:invoice_lines).where(billing_country: 'USA').flat_map(&:invoice_line_ids).join(', ')
+      invoice_line_ids = Invoice.includes(:invoice_lines).where(billing_country: 'USA').flat_map(&:invoice_line_ids).join(',')
       expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
       SELECT invoice_line_id, SUM(units_sold) AS units_sold
       FROM (SELECT invoice_lines.id AS invoice_line_id,
@@ -239,7 +239,7 @@ describe 'Runtime Queries' do
           INNER JOIN "media_types" ON "media_types"."id" = "tracks"."media_type_id"
           INNER JOIN "invoices" ON "invoices"."id" = "invoice_lines"."invoice_id"
           INNER JOIN "customers" ON "customers"."id" = "invoices"."customer_id"
-        WHERE "invoice_lines"."id" IN (#{invoice_line_ids})) martyr_wrapper
+        WHERE ((invoice_lines.id) IN (#{invoice_line_ids}))) martyr_wrapper
       GROUP BY invoice_line_id
       SQL
     end
@@ -281,8 +281,8 @@ describe 'Runtime Queries' do
                       MIN(invoices.id) AS first_invoice_id
                       FROM "invoices"
                       GROUP BY invoices.customer_id) customer_first_invoices ON customer_first_invoices.customer_id = customers.id
-        WHERE "media_types"."name" = 'AAC audio file' AND
-           "genres"."name" = 'Rock') martyr_wrapper
+        WHERE ((media_types.name) IN ('AAC audio file')) AND
+           ((genres.name) IN ('Rock'))) martyr_wrapper
       GROUP BY first_invoice_yes_no, media_types_name, genres_name
       SQL
     end
@@ -308,9 +308,9 @@ describe 'Runtime Queries' do
           INNER JOIN (SELECT invoices.customer_id,
                       MIN(invoices.id) AS first_invoice_id
                       FROM "invoices"
-                      WHERE "invoices"."customer_id" = #{customer_id}
+                      WHERE ((invoices.customer_id) IN (#{customer_id}))
                       GROUP BY invoices.customer_id) customer_first_invoices ON customer_first_invoices.customer_id = customers.id
-        WHERE "customers"."id" = #{customer_id}) martyr_wrapper
+        WHERE ((customers.id) IN (#{customer_id}))) martyr_wrapper
       GROUP BY customer_country, customer_state, customer_id
       SQL
     end
@@ -320,7 +320,7 @@ describe 'Runtime Queries' do
       sub_cube = MartyrSpec::DegeneratesAndCustomersAndSubFacts.select(:units_sold).slice('customers.country' => {with: 'USA'}).granulate('customers.country').build.sub_cubes.first
       sub_cube.test
 
-      customer_ids = Customer.where(country: 'USA').map(&:id).join(', ')
+      customer_ids = Customer.where(country: 'USA').map(&:id).join(',')
       expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
       SELECT customer_country, SUM(units_sold) AS units_sold
       FROM (SELECT customers.country AS customer_country,
@@ -334,9 +334,9 @@ describe 'Runtime Queries' do
           INNER JOIN (SELECT invoices.customer_id,
                       MIN(invoices.id) AS first_invoice_id
                       FROM "invoices"
-                      WHERE "invoices"."customer_id" IN (#{customer_ids})
+                      WHERE ((invoices.customer_id) IN (#{customer_ids}))
                       GROUP BY invoices.customer_id) customer_first_invoices ON customer_first_invoices.customer_id = customers.id
-        WHERE "customers"."country" = 'USA') martyr_wrapper
+        WHERE ((customers.country) IN ('USA'))) martyr_wrapper
       GROUP BY customer_country
       SQL
     end

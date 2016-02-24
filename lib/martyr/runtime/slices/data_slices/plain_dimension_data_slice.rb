@@ -97,12 +97,12 @@ module Martyr
       def add_to_where_using_fact_strategy(level_scope, slice_definition, operator)
         return unless slice_definition.with.present?
         level_key = operator.level_key_for_where(level_scope.id)
-        operator.add_where(level_key => slice_definition.with)
+        operator.add_where("(#{level_key}) IN (?)", slice_definition.with)
       end
 
       def add_to_where_using_join_strategy(operator, common_level_scope)
         level_key = operator.level_key_for_where(common_level_scope.id)
-        operator.add_where(level_key => common_level_scope.keys)
+        operator.add_where("(#{level_key}) IN (?)", common_level_scope.keys)
       end
     end
   end

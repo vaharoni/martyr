@@ -1,6 +1,10 @@
 module Martyr
   class VirtualCube < BaseCube
 
+    def self.cube
+      self
+    end
+
     def self.contained_cube_classes
       @contained_cube_classes ||= []
     end

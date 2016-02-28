@@ -2,6 +2,10 @@ module Martyr
   class Cube < BaseCube
     extend Martyr::LevelComparator
 
+    def self.cube
+      self
+    end
+
     def self.contained_cube_classes
       [self]
     end

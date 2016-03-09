@@ -185,10 +185,10 @@ describe 'Runtime Queries' do
     end
 
     it 'sets up WHERE on keys when slicing on query level that is not connected to the fact' do
-      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('albums.album' => {with: 'Restless and Wild'}).granulate('albums.album').build.sub_cubes.first
+      sub_cube = MartyrSpec::DegeneratesAndBottomLevels.select(:units_sold).slice('albums.album' => {with: 1}).granulate('albums.album').build.sub_cubes.first
       sub_cube.test
 
-      track_ids = Album.find_by(title: 'Restless and Wild').track_ids.join(',')
+      track_ids = Album.find(1).track_ids.join(',')
       expect(sub_cube.combined_sql).to eq <<-SQL.gsub(/\s+/, ' ').gsub("\n", '').strip
       SELECT track_id, SUM(units_sold) AS units_sold
       FROM (SELECT tracks.id AS track_id,

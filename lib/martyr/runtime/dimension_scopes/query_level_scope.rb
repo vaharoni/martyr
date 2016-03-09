@@ -28,7 +28,7 @@ module Martyr
 
       def slice_with(values)
         decorate_scope do |scope|
-          scope.where label_key => values
+          scope.where primary_key => values
         end
         set_bottom_sliced_level
       end

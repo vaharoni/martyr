@@ -2,11 +2,14 @@ module Martyr
   class Sorter
 
     def self.default_for_query(label_field)
-      ->(record) { record.try(label_field) }
+      ->(record) do
+        value = record.try(label_field)
+        value.is_a?(String) ? value.downcase : value
+      end
     end
 
     def self.identity
-      ->(value) { value }
+      ->(value) { value.is_a?(String) ? value.downcase : value }
     end
 
     def self.args_to_hash(arg)

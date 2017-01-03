@@ -27,6 +27,14 @@ module Martyr
       merge_from_cubes(Schema::DimensionDefinitionCollection.new, &:supported_dimension_definitions)
     end
 
+    def self.supported_level_definitions
+      contained_cube_classes.map(&:supported_level_definitions).faltten.uniq
+    end
+
+    def self.supported_level_ids
+      supported_level_definitions.map(&:id)
+    end
+
     class << self
       delegate :find_metric, :has_custom_rollup, to: :metric_definitions
       delegate :select, :slice, :granulate, :pivot, to: :new_query_context_builder

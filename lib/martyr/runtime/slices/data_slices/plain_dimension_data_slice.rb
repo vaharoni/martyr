@@ -80,10 +80,7 @@ module Martyr
 
         # Building operator used to slice the fact
         fact_scopes.add_where_operator_for_dimension(level_scope.dimension_name, level_scope.name) do |operator|
-          if slice_definition.null?
-            operator.decorate_scope {|fact_scope| fact_scope.where('0=1')}
-            next
-          end
+          next operator.add_where('0=1') if slice_definition.null?
 
           common_denominator_level = operator.common_denominator_level(level_scope.level_definition)
           if common_denominator_level.name == level_scope.name

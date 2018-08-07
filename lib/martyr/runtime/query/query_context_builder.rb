@@ -9,7 +9,7 @@ module Martyr
       include Martyr::Translations
 
       attr_reader :cube, :scope_helper_module
-      delegate :elements, :facts, :pivot, :total, :totals, to: :build
+      delegate :elements, :facts, :pivot, :total, :totals, :combined_sql, to: :build
 
       def initialize(cube, scope_helper_module)
         @cube = cube
@@ -78,6 +78,18 @@ module Martyr
 
       def decorate(*args, &block)
         data_dup.decorate!(*args, &block)
+      end
+
+      def granulate_and_select_all
+        granulate_all.select_all_metrics
+      end
+
+      def granulate_all
+        granulate(*cube.level_associations.map(&:id))
+      end
+
+      def select_all_metrics
+        select('all')
       end
 
       def build

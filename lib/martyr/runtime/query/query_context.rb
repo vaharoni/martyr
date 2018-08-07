@@ -16,6 +16,7 @@ module Martyr
       delegate :level_scope, :level_scopes, :with_level_scope, :lowest_level_of, :lowest_level_ids_of,
         :levels_and_above_for, :level_ids_and_above_for, :level_loaded?, to: :dimension_scopes
       delegate :slice, to: :memory_slice
+      delegate :combined_sql, to: :default_cube
 
       def initialize
         @data_slice = DataSlice.new(self)
